@@ -1,0 +1,11 @@
+name: money
+description: >
+  "Dart implementation of Fowler's Money pattern"
+version: 0.0.0
+author: Roman Shamritskiy <roman@litgroup.ru>
+homepage: https://github.com/dartiny/money
+#dependencies:
+#  lib_name: any
+dev_dependencies:
+  mock: '>=0.11.0+2 <0.12.0'
+  unittest: '>=0.11.15+4 <0.12.0'
