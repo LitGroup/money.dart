@@ -2,10 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // MIT license that can be found in the LICENSE file.
 
-library money.test;
+part of money;
 
-import 'currency_test.dart' as currency_test;
-
-main() {
-  currency_test.main();
+class Money {
+  
+  final int amount;
+  final Currency currency;
+  
+  Money(this.amount, this.currency);
+  
+  
 }

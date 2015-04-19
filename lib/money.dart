@@ -3,3 +3,7 @@
 // MIT license that can be found in the LICENSE file.
 
 library money;
+
+part 'src/money.dart';
+part 'src/currency.dart';
+part 'src/currencies.dart';
