@@ -7,5 +7,5 @@ homepage: https://github.com/dartiny/money
 #dependencies:
 #  lib_name: any
 dev_dependencies:
+  unittest: '>=0.11.1+4 <0.12.0'
   mock: '>=0.11.0+2 <0.12.0'
-  unittest: '>=0.11.15+4 <0.12.0'
