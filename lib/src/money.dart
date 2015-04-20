@@ -31,24 +31,18 @@ class Money implements Comparable<Money> {
   }
   
   bool operator ==(Money other) {
-    _assertSameCurrency(other);
-    // TODO: Not implemented yet.
+    return (currency == other.currency) && (amount == other.amount);
   }
   
   int get hashCode {
-    // TODO: Not implemented yet.
+    return amount;
   }
   
   String toString() {
-      var integerPart  = (amount ~/ currency.subUnit).toString();
-      var fractionPart = (amount % currency.subUnit).toString();
-      
-      while (fractionPart.length < currency.defaultFractionDigits) {
-        fractionPart = '0' + fractionPart;
-      }
-      
-      return '${integerPart}.${fractionPart} ${currency.code}';
-    }
+    final amountStr = (amount / currency.subUnit).toStringAsFixed(currency.defaultFractionDigits);
+    
+    return '$amountStr ${currency.code}';
+  }
   
   void _assertSameCurrency(Money money) {
     if (money.currency != currency) {

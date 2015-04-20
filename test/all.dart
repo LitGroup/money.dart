@@ -5,7 +5,9 @@
 library money.test;
 
 import 'currency_test.dart' as currency_test;
+import 'money_test.dart' as money_test;
 
 main() {
   currency_test.main();
+  money_test.main();
 }
