@@ -5,7 +5,6 @@
 part of money;
 
 const Map<String, Currency> _currencies = const <String, Currency>{
-
     'AED': const _Currency('AED', 'UAE Dirham', 784, 2, 100),
     'AFN': const _Currency('AFN', 'Afghani', 971, 2, 100),
     'ALL': const _Currency('ALL', 'Lek', 8, 2, 100),
@@ -188,5 +187,4 @@ const Map<String, Currency> _currencies = const <String, Currency>{
     'ZAR': const _Currency('ZAR', 'Rand', 710, 2, 100),
     'ZMW': const _Currency('ZMW', 'Zambian Kwacha', 967, 2, 100),
     'ZWL': const _Currency('ZWL', 'Zimbabwe Dollar', 932, 2, 100),
-
 };

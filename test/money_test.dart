@@ -8,9 +8,9 @@ import 'package:unittest/unittest.dart';
 import 'package:money/money.dart';
 
 class MockCurrency implements Currency {
-  static const USD = const MockCurrency('USD', 'US Dollar', 840, 2, 100);
-  static const EUR = const MockCurrency('EUR', 'Euro', 978, 2, 100);
-  static const IQD = const MockCurrency('IQD', 'Iraqi Dinar', 368, 3, 1000);
+  static const usd = const MockCurrency('USD', 'US Dollar', 840, 2, 100);
+  static const eur = const MockCurrency('EUR', 'Euro', 978, 2, 100);
+  static const iqd = const MockCurrency('IQD', 'Iraqi Dinar', 368, 3, 1000);
   
   final String code;
   final String name;
@@ -30,67 +30,86 @@ class MockCurrency implements Currency {
 }
 
 void main() {
-  group('Money', () {
-    
+  group('Money', () { 
     test('construction', () {
-      final money = new Money(100, MockCurrency.USD);
+      final money = new Money(100, MockCurrency.usd);
       
       expect(money.amount, equals(100));
-      expect(money.currency, same(MockCurrency.USD));
+      expect(money.currency, same(MockCurrency.usd));
     });
     
-    group('equality', () {
-      
-      test('with-same-amount-and-currencies', () {
-        final money1 = new Money(1000, MockCurrency.USD);
-        final money2 = new Money(1000, MockCurrency.USD);
+    group('==()', () {
+      test('the same amount and currencies', () {
+        final money1 = new Money(1000, MockCurrency.usd);
+        final money2 = new Money(1000, MockCurrency.usd);
         
         expect(money1 == money2, isTrue);
         expect(money1.hashCode == money2.hashCode, isTrue);
       });
       
-      test('with-same-currency-and-different-amounts', () {
-        final money1 = new Money(1000, MockCurrency.USD);
-        final money2 = new Money(2000, MockCurrency.USD);
+      test('the same currency but different amounts', () {
+        final money1 = new Money(1000, MockCurrency.usd);
+        final money2 = new Money(2000, MockCurrency.usd);
         
         expect(money1 == money2, isFalse);
         expect(money1.hashCode == money2.hashCode, isFalse);
       });
       
-      test('with-same-amount-and-different-currencies', () {
-        final money1 = new Money(1000, MockCurrency.USD);
-        final money2 = new Money(1000, MockCurrency.EUR);
+      test('the same amount but different currencies', () {
+        final money1 = new Money(1000, MockCurrency.usd);
+        final money2 = new Money(1000, MockCurrency.eur);
         
         expect(money1 == money2, isFalse);
       });
       
-      test('with-different-amounts-and-currencies', () {
-        final money1 = new Money(0, MockCurrency.USD);
-        final money2 = new Money(1000, MockCurrency.EUR);
+      test('different amounts and currencies', () {
+        final money1 = new Money(0, MockCurrency.usd);
+        final money2 = new Money(1000, MockCurrency.eur);
         
         expect(money1 == money2, isFalse);
       });
-      
     });
     
+    group('unary -()', () {
+      test('amount is zero', () {
+        final money = new Money(0, MockCurrency.usd);
+        
+        expect(-money, equals(new Money(0, MockCurrency.usd)));
+      });
+      
+      test('positive amount', () {
+        final money = new Money(100, MockCurrency.usd);
+        
+        expect(-money, equals(new Money(-100, MockCurrency.usd)));
+      });
+      
+      test('negative amount', () {
+        final money = new Money(-100, MockCurrency.usd);
+        
+        expect(-money, new Money(100, MockCurrency.usd));
+      });
+    });
+    
+    group('-()', () {
+      
+    });
     test('toString()', () {
-      expect(new Money(0, MockCurrency.USD).toString(), '0.00 USD');
-      expect(new Money(1, MockCurrency.USD).toString(), '0.01 USD');
-      expect(new Money(10, MockCurrency.USD).toString(), '0.10 USD');
-      expect(new Money(100, MockCurrency.USD).toString(), '1.00 USD');
-      expect(new Money(101, MockCurrency.USD).toString(), '1.01 USD');
-      expect(new Money(110, MockCurrency.USD).toString(), '1.10 USD');
-      expect(new Money(-100, MockCurrency.USD).toString(), '-1.00 USD');
+      expect(new Money(0, MockCurrency.usd).toString(), '0.00 USD');
+      expect(new Money(1, MockCurrency.usd).toString(), '0.01 USD');
+      expect(new Money(10, MockCurrency.usd).toString(), '0.10 USD');
+      expect(new Money(100, MockCurrency.usd).toString(), '1.00 USD');
+      expect(new Money(101, MockCurrency.usd).toString(), '1.01 USD');
+      expect(new Money(110, MockCurrency.usd).toString(), '1.10 USD');
+      expect(new Money(-100, MockCurrency.usd).toString(), '-1.00 USD');
       
-      expect(new Money(0, MockCurrency.IQD).toString(), '0.000 IQD');
-      expect(new Money(1, MockCurrency.IQD).toString(), '0.001 IQD');
-      expect(new Money(10, MockCurrency.IQD).toString(), '0.010 IQD');
-      expect(new Money(100, MockCurrency.IQD).toString(), '0.100 IQD');
-      expect(new Money(1000, MockCurrency.IQD).toString(), '1.000 IQD');
-      expect(new Money(1001, MockCurrency.IQD).toString(), '1.001 IQD');
-      expect(new Money(1110, MockCurrency.IQD).toString(), '1.110 IQD');
-      expect(new Money(-1000, MockCurrency.IQD).toString(), '-1.000 IQD');
+      expect(new Money(0, MockCurrency.iqd).toString(), '0.000 IQD');
+      expect(new Money(1, MockCurrency.iqd).toString(), '0.001 IQD');
+      expect(new Money(10, MockCurrency.iqd).toString(), '0.010 IQD');
+      expect(new Money(100, MockCurrency.iqd).toString(), '0.100 IQD');
+      expect(new Money(1000, MockCurrency.iqd).toString(), '1.000 IQD');
+      expect(new Money(1001, MockCurrency.iqd).toString(), '1.001 IQD');
+      expect(new Money(1110, MockCurrency.iqd).toString(), '1.110 IQD');
+      expect(new Money(-1000, MockCurrency.iqd).toString(), '-1.000 IQD');
     });
-    
   });
 }

@@ -5,43 +5,48 @@
 part of money;
 
 class Money implements Comparable<Money> {
-  
   final int      amount;
   final Currency currency;
   
   Money(this.amount, this.currency);
   
-  Money operator +(Money other) {
-    _assertSameCurrency(other);
-    // TODO: Not implemented yet.
-  }
+  Money operator -() {
+      return _newMoney(-amount);
+    }
   
   Money operator -(Money other) {
     _assertSameCurrency(other);
     // TODO: Not implemented yet.
   }
   
-  Money operator -() {
-    // TODO: Not implemented yet.
-  }
-  
-  int compareTo(Money other) {
-    _assertSameCurrency(other);
-    // TODO: Not implemented yet.
+  Money operator +(Money other) {
+     _assertSameCurrency(other);
+     // TODO: Not implemented yet.
   }
   
   bool operator ==(Money other) {
     return (currency == other.currency) && (amount == other.amount);
   }
-  
+    
   int get hashCode {
     return amount;
   }
+    
+  int compareTo(Money other) {
+    _assertSameCurrency(other);
+    // TODO: Not implemented yet.
+  }
   
   String toString() {
-    final amountStr = (amount / currency.subUnit).toStringAsFixed(currency.defaultFractionDigits);
-    
-    return '$amountStr ${currency.code}';
+    return '${_amountToString()} ${currency.code}';
+  }
+  
+  Money _newMoney(int amount) {
+    return new Money(amount, currency);
+  }
+  
+  String _amountToString() {
+    return (amount / currency.subUnit).toStringAsFixed(currency.defaultFractionDigits);
   }
   
   void _assertSameCurrency(Money money) {
