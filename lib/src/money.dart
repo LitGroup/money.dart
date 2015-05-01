@@ -29,7 +29,27 @@ class Money implements Comparable<Money> {
   Money operator *(num factor) {
     return _newMoney((amount * factor).round());
   }
-  
+
+  List<Money> allocate(List<int> ratios) {
+    var total = 0;
+    for (var i = 0; i < ratios.length; i++) {
+      total += ratios[i];
+    }
+
+    var remainder = amount;
+    var results = new List<Money>(ratios.length);
+    for (var i = 0; i < results.length; i++) {
+      results[i] = _newMoney(amount * ratios[i] ~/ total);
+      remainder -= results[i].amount;
+    }
+
+    for (var i = 0; i < remainder; i++) {
+      results[i] = _newMoney(results[i].amount + 1);
+    }
+
+    return results;
+  }
+
   bool operator ==(Money other) {
     return (currency == other.currency) && (amount == other.amount);
   }

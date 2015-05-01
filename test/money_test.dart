@@ -381,6 +381,27 @@ void main() {
       });
     });
 
+    test('allocate()', () {
+      final money = new Money(99, MockCurrency.usd);
+      final rates = <int>[10, 10, 10, 10, 10, 10, 10, 10, 10, 10]; // length = 10
+
+      expect(
+          money.allocate(rates),
+          [
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(10, MockCurrency.usd),
+            new Money(9, MockCurrency.usd),
+          ]
+      );
+    });
+
     test('toString()', () {
       expect(new Money(0, MockCurrency.usd).toString(), '0.00 USD');
       expect(new Money(1, MockCurrency.usd).toString(), '0.01 USD');
