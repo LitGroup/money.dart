@@ -16,12 +16,18 @@ class Money implements Comparable<Money> {
   
   Money operator -(Money other) {
     _assertSameCurrency(other);
-    // TODO: Not implemented yet.
+
+    return _newMoney(amount - other.amount);
   }
   
   Money operator +(Money other) {
      _assertSameCurrency(other);
-     // TODO: Not implemented yet.
+
+    return _newMoney(amount + other.amount);
+  }
+
+  Money operator *(num factor) {
+    return _newMoney((amount * factor).round());
   }
   
   bool operator ==(Money other) {
@@ -29,12 +35,13 @@ class Money implements Comparable<Money> {
   }
     
   int get hashCode {
-    return amount;
+    return amount.hashCode;
   }
     
   int compareTo(Money other) {
     _assertSameCurrency(other);
-    // TODO: Not implemented yet.
+
+    return amount.compareTo(other.amount);
   }
   
   String toString() {
