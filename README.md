@@ -12,8 +12,8 @@ Example
 import 'package:money/money.dart';
 
 void main() {
-    final a = new Money(1000, new Currency('USD');
-    final b = new Money(2000, new Currency('USD');
+    final a = new Money(100, new Currency('USD');
+    final b = new Money(200, new Currency('USD');
     
     final sum = a + b;
     
