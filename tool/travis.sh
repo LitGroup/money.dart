@@ -8,8 +8,8 @@ pub global activate tuneup
 pub global run tuneup check
 
 # Verify code style.
-pub global activate linter
-pub global run linter ./
+# pub global activate linter
+# pub global run linter ./
 
 # Run the tests.
 dart --checked test/all.dart
