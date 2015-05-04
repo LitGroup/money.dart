@@ -12,7 +12,7 @@ pub global run tuneup check
 # pub global run linter ./
 
 # Run the tests.
-dart --checked test/all.dart
+pub run test:test --reporter=expanded --no-color
 
 # Install dart_coveralls; gather and send coverage data.
 if [ "$COVERALLS_TOKEN" ] && [ "$TRAVIS_DART_VERSION" = "stable" ]; then

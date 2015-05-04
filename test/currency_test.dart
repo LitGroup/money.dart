@@ -4,7 +4,7 @@
 
 library money.test.currency;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:money/money.dart';
 
 void main() {

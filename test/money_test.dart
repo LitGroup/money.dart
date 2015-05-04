@@ -4,7 +4,7 @@
 
 library money.test.money;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:money/money.dart';
 
 class MockCurrency implements Currency {
