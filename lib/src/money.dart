@@ -28,9 +28,13 @@ class Money implements Comparable<Money> {
     }
 
     final integerPart = int.parse(match.group(1)) * currency.subUnit;
-    final fractionPart = (match.group(2) != null) ? int.parse(match.group(2)) : 0;
+    final fractionPart = (match.group(2) != null)
+                           ? int.parse(match.group(2))
+                           : 0;
 
-    final intAmount = (integerPart > 0) ? (integerPart + fractionPart) : (integerPart - fractionPart);
+    final intAmount = (integerPart > 0)
+                        ? (integerPart + fractionPart)
+                        : (integerPart - fractionPart);
 
     return new Money(intAmount, currency);
   }
