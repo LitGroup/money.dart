@@ -32,6 +32,7 @@ void main() {
       
       expect(currency1 == currency2, isTrue);
       expect(currency1.hashCode, equals(currency2.hashCode));
+
       expect(currency1 != currency3, isTrue);
     });
     
