@@ -37,6 +37,70 @@ void main() {
       expect(money.amount, equals(100));
       expect(money.currency, same(MockCurrency.usd));
     });
+
+    group('new Money.fromString()', () {
+      test('for "120" and USD currency', () {
+        final money = new Money.fromString('120', MockCurrency.usd);
+
+        expect(money.amount, 12000);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for "120.00" and USD currency', () {
+        final money = new Money.fromString('120.00', MockCurrency.usd);
+
+        expect(money.amount, 12000);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for "120.10" and USD currency', () {
+        final money = new Money.fromString('120.10', MockCurrency.usd);
+
+        expect(money.amount, 12010);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for "-120.00" and USD currency', () {
+        final money = new Money.fromString('-120.00', MockCurrency.usd);
+
+        expect(money.amount, -12000);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for "-120.10" and USD currency', () {
+        final money = new Money.fromString('-120.10', MockCurrency.usd);
+
+        expect(money.amount, -12010);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for "120.010" and IQD currency', () {
+        final money = new Money.fromString('120.010', MockCurrency.iqd);
+
+        expect(money.amount, 120010);
+        expect(money.currency, MockCurrency.iqd);
+      });
+
+      test('throws FormatException for "120.00" and IQD currency (3 fraction digits should be)', () {
+        expect(
+          () => new Money.fromString('120.00', MockCurrency.iqd),
+          throwsA(const isInstanceOf<FormatException>())
+        );
+      });
+
+      test('throws FormatEception for incorrect strings', () {
+        final values = [
+          '',
+          'not a numeric',
+          '100abc',
+          'abc100',
+        ];
+
+        for (var value in values) {
+          expect(() => new Money.fromString(value, MockCurrency.usd), throwsA(const isInstanceOf<FormatException>()));
+        }
+      });
+    });
     
     group('==()', () {
       test('the same amount and currencies', () {

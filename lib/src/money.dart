@@ -7,29 +7,60 @@ part of money;
 class Money implements Comparable<Money> {
   final int      amount;
   final Currency currency;
-  
+
   Money(this.amount, this.currency);
-  
+
+  /// Parses amount from string representation.
+  ///
+  /// [FormatException] will be thrown if string representation of amount is incorrect.
+  ///
+  /// Examples:
+  ///     new Money.fromString('120', new Currency('USD');
+  ///     new Money.fromString('120.00', new Currency('USD');
+  ///     new Money.fromString('120.000', new Currency('IQD');
+  ///
+  factory Money.fromString(String amount, Currency currency) {
+    final pattern = r'^(-?\d+)(?:\.(\d{' + currency.defaultFractionDigits.toString() + r'}))?$';
+    final match = (new RegExp(pattern, multiLine: false)).firstMatch(amount);
+
+    if (match == null) {
+      throw new FormatException('String representation of amount is invalid.');
+    }
+
+    final integerPart = int.parse(match.group(1)) * currency.subUnit;
+    final fractionPart = (match.group(2) != null) ? int.parse(match.group(2)) : 0;
+
+    final intAmount = (integerPart > 0) ? (integerPart + fractionPart) : (integerPart - fractionPart);
+
+    return new Money(intAmount, currency);
+  }
+
+  /// Negate operator.
   Money operator -() {
       return _newMoney(-amount);
-    }
-  
+  }
+
+  /// Subtraction operator.
   Money operator -(Money other) {
     _assertSameCurrency(other);
 
     return _newMoney(amount - other.amount);
   }
-  
+
+  /// Addition operator.
   Money operator +(Money other) {
      _assertSameCurrency(other);
 
     return _newMoney(amount + other.amount);
   }
 
+  /// Multiplication operator.
   Money operator *(num factor) {
     return _newMoney((amount * factor).round());
   }
 
+  /// Allocate the monetary value represented by this Money object
+  /// using a list of [ratios].
   List<Money> allocate(List<int> ratios) {
     var total = 0;
     for (var i = 0; i < ratios.length; i++) {
@@ -50,6 +81,8 @@ class Money implements Comparable<Money> {
     return results;
   }
 
+  /// Returns true if [amount] and [currency] of this object
+  /// are equal to amount and currency of other.
   bool operator ==(Money other) {
     return (currency == other.currency) && (amount == other.amount);
   }
@@ -57,7 +90,7 @@ class Money implements Comparable<Money> {
   int get hashCode {
     return amount.hashCode;
   }
-    
+
   int compareTo(Money other) {
     _assertSameCurrency(other);
 
