@@ -281,6 +281,110 @@ void main() {
       });
     });
 
+    group('relational operators', () {
+      test('trows ArgumentError if currencies are not equal', () {
+        final a = new Money(0, MockCurrency.usd);
+        final b = new Money(0, MockCurrency.eur);
+
+        expect(() => a < b, throwsArgumentError);
+        expect(() => a <= b, throwsArgumentError);
+        expect(() => a > b, throwsArgumentError);
+        expect(() => a >= b, throwsArgumentError);
+      });
+
+      group('<()', () {
+        test('1.00 USD < 2.00 USD (true)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(200, MockCurrency.usd);
+
+          expect(a < b, isTrue);
+        });
+
+        test('1.00 USD < 1.00 USD (false)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a < b, isFalse);
+        });
+
+        test('2.00 USD < 1.00 USD (false)', () {
+          final a = new Money(200, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a < b, isFalse);
+        });
+      });
+
+      group('<=()', () {
+        test('1.00 USD <= 2.00 USD (true)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(200, MockCurrency.usd);
+
+          expect(a <= b, isTrue);
+        });
+
+        test('1.00 USD <= 1.00 USD (true)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a <= b, isTrue);
+        });
+
+        test('2.00 USD <= 1.00 USD (false)', () {
+          final a = new Money(200, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a <= b, isFalse);
+        });
+      });
+
+      group('>()', () {
+        test('2.00 USD > 1.00 USD (true)', () {
+          final a = new Money(200, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a > b, isTrue);
+        });
+
+        test('1.00 USD > 1.00 USD (false)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a > b, isFalse);
+        });
+
+        test('1.00 USD > 2.00 USD (false)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(200, MockCurrency.usd);
+
+          expect(a > b, isFalse);
+        });
+      });
+
+      group('>=()', () {
+        test('2.00 USD >= 1.00 USD (true)', () {
+          final a = new Money(200, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a >= b, isTrue);
+        });
+
+        test('1.00 USD >= 1.00 USD (true)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(100, MockCurrency.usd);
+
+          expect(a >= b, isTrue);
+        });
+
+        test('1.00 USD >= 2.00 USD (false)', () {
+          final a = new Money(100, MockCurrency.usd);
+          final b = new Money(200, MockCurrency.usd);
+
+          expect(a >= b, isFalse);
+        });
+      });
+    });
+
     group('*()', () {
       test('0.00 USD * 0', () {
         final money = new Money(0, MockCurrency.usd);

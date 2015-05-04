@@ -95,12 +95,34 @@ class Money implements Comparable<Money> {
     return amount.hashCode;
   }
 
+  /// Relational less than operator.
+  bool operator <(Money other) {
+    return compareTo(other) < 0;
+  }
+
+  /// Relational less than or equal operator.
+  bool operator <=(Money other) {
+    return compareTo(other) <= 0;
+  }
+
+  /// Relational greater than operator.
+  bool operator >(Money other) {
+    return compareTo(other) > 0;
+  }
+
+  /// Relational greater than or equal operator.
+  bool operator >=(Money other) {
+    return compareTo(other) >= 0;
+  }
+
   int compareTo(Money other) {
     _assertSameCurrency(other);
 
     return amount.compareTo(other.amount);
   }
-  
+
+  /// Returns string representation of money.
+  /// For example: "1.50 USD".
   String toString() {
     return '${_amountToString()} ${currency.code}';
   }
@@ -108,7 +130,7 @@ class Money implements Comparable<Money> {
   Money _newMoney(int amount) {
     return new Money(amount, currency);
   }
-  
+
   String _amountToString() {
     return (amount / currency.subUnit).toStringAsFixed(currency.defaultFractionDigits);
   }
