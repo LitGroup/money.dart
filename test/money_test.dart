@@ -101,6 +101,32 @@ void main() {
         }
       });
     });
+
+    group('get amountAsString', () {
+      test('0.00 USD', () {
+        final money = new Money(0, MockCurrency.usd);
+
+        expect(money.amountAsString, equals('0.00'));
+      });
+
+      test('10.50 USD', () {
+        final money = new Money(1050, MockCurrency.usd);
+
+        expect(money.amountAsString, equals('10.50'));
+      });
+
+      test('-10.00 USD', () {
+        final money = new Money(-1000, MockCurrency.usd);
+
+        expect(money.amountAsString, equals('-10.00'));
+      });
+
+      test('5.300 IQD', () {
+        final money = new Money(5300, MockCurrency.iqd);
+
+        expect(money.amountAsString, equals('5.300'));
+      });
+    });
     
     group('==()', () {
       test('the same amount and currencies', () {

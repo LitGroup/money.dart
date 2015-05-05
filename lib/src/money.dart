@@ -39,6 +39,25 @@ class Money implements Comparable<Money> {
     return new Money(intAmount, currency);
   }
 
+  /// String representation of the [amount].
+  String get amountAsString {
+    final integerPart = (amount ~/ currency.subUnit).toString();
+    final fractionPart = (amount % currency.subUnit).toString();
+    final buffer = new StringBuffer();
+
+    buffer
+      ..write(integerPart)
+      ..write('.');
+
+    for (var digits = fractionPart.length; digits < currency.defaultFractionDigits; digits++) {
+      buffer.write('0');
+    }
+
+    buffer.write(fractionPart);
+
+    return buffer.toString();
+  }
+
   /// Negate operator.
   Money operator -() {
       return _newMoney(-amount);
@@ -124,17 +143,13 @@ class Money implements Comparable<Money> {
   /// Returns string representation of money.
   /// For example: "1.50 USD".
   String toString() {
-    return '${_amountToString()} ${currency.code}';
+    return '${amountAsString} ${currency.code}';
   }
   
   Money _newMoney(int amount) {
     return new Money(amount, currency);
   }
 
-  String _amountToString() {
-    return (amount / currency.subUnit).toStringAsFixed(currency.defaultFractionDigits);
-  }
-  
   void _assertSameCurrency(Money money) {
     if (money.currency != currency) {
       throw new ArgumentError('Money math mismatch. Currencies are different.');
