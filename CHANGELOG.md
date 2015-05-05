@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.3
+  - Added `Money.fromDouble()` constructor.
+
 ## 0.1.2
   - Added getter `Money.amountAsString`.
   

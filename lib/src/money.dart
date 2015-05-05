@@ -39,6 +39,10 @@ class Money implements Comparable<Money> {
     return new Money(intAmount, currency);
   }
 
+  factory Money.fromDouble(double amount, Currency currency) {
+    return new Money((amount * currency.subUnit).round(), currency);
+  }
+
   /// String representation of the [amount].
   String get amountAsString {
     final integerPart = (amount ~/ currency.subUnit).toString();

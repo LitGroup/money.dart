@@ -102,6 +102,57 @@ void main() {
       });
     });
 
+    group('new Money.fromDouble()', () {
+      test('for 0.0 and USD currency', () {
+        final money = new Money.fromDouble(0.0, MockCurrency.usd);
+
+        expect(money.amount, equals(0));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+
+      test('for 10.01 and USD currency', () {
+        final money = new Money.fromDouble(10.01, MockCurrency.usd);
+
+        expect(money.amount, equals(1001));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+
+      test('for 10.99 and USD currency', () {
+        final money = new Money.fromDouble(10.99, MockCurrency.usd);
+
+        expect(money.amount, equals(1099));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+
+      test('for -10.50 and USD currency', () {
+        final money = new Money.fromDouble(-10.50, MockCurrency.usd);
+
+        expect(money.amount, equals(-1050));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+
+      test('for 10.001 and IQD currency', () {
+        final money = new Money.fromDouble(10.001, MockCurrency.iqd);
+
+        expect(money.amount, equals(10001));
+        expect(money.currency, same(MockCurrency.iqd));
+      });
+
+      test('for 10.995 and USD currecy', () {
+        final money = new Money.fromDouble(10.995, MockCurrency.usd);
+
+        expect(money.amount, equals(1100));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+
+      test('for 10.994 and USD currecy', () {
+        final money = new Money.fromDouble(10.994, MockCurrency.usd);
+
+        expect(money.amount, equals(1099));
+        expect(money.currency, same(MockCurrency.usd));
+      });
+    });
+
     group('get amountAsString', () {
       test('0.00 USD', () {
         final money = new Money(0, MockCurrency.usd);
