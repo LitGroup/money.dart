@@ -94,7 +94,7 @@ b.compareTo(a); // =>  1
 
 The `compareTo()` method returns an integer less than, equal to, or greater than zero if the value of one `Money` object is considered to be respectively less than, equal to, or greater than that of another `Money` object.
 
-You can use the `compareTo()` method to sort a list of Money objects.
+`Money` implements `Comparable` interface and you can sort a list of `Money` objects.
 
 ### Allocate the monetary value represented by a Money object using a list of ratios
 ```dart
