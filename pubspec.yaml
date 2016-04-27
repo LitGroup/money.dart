@@ -3,6 +3,9 @@ description: >
   Dart implementation of Fowler's Money pattern
 version: 0.1.3+1
 author: Roman Shamritskiy <roman@litgroup.ru>
-homepage: https://github.com/dartiny/money
+homepage: https://github.com/litgroup/money.dart
+environment:
+  sdk: ">=1.14.0 <2.0.0"
 dev_dependencies:
-  test: '>=0.12.0 <0.13.0'
+  test: ">=0.12.13 <0.13.0"
+  mockito: ">=0.11.0 <0.12.0"
