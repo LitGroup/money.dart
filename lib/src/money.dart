@@ -1,6 +1,6 @@
-// Copyright (c) 2015, the package authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// MIT license that can be found in the LICENSE file.
+// (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
+// This source file is subject to the MIT license that is bundled
+// with this source code in the file LICENSE.
 
 part of money;
 
@@ -113,7 +113,7 @@ class Money implements Comparable<Money> {
   bool operator ==(Money other) {
     return (currency == other.currency) && (amount == other.amount);
   }
-    
+
   int get hashCode {
     return amount.hashCode;
   }
@@ -149,7 +149,7 @@ class Money implements Comparable<Money> {
   String toString() {
     return '${amountAsString} ${currency.code}';
   }
-  
+
   Money _newMoney(int amount) {
     return new Money(amount, currency);
   }

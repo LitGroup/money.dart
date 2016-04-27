@@ -1,6 +1,6 @@
-// Copyright (c) 2015, the package authors. Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// MIT license that can be found in the LICENSE file.
+// (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
+// This source file is subject to the MIT license that is bundled
+// with this source code in the file LICENSE.
 
 library money.test.money;
 
@@ -11,13 +11,13 @@ class MockCurrency implements Currency {
   static const usd = const MockCurrency('USD', 'US Dollar', 840, 2, 100);
   static const eur = const MockCurrency('EUR', 'Euro', 978, 2, 100);
   static const iqd = const MockCurrency('IQD', 'Iraqi Dinar', 368, 3, 1000);
-  
+
   final String code;
   final String name;
   final int    numericCode;
   final int    defaultFractionDigits;
   final int    subUnit;
-  
+
   const MockCurrency(
     this.code,
     this.name,
@@ -30,10 +30,10 @@ class MockCurrency implements Currency {
 }
 
 void main() {
-  group('Money', () { 
+  group('Money', () {
     test('new Money()', () {
       final money = new Money(100, MockCurrency.usd);
-      
+
       expect(money.amount, equals(100));
       expect(money.currency, same(MockCurrency.usd));
     });
@@ -178,59 +178,59 @@ void main() {
         expect(money.amountAsString, equals('5.300'));
       });
     });
-    
+
     group('==()', () {
       test('the same amount and currencies', () {
         final money1 = new Money(1000, MockCurrency.usd);
         final money2 = new Money(1000, MockCurrency.usd);
-        
+
         expect(money1 == money2, isTrue);
         expect(money1.hashCode == money2.hashCode, isTrue);
       });
-      
+
       test('the same currency but different amounts', () {
         final money1 = new Money(1000, MockCurrency.usd);
         final money2 = new Money(2000, MockCurrency.usd);
-        
+
         expect(money1 == money2, isFalse);
         expect(money1.hashCode == money2.hashCode, isFalse);
       });
-      
+
       test('the same amount but different currencies', () {
         final money1 = new Money(1000, MockCurrency.usd);
         final money2 = new Money(1000, MockCurrency.eur);
-        
+
         expect(money1 == money2, isFalse);
       });
-      
+
       test('different amounts and currencies', () {
         final money1 = new Money(0, MockCurrency.usd);
         final money2 = new Money(1000, MockCurrency.eur);
-        
+
         expect(money1 == money2, isFalse);
       });
     });
-    
+
     group('unary -()', () {
       test('amount is zero', () {
         final money = new Money(0, MockCurrency.usd);
-        
+
         expect(-money, equals(new Money(0, MockCurrency.usd)));
       });
-      
+
       test('positive amount', () {
         final money = new Money(100, MockCurrency.usd);
-        
+
         expect(-money, equals(new Money(-100, MockCurrency.usd)));
       });
-      
+
       test('negative amount', () {
         final money = new Money(-100, MockCurrency.usd);
-        
+
         expect(-money, new Money(100, MockCurrency.usd));
       });
     });
-    
+
     group('-()', () {
       test('error for different currencies', () {
         final minuend = new Money(100, MockCurrency.usd);
@@ -556,7 +556,7 @@ void main() {
       expect(new Money(101, MockCurrency.usd).toString(), '1.01 USD');
       expect(new Money(110, MockCurrency.usd).toString(), '1.10 USD');
       expect(new Money(-100, MockCurrency.usd).toString(), '-1.00 USD');
-      
+
       expect(new Money(0, MockCurrency.iqd).toString(), '0.000 IQD');
       expect(new Money(1, MockCurrency.iqd).toString(), '0.001 IQD');
       expect(new Money(10, MockCurrency.iqd).toString(), '0.010 IQD');
