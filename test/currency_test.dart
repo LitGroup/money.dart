@@ -10,18 +10,26 @@ import 'package:money/money.dart';
 void main() {
   group('Currency', () {
 
-    group('Currency()', () {
-      test('error for invalid argument', () {
+    group('default factory', () {
+      test('must throw error if non-existent code given', () {
         expect(() => new Currency('WTFCURRENCY'), throwsArgumentError);
         expect(() => new Currency(null), throwsArgumentError);
       });
 
-      test('create from uppercase string', () {
-        expect(new Currency('USD'), const isInstanceOf<Currency>());
+      test('create from uppercase code', () {
+        final currency = new Currency('USD');
+        expect(currency, const isInstanceOf<Currency>());
+        expect(currency.code, equals('USD'));
+        expect(currency.name, equals('US Dollar'));
+        expect(currency.numericCode, equals(840));
+        expect(currency.defaultFractionDigits, equals(2));
+        expect(currency.subUnit, equals(100));
       });
 
       test('create from lowercase string', () {
-        expect(new Currency('usd'), const isInstanceOf<Currency>());
+        final currency = new Currency('usd');
+        expect(currency, const isInstanceOf<Currency>());
+        expect(currency.code, equals('USD'));
       });
     });
 
