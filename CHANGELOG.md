@@ -1,8 +1,8 @@
 CHANGELOG
 =========
 
-## 0.1.4
-
+## 0.1.3+2
+  - Fixed bug [#3][i3] in `Money.toString()`.
 
 ## 0.1.3
   - Added `Money.fromDouble()` constructor.
@@ -19,3 +19,5 @@ CHANGELOG
 
 ## 0.1.0
   - Initial version.
+
+[i3]: https://github.com/LitGroup/money.dart/issues/3
