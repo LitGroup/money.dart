@@ -4,9 +4,8 @@ Money
 Dart implementation of [Fowler's Money pattern](http://martinfowler.com/eaaCatalog/money.html).
 
 [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Dartiny/money/blob/master/LICENSE)
-[![Coverage Status](https://coveralls.io/repos/Dartiny/money/badge.svg)](https://coveralls.io/r/Dartiny/money?branch=master)
-
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE)
+[![Coverage Status](https://coveralls.io/repos/github/LitGroup/money.dart/badge.svg?branch=master)](https://coveralls.io/github/LitGroup/money.dart?branch=master)
 
 Usage Examples
 --------------
