@@ -555,16 +555,16 @@ void main() {
       expect(new Money(100, MockCurrency.usd).toString(), '1.00 USD');
       expect(new Money(101, MockCurrency.usd).toString(), '1.01 USD');
       expect(new Money(110, MockCurrency.usd).toString(), '1.10 USD');
+
       expect(new Money(-100, MockCurrency.usd).toString(), '-1.00 USD');
+      expect(new Money(-101, MockCurrency.usd).toString(), '-1.01 USD');
+      expect(new Money(-110, MockCurrency.usd).toString(), '-1.10 USD');
+
+      // Bug #3
+      expect(new Money(199, MockCurrency.usd).toString(), '1.99 USD');
+      expect(new Money(-199, MockCurrency.usd).toString(), '-1.99 USD');
 
       expect(new Money(0, MockCurrency.iqd).toString(), '0.000 IQD');
-      expect(new Money(1, MockCurrency.iqd).toString(), '0.001 IQD');
-      expect(new Money(10, MockCurrency.iqd).toString(), '0.010 IQD');
-      expect(new Money(100, MockCurrency.iqd).toString(), '0.100 IQD');
-      expect(new Money(1000, MockCurrency.iqd).toString(), '1.000 IQD');
-      expect(new Money(1001, MockCurrency.iqd).toString(), '1.001 IQD');
-      expect(new Money(1110, MockCurrency.iqd).toString(), '1.110 IQD');
-      expect(new Money(-1000, MockCurrency.iqd).toString(), '-1.000 IQD');
     });
   });
 }

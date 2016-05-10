@@ -46,7 +46,7 @@ class Money implements Comparable<Money> {
   /// String representation of the [amount].
   String get amountAsString {
     final integerPart = (amount ~/ currency.subUnit).toString();
-    final fractionPart = (amount % currency.subUnit).toString();
+    final fractionPart = amount.remainder(currency.subUnit).abs().toString();
     final buffer = new StringBuffer();
 
     buffer
