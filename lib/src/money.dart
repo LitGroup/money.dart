@@ -110,8 +110,11 @@ class Money implements Comparable<Money> {
 
   /// Returns true if [amount] and [currency] of this object
   /// are equal to amount and currency of other.
-  bool operator ==(Money other) {
-    return (currency == other.currency) && (amount == other.amount);
+  bool operator ==(Object other) {
+    return
+        (other is Money) &&
+        (currency == other.currency) &&
+        (amount == other.amount);
   }
 
   int get hashCode {

@@ -1,18 +1,16 @@
-Money
-=====
+# Money [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE) [![Coverage Status](https://coveralls.io/repos/github/LitGroup/money.dart/badge.svg?branch=master)](https://coveralls.io/github/LitGroup/money.dart?branch=master)
+
+
 
 Dart implementation of [Fowler's Money pattern](http://martinfowler.com/eaaCatalog/money.html).
 
-[![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE)
-[![Coverage Status](https://coveralls.io/repos/github/LitGroup/money.dart/badge.svg?branch=master)](https://coveralls.io/github/LitGroup/money.dart?branch=master)
 
 Usage Examples
 --------------
 
 ### Creating a Money object and accessing its monetary value
-```dart
 
+```dart
 // Create a money object that represents 1 USD
 var money = new Money(100, new Currency('USD'));
 
@@ -23,24 +21,27 @@ print(money.amount); // => 100
 print(money.amountAsString); // => 1.00
 ```
 
+
 #### Creating a Money object from a string value
+
 ```dart
 var money = new Money.fromString('12.50', new Currency('USD'));
-
 
 print(money.amount); // => 1250
 ```
 
+
 #### Creating a money from a double value
+
 ```dart
 var money = new Money.fromDouble(12.34, new Currency('USD'));
-
 
 print(money.amount); // => 1234
 ```
 
 
 ### Simple conversion to a string
+
 ```dart
 var money = new Money(150, new Currency('USD'));
 
@@ -77,6 +78,7 @@ print(c); // => 2.00 USD
 
 
 ### Comparing Money objects
+
 ```dart
 final a = new Money(100, new Currency('USD'));
 final b = new Money(200, new Currency('USD'));
@@ -96,7 +98,9 @@ The `compareTo()` method returns an integer less than, equal to, or greater than
 
 `Money` implements `Comparable` interface and you can sort a list of `Money` objects.
 
+
 ### Allocate the monetary value represented by a Money object using a list of ratios
+
 ```dart
 final a = new Money(5, new Currency('USD'));
 
@@ -105,8 +109,9 @@ for (var c in a.allocate(3, 7)) {
 }
 ```
 
+
 The code above produces the output shown below:
-```dart
+```
 2
 3
 ```
