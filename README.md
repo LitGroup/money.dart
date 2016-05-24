@@ -1,4 +1,4 @@
-# Money [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE)
+# Money [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money) [![documentation](https://img.shields.io/badge/Documentation-money-blue.svg)](https://www.dartdocs.org/documentation/money/latest/) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE)
 
 
 
