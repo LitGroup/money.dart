@@ -11,3 +11,7 @@ matrix:
     - dart: "dev"
 
 script: ./tool/travis.sh
+
+after_success:
+  # Check coverage
+  - bash <(curl -s https://codecov.io/bash)
