@@ -1,8 +1,11 @@
-.packages
-.buildlog
-.DS_Store
 .idea
-.pub/
-build/
-packages
+.DS_Store
+
 pubspec.lock
+packages
+.packages
+.pub/
+
+.buildlog
+/build/
+/doc/api/
