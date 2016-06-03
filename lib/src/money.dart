@@ -5,7 +5,7 @@
 part of money;
 
 class Money implements Comparable<Money> {
-  final int      amount;
+  final int amount;
   final Currency currency;
 
   Money(this.amount, this.currency);
@@ -20,7 +20,9 @@ class Money implements Comparable<Money> {
   ///     new Money.fromString('120.000', new Currency('IQD');
   ///
   factory Money.fromString(String amount, Currency currency) {
-    final pattern = r'^(-?\d+)(?:\.(\d{' + currency.defaultFractionDigits.toString() + r'}))?$';
+    final pattern = r'^(-?\d+)(?:\.(\d{' +
+        currency.defaultFractionDigits.toString() +
+        r'}))?$';
     final match = (new RegExp(pattern, multiLine: false)).firstMatch(amount);
 
     if (match == null) {
@@ -28,13 +30,12 @@ class Money implements Comparable<Money> {
     }
 
     final integerPart = int.parse(match.group(1)) * currency.subUnit;
-    final fractionPart = (match.group(2) != null)
-                           ? int.parse(match.group(2))
-                           : 0;
+    final fractionPart =
+        (match.group(2) != null) ? int.parse(match.group(2)) : 0;
 
     final intAmount = (integerPart > 0)
-                        ? (integerPart + fractionPart)
-                        : (integerPart - fractionPart);
+        ? (integerPart + fractionPart)
+        : (integerPart - fractionPart);
 
     return new Money(intAmount, currency);
   }
@@ -49,11 +50,11 @@ class Money implements Comparable<Money> {
     final fractionPart = amount.remainder(currency.subUnit).abs().toString();
     final buffer = new StringBuffer();
 
-    buffer
-      ..write(integerPart)
-      ..write('.');
+    buffer..write(integerPart)..write('.');
 
-    for (var digits = fractionPart.length; digits < currency.defaultFractionDigits; digits++) {
+    for (var digits = fractionPart.length;
+        digits < currency.defaultFractionDigits;
+        digits++) {
       buffer.write('0');
     }
 
@@ -64,7 +65,7 @@ class Money implements Comparable<Money> {
 
   /// Negate operator.
   Money operator -() {
-      return _newMoney(-amount);
+    return _newMoney(-amount);
   }
 
   /// Subtraction operator.
@@ -76,7 +77,7 @@ class Money implements Comparable<Money> {
 
   /// Addition operator.
   Money operator +(Money other) {
-     _assertSameCurrency(other);
+    _assertSameCurrency(other);
 
     return _newMoney(amount + other.amount);
   }
@@ -111,8 +112,7 @@ class Money implements Comparable<Money> {
   /// Returns true if [amount] and [currency] of this object
   /// are equal to amount and currency of other.
   bool operator ==(Object other) {
-    return
-        (other is Money) &&
+    return (other is Money) &&
         (currency == other.currency) &&
         (amount == other.amount);
   }

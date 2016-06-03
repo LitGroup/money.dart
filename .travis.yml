@@ -1,9 +1,9 @@
 language: dart
 sudo: false
 dart:
-  - "1.14.0"
-  - "1.15.0"
   - "stable"
+  - "1.15.0"
+  - "1.14.0"
   - "dev"
 
 matrix:
@@ -11,7 +11,7 @@ matrix:
     - dart: "dev"
 
 script:
-#  - pub run dart_dev format --check
+  - pub run dart_dev format --check
   - pub run dart_dev analyze
   - pub run dart_dev test
   - pub run dart_dev coverage --no-html
