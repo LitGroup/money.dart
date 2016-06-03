@@ -10,4 +10,5 @@ dev_dependencies:
   test: ">=0.12.13 <0.13.0"
   mockito: ">=0.11.0 <0.12.0"
   coverage: any
+  dart_style: any
   dart_dev: any

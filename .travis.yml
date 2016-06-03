@@ -10,8 +10,12 @@ matrix:
   allow_failures:
     - dart: "dev"
 
-script: ./tool/travis.sh
+script:
+#  - pub run dart_dev format --check
+  - pub run dart_dev analyze
+  - pub run dart_dev test
+  - pub run dart_dev coverage --no-html
 
-#after_success:
-#  # Check coverage
-#  - bash <(curl -s https://codecov.io/bash)
+after_success:
+  # Check coverage
+  - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov
