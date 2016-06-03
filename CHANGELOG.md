@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [Unreleased]
+## [0.1.4] - 2016-06-03
 ### Changed
 - [BC] `Money.==()` now receives `Object` instead of `Money` and checks runtime
   type of the argument, closes [#4](https://github.com/LitGroup/money.dart/issues/4).
