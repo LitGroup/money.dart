@@ -118,7 +118,11 @@ class Money implements Comparable<Money> {
   }
 
   int get hashCode {
-    return amount.hashCode;
+    var result = 66;
+    result = 37 * result + amount.hashCode;
+    result = 37 * result + currency.hashCode;
+
+    return result;
   }
 
   /// Relational less than operator.
