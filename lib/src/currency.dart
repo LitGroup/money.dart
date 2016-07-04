@@ -4,6 +4,7 @@
 
 part of money;
 
+/// Currency Value Object.
 class Currency {
   /// The ISO 4217 currency code of this currency.
   final String code;
@@ -18,6 +19,9 @@ class Currency {
   final int defaultFractionDigits;
   final int subUnit;
 
+  /// Constructs currency by ISO 4217 code.
+  ///
+  /// It throws [ArgumentError] if [code] is unregistered ISO code of currency.
   factory Currency(String code) {
     if (code == null || !_currencies.containsKey(code.toUpperCase())) {
       throw new ArgumentError.value(
