@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/LitGroup/money.dart.png?label=ready&title=Ready)](https://waffle.io/LitGroup/money.dart)
 # Money
 
 [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money)
