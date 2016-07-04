@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Class `Currency` is not abstract from now on.
 
+### Fixed
+- `Money.hashCode` now relates on `amount` and `currency` (Issue #1).
+
 
 ## [0.1.4] - 2016-06-03
 ### Changed
