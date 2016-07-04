@@ -8,4 +8,4 @@
 
 > Dart implementation of [Fowler's Money pattern](http://martinfowler.com/eaaCatalog/money.html).
 
-**This is a development branch of release 2.x**
+**This is a development branch of 2.x milestone**
