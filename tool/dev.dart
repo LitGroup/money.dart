@@ -10,9 +10,6 @@ main(List<String> args) async {
     ..fatalHints = true
     ..strong = true;
 
-  config.format
-    ..exclude = const['lib/src/currencies.dart'];
-
   config.coverage
     ..html = true
     ..output = 'build/coverage/';
