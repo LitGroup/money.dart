@@ -2,8 +2,8 @@ language: dart
 sudo: false
 dart:
   - "stable"
+  - "1.16.0"
   - "1.15.0"
-  - "1.14.0"
   - "dev"
 
 matrix:
@@ -13,7 +13,7 @@ matrix:
 script:
   - pub run dart_dev format --check
   - pub run dart_dev analyze
-  - pub run dart_dev test
+  - pub run dart_dev test -p "vm,phantomjs"
   - pub run dart_dev coverage --no-html
 
 after_success:
