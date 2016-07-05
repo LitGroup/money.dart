@@ -5,9 +5,10 @@
 import 'package:test/test.dart';
 import 'package:money/money.dart' show Money, Currency;
 
-final amount = 1;
+final amount = 10;
+final otherAmount = 5;
 final currency = new Currency('USD');
-final anotherCurrency = new Currency('EUR');
+final otherCurrency = new Currency('EUR');
 final money = new Money(amount, currency);
 
 void main() {
@@ -30,14 +31,14 @@ void main() {
 
     test('tests currency equality', () {
       expect(money.isSameCurrency(new Money(amount, currency)), isTrue);
-      expect(money.isSameCurrency(new Money(amount, anotherCurrency)), isFalse);
+      expect(money.isSameCurrency(new Money(amount, otherCurrency)), isFalse);
     });
 
     test('equals to another money', () {
       expect(money == new Money(amount, currency), isTrue);
       expect(money == new Money(amount + 1, currency), isFalse);
-      expect(money == new Money(amount, anotherCurrency), isFalse);
-      expect(money == new Money(amount + 1, anotherCurrency), isFalse);
+      expect(money == new Money(amount, otherCurrency), isFalse);
+      expect(money == new Money(amount + 1, otherCurrency), isFalse);
       expect(money == 'not a money', isFalse);
     });
 
@@ -45,8 +46,8 @@ void main() {
       expect(money.hashCode, const isInstanceOf<int>());
       expect(money.hashCode, equals(new Money(amount, currency).hashCode));
       expect(money.hashCode, isNot(equals(new Money(amount + 1, currency).hashCode)));
-      expect(money.hashCode, isNot(equals(new Money(amount, anotherCurrency).hashCode)));
-      expect(money.hashCode, isNot(equals(new Money(amount + 1, anotherCurrency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount, otherCurrency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount + 1, otherCurrency).hashCode)));
     });
 
     group('compares two amounts', () {
@@ -79,7 +80,7 @@ void main() {
     });
 
     test('shold throw an exception when currency is different during comparison', () {
-      final another = new Money(amount, anotherCurrency);
+      final another = new Money(amount, otherCurrency);
       expect(() => money.compareTo(another), throwsArgumentError);
       expect(() => money < another, throwsArgumentError);
       expect(() => money <= another, throwsArgumentError);
@@ -88,25 +89,25 @@ void main() {
     });
 
     test('adds an another money', () {
-      final result = new Money(3, currency) + new Money(1, currency);
+      final result = new Money(amount, currency) + new Money(otherAmount, currency);
       expect(result, const isInstanceOf<Money>());
-      expect(result.amount, equals(4));
+      expect(result.amount, equals(amount + otherAmount));
       expect(result.currency, equals(currency));
     });
 
     test('throws an error if currency is different during addition', () {
-      expect(() => money + new Money(amount, anotherCurrency), throwsArgumentError);
+      expect(() => money + new Money(amount, otherCurrency), throwsArgumentError);
     });
 
     test('subtracts an another money', () {
-      final result = new Money(3, currency) - new Money(1, currency);
+      final result = new Money(amount, currency) - new Money(otherAmount, currency);
       expect(result, const isInstanceOf<Money>());
-      expect(result.amount, equals(2));
+      expect(result.amount, equals(amount - otherAmount));
       expect(result.currency, equals(currency));
     });
 
     test('throws an error if currency is different during subtraction', () {
-      expect(() => money - new Money(amount, anotherCurrency), throwsArgumentError);
+      expect(() => money - new Money(amount, otherCurrency), throwsArgumentError);
     });
   });
 }
