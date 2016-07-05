@@ -53,5 +53,43 @@ void main() {
       expect(money.hashCode, isNot(equals(new Money(amount, anotherCurrency).hashCode)));
       expect(money.hashCode, isNot(equals(new Money(amount + 1, anotherCurrency).hashCode)));
     });
+
+    group('compares two amounts', () {
+      test('(both are equal)', () {
+        final another = new Money(amount, currency);
+        expect(money.compareTo(another), equals(0));
+        expect(money < another, isFalse);
+        expect(money <= another, isTrue);
+        expect(money > another, isFalse);
+        expect(money >= another, isTrue);
+      });
+
+      test('(one less than another)', () {
+        final another = new Money(amount + 1, currency);
+        expect(money.compareTo(another), equals(-1));
+        expect(money < another, isTrue);
+        expect(money <= another, isTrue);
+        expect(money > another, isFalse);
+        expect(money >= another, isFalse);
+      });
+
+      test('(one greater than another)', () {
+        final another = new Money(amount - 1, currency);
+        expect(money.compareTo(another), equals(1));
+        expect(money < another, isFalse);
+        expect(money <= another, isFalse);
+        expect(money > another, isTrue);
+        expect(money >= another, isTrue);
+      });
+    });
+
+    test('shold throw an exception when currency is different during comparison', () {
+      final another = new Money(amount, anotherCurrency);
+      expect(() => money.compareTo(another), throwsArgumentError);
+      expect(() => money < another, throwsArgumentError);
+      expect(() => money <= another, throwsArgumentError);
+      expect(() => money > another, throwsArgumentError);
+      expect(() => money >= another, throwsArgumentError);
+    });
   });
 }

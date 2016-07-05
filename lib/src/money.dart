@@ -1,11 +1,12 @@
 // (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
+
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
 part of ru.litgroup.money;
 
 /// Money Value Object.
-class Money {
+class Money implements Comparable<Money> {
   final int amount;
   final Currency currency;
 
@@ -39,5 +40,34 @@ class Money {
     result = result * 37 + currency.hashCode;
 
     return result;
+  }
+
+  @override
+  int compareTo(Money other) {
+    _assertSameCurrency(other);
+
+    return amount.compareTo(other.amount);
+  }
+
+  void _assertSameCurrency(Money other) {
+    if (!isSameCurrency(other)) {
+      throw new ArgumentError.value(other, 'other', 'Currencies must be equal');
+    }
+  }
+
+  bool operator <(Money other) {
+    return compareTo(other) < 0;
+  }
+
+  bool operator <=(Money other) {
+    return compareTo(other) <= 0;
+  }
+
+  bool operator >(Money other) {
+    return compareTo(other) > 0;
+  }
+
+  bool operator >=(Money other) {
+    return compareTo(other) >= 0;
   }
 }
