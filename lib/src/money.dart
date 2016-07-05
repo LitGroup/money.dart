@@ -71,6 +71,12 @@ class Money implements Comparable<Money> {
     return new Money(amount + other.amount, currency);
   }
 
+  Money operator -(Money other) {
+    _assertSameCurrency(other);
+
+    return new Money(amount - other.amount, currency);
+  }
+
   void _assertSameCurrency(Money other) {
     if (!isSameCurrency(other)) {
       throw new ArgumentError.value(other, 'other', 'Currencies must be equal');

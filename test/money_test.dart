@@ -8,15 +8,10 @@ import 'package:money/money.dart' show Money, Currency;
 final amount = 1;
 final currency = new Currency('USD');
 final anotherCurrency = new Currency('EUR');
+final money = new Money(amount, currency);
 
 void main() {
   group('Money', () {
-    Money money;
-
-    setUp(() {
-      money = new Money(amount, currency);
-    });
-
     test('has an amount', () {
       expect(money.amount, equals(amount));
     });
@@ -25,11 +20,11 @@ void main() {
       expect(money.currency, same(currency));
     });
 
-    test('should throw an error if amount is null', () {
+    test('throws an error if amount is null', () {
       expect(() => new Money(null, currency), throwsArgumentError);
     });
 
-    test('should throw an error if currency is null', () {
+    test('throws an error if currency is null', () {
       expect(() => new Money(1, null), throwsArgumentError);
     });
 
@@ -93,14 +88,25 @@ void main() {
     });
 
     test('adds an another money', () {
-      final result = money + new Money(amount, currency);
+      final result = new Money(3, currency) + new Money(1, currency);
       expect(result, const isInstanceOf<Money>());
-      expect(result.amount, equals(1 + 1));
+      expect(result.amount, equals(4));
       expect(result.currency, equals(currency));
     });
 
-    test('should throw an exception if currency is different during addition', () {
+    test('throws an error if currency is different during addition', () {
       expect(() => money + new Money(amount, anotherCurrency), throwsArgumentError);
+    });
+
+    test('subtracts an another money', () {
+      final result = new Money(3, currency) - new Money(1, currency);
+      expect(result, const isInstanceOf<Money>());
+      expect(result.amount, equals(2));
+      expect(result.currency, equals(currency));
+    });
+
+    test('throws an error if currency is different during subtraction', () {
+      expect(() => money - new Money(amount, anotherCurrency), throwsArgumentError);
     });
   });
 }
