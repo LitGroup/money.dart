@@ -30,6 +30,6 @@ class Currency {
 
   @override
   int get hashCode {
-     return 54 * 37 + code.hashCode;
+    return 17 * 37 + code.hashCode;
   }
 }

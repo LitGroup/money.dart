@@ -5,23 +5,53 @@
 import 'package:test/test.dart';
 import 'package:money/money.dart' show Money, Currency;
 
+final amount = 1;
 final currency = new Currency('USD');
 final anotherCurrency = new Currency('EUR');
 
 void main() {
   group('Money', () {
-    test('should be constructed with amount and currency', () {
-      final money = new Money(1, currency);
-      expect(money.amount, same(1));
+    Money money;
+
+    setUp(() {
+      money = new Money(amount, currency);
+    });
+
+    test('has an amount', () {
+      expect(money.amount, equals(amount));
+    });
+
+    test('has a currency', () {
       expect(money.currency, same(currency));
     });
 
-    test('constructor should throw an error if amount is null', () {
+    test('should throw an error if amount is null', () {
       expect(() => new Money(null, currency), throwsArgumentError);
     });
 
-    test('constructor should throw an error if currency is null', () {
+    test('should throw an error if currency is null', () {
       expect(() => new Money(1, null), throwsArgumentError);
+    });
+
+    test('tests currency equality', () {
+      expect(money.isSameCurrency(new Money(amount, currency)), isTrue);
+      expect(money.isSameCurrency(new Money(amount, anotherCurrency)), isFalse);
+    });
+
+    test('equals to another money', () {
+      expect(money == new Money(amount, currency), isTrue);
+      expect(money == new Money(amount + 1, currency), isFalse);
+      expect(money == new Money(amount, anotherCurrency), isFalse);
+      expect(money == new Money(amount + 1, anotherCurrency), isFalse);
+      expect(money == 'not a money', isFalse);
+    });
+
+    test('has a hashcode', () {
+      expect(money.hashCode, const isInstanceOf<int>());
+      expect(money.hashCode, equals(new Money(amount, currency).hashCode));
+      expect(money.hashCode, isNot(equals(new Money(amount + 1, currency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount, anotherCurrency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount + 1, anotherCurrency).hashCode)));
     });
   });
 }
