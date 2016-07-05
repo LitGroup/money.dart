@@ -91,5 +91,16 @@ void main() {
       expect(() => money > another, throwsArgumentError);
       expect(() => money >= another, throwsArgumentError);
     });
+
+    test('adds an another money', () {
+      final result = money + new Money(amount, currency);
+      expect(result, const isInstanceOf<Money>());
+      expect(result.amount, equals(1 + 1));
+      expect(result.currency, equals(currency));
+    });
+
+    test('should throw an exception if currency is different during addition', () {
+      expect(() => money + new Money(amount, anotherCurrency), throwsArgumentError);
+    });
   });
 }

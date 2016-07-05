@@ -49,12 +49,6 @@ class Money implements Comparable<Money> {
     return amount.compareTo(other.amount);
   }
 
-  void _assertSameCurrency(Money other) {
-    if (!isSameCurrency(other)) {
-      throw new ArgumentError.value(other, 'other', 'Currencies must be equal');
-    }
-  }
-
   bool operator <(Money other) {
     return compareTo(other) < 0;
   }
@@ -69,5 +63,17 @@ class Money implements Comparable<Money> {
 
   bool operator >=(Money other) {
     return compareTo(other) >= 0;
+  }
+
+  Money operator +(Money other) {
+    _assertSameCurrency(other);
+
+    return new Money(amount + other.amount, currency);
+  }
+
+  void _assertSameCurrency(Money other) {
+    if (!isSameCurrency(other)) {
+      throw new ArgumentError.value(other, 'other', 'Currencies must be equal');
+    }
   }
 }
