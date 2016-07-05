@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [Unreleased]
+
+> Release not backward compatible with `0.1.x`. Version `0.1.x` was developed
+> to support ISO currencies only. New implementation designed to be independent
+> from currency context.
+
+### Removed
+- [BC Break] `Currency.name`.
+- [BC Break] `Currency.numericCode`.
+- [BC Break] `Currency.defaultFractionDigits`.
+- [BC Break] `Currency.subUnit`.
+
+
 ## [0.1.5] - 2016-07-06
 ### Changed
 - Class `Currency` is not abstract from now on.

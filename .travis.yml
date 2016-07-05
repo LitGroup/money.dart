@@ -2,20 +2,27 @@ language: dart
 sudo: false
 dart:
   - "stable"
+  - "1.16.0"
   - "1.15.0"
-  - "1.14.0"
   - "dev"
 
 matrix:
   allow_failures:
     - dart: "dev"
 
+install:
+  - mkdir travis-phantomjs
+  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+  - tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs
+  - export PATH=$PWD/travis-phantomjs:$PATH
+  - pub get
+
 script:
   - pub run dart_dev format --check
   - pub run dart_dev analyze
-  - pub run dart_dev test
-  - pub run dart_dev coverage --no-html
+  - pub run dart_dev test -p "vm,phantomjs"
 
 after_success:
   # Check coverage
+  - pub run dart_dev coverage --no-html
   - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov

@@ -2,39 +2,34 @@
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
-part of money;
+part of ru.litgroup.money;
 
 /// Currency Value Object.
+///
+/// Holds Currency specific data.
 class Currency {
-  /// The ISO 4217 currency code of this currency.
+  /// This currency code.
   final String code;
 
-  /// The name that is suitable for displaying this currency.
-  final String name;
-
-  /// The ISO 4217 numeric code of this currency.
-  final int numericCode;
-
-  /// The default number of fraction digits used with this currency.
-  final int defaultFractionDigits;
-  final int subUnit;
-
-  /// Constructs currency by ISO 4217 code.
+  /// Constructor.
   ///
-  /// It throws [ArgumentError] if [code] is unregistered ISO code of currency.
-  factory Currency(String code) {
-    if (code == null || !_currencies.containsKey(code.toUpperCase())) {
-      throw new ArgumentError.value(
-          code, 'code', 'Unknown currency code "$code".');
+  /// Argument [code] is required, it cannot be null or empty string.
+  Currency(this.code) {
+    if (code == null) {
+      throw new ArgumentError.notNull('code');
     }
-
-    return _currencies[code.toUpperCase()];
+    if (code.trim().isEmpty) {
+      throw new ArgumentError('Argument "code" cannot be an empty string');
+    }
   }
 
-  const Currency._private(this.code, this.name, this.numericCode,
-      this.defaultFractionDigits, this.subUnit);
-
-  /// Returns the ISO 4217 currency code of this currency.
   @override
-  String toString() => code;
+  bool operator ==(Object other) {
+    return other is Currency && other.code == code;
+  }
+
+  @override
+  int get hashCode {
+    return 17 * 37 + code.hashCode;
+  }
 }

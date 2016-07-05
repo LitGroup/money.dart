@@ -2,8 +2,7 @@
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
-library money;
+library ru.litgroup.money;
 
-part 'src/money.dart';
 part 'src/currency.dart';
-part 'src/currencies.dart';
+part 'src/money.dart';

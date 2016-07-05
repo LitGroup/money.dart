@@ -2,52 +2,36 @@
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
-library money.test.currency;
-
 import 'package:test/test.dart';
-import 'package:money/money.dart';
+import 'package:money/money.dart' show Currency;
+
+final currency = new Currency('USD');
+final anotherCurrency = new Currency('EUR');
 
 void main() {
   group('Currency', () {
-
-    group('default factory', () {
-      test('must throw error if non-existent code given', () {
-        expect(() => new Currency('WTFCURRENCY'), throwsArgumentError);
-        expect(() => new Currency(null), throwsArgumentError);
-      });
-
-      test('create from uppercase code', () {
-        final currency = new Currency('USD');
-        expect(currency, const isInstanceOf<Currency>());
-        expect(currency.code, equals('USD'));
-        expect(currency.name, equals('US Dollar'));
-        expect(currency.numericCode, equals(840));
-        expect(currency.defaultFractionDigits, equals(2));
-        expect(currency.subUnit, equals(100));
-      });
-
-      test('create from lowercase string', () {
-        final currency = new Currency('usd');
-        expect(currency, const isInstanceOf<Currency>());
-        expect(currency.code, equals('USD'));
-      });
+    test('has a code', () {
+      expect(currency.code, same('USD'));
     });
 
-    test('==() and hashCcode', () {
-      var currency1 = new Currency('USD');
-      var currency2 = new Currency('USD');
-      var currency3 = new Currency('EUR');
-
-      expect(currency1 == currency2, isTrue);
-      expect(currency1.hashCode, equals(currency2.hashCode));
-
-      expect(currency1 != currency3, isTrue);
+    test('should throw an error if code is NULL', () {
+      expect(() => new Currency(null), throwsArgumentError);
     });
 
-    test('toString()', () {
-      var currency = new Currency('USD');
+    test('should throw an error if code is empty string', () {
+      expect(() => new Currency(''), throwsArgumentError);
+      expect(() => new Currency('  '), throwsArgumentError);
+    });
 
-      expect(currency.toString(), equals('USD'));
+    test('equals to another currency', () {
+      expect(currency == currency, isTrue);
+      expect(currency == anotherCurrency, isFalse);
+    });
+
+    test('has a hashcode', () {
+      expect(currency.hashCode, const isInstanceOf<int>());
+      expect(currency.hashCode, equals(new Currency('USD').hashCode));
+      expect(currency.hashCode, isNot(equals(new Currency('EUR').hashCode)));
     });
   });
 }

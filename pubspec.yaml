@@ -5,9 +5,9 @@ version: 0.1.5
 author: Roman Shamritskiy <roman@litgroup.ru>
 homepage: https://github.com/litgroup/money.dart
 environment:
-  sdk: ">=1.14.0 <2.0.0"
+  sdk: ">=1.15.0 <2.0.0"
 dev_dependencies:
-  test: ">=0.12.13 <0.13.0"
+  test: ">=0.12.14 <0.13.0"
   mockito: ">=0.11.0 <0.12.0"
   coverage: any
   dart_style: any
