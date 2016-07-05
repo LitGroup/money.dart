@@ -9,7 +9,6 @@ void main() {
   group('Currency', () {
     test('should have a code', () {
       final currency = new Currency('USD');
-
       expect(currency.code, same('USD'));
     });
 

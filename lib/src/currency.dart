@@ -2,7 +2,7 @@
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
-part of money;
+part of ru.litgroup.money;
 
 /// Currency Value Object.
 ///
@@ -18,7 +18,6 @@ class Currency {
     if (code == null) {
       throw new ArgumentError.notNull('code');
     }
-
     if (code.trim().isEmpty) {
       throw new ArgumentError('Argument "code" cannot be an empty string');
     }
