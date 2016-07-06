@@ -1,5 +1,4 @@
-.idea
-.DS_Store
+
 
 pubspec.lock
 packages
@@ -9,3 +8,9 @@ packages
 .buildlog
 /build/
 /doc/api/
+
+### IDEs
+*.iml
+.atom
+.idea
+.DS_Store
