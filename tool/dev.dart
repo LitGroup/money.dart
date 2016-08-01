@@ -14,6 +14,9 @@ main(List<String> args) async {
     ..fatalHints = true
     ..strong = true;
 
+  config.test
+    ..unitTests = const['test/'];
+
   config.coverage
     ..html = true
     ..output = 'build/coverage/';
