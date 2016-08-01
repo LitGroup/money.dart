@@ -109,5 +109,7 @@ void main() {
     test('throws an error if currency is different during subtraction', () {
       expect(() => money - new Money(amount, otherCurrency), throwsArgumentError);
     });
+
+
   });
 }
