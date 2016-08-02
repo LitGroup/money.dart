@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 import 'package:money/money.dart' show Money, Currency;
 
 import 'round_examples.dart';
+import 'allocation_examles.dart';
 
 final amount = 10;
 final otherAmount = 5;
@@ -167,5 +168,39 @@ void main() {
       expect(() => money / 0.0, throwsArgumentError);
     });
 
+    group('allocates amount', () {
+      var exampleNum = 0;
+      allocationExamples.forEach((example) {
+        test('(Example #${exampleNum++}', (){
+          final allocated = new Money(example.amount, currency).allocate(example.ratios);
+
+          expect(allocated.length, equals(example.allocatedAmounts.length));
+          for (var i = 0; i < example.allocatedAmounts.length; ++i) {
+            expect(allocated[i].currency, same(currency));
+            expect(allocated[i].amount, equals(example.allocatedAmounts[i]));
+          }
+        });
+      });
+    });
+
+    test('throws an error when allocate target is null', () {
+      expect(() => money.allocate(null), throwsArgumentError);
+    });
+
+    test('throws an error when allocate target is empty', () {
+      expect(() => money.allocate([]), throwsArgumentError);
+    });
+
+    test('throws an error when any of ratios is null during allocation', () {
+      expect(() => money.allocate([1, null]), throwsArgumentError);
+    });
+
+    test('trows an error when any of ratios less than 0 during allocation', () {
+      expect(() => money.allocate([4, -1]), throwsArgumentError);
+    });
+
+    test('throws an error when sum of ratios is 0', () {
+      expect(() => money.allocate([0, 0]), throwsArgumentError);
+    });
   });
 }

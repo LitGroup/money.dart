@@ -1,5 +1,4 @@
 // (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
-
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
@@ -91,6 +90,47 @@ class Money implements Comparable<Money> {
     }
 
     return new Money(_round(amount / divider), currency);
+  }
+
+  List<Money> allocate(List<int> ratios) {
+    if (ratios == null || ratios.isEmpty) {
+      throw new ArgumentError.value(
+          ratios, 'ratios', 'Cannot allocate to nothing.');
+    }
+    ratios.forEach((ratio) {
+      if (ratio == null) {
+        throw new ArgumentError.value(ratios, 'ratios', 'Cannon contain null');
+      }
+      if (ratio < 0) {
+        throw new ArgumentError.value(
+            ratio, 'ratios', 'Cannot contain negativ value.');
+      }
+    });
+
+    final shares = new List<int>(ratios.length);
+
+    final total = ratios.reduce((a, b) => a + b);
+    if (total == 0) {
+      throw new ArgumentError.value(
+          ratios, 'ratios', 'Sum of elements cannot be 0');
+    }
+
+    var remainder = amount;
+
+    for (var i = 0; i < ratios.length; ++i) {
+      var share = amount * ratios[i] ~/ total;
+      remainder -= share;
+      shares[i] = share;
+    }
+
+    for (var i = 0; remainder > 0; ++i) {
+      shares[i] += 1;
+      remainder -= 1;
+    }
+
+    return new List<Money>.from(
+        shares.map((share) => new Money(share, currency)),
+        growable: false);
   }
 
   void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
