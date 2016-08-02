@@ -118,7 +118,7 @@ class Money implements Comparable<Money> {
     var remainder = amount;
 
     for (var i = 0; i < ratios.length; ++i) {
-      var share = amount * ratios[i] ~/ total;
+      var share = (amount * ratios[i] / total).floor();
       remainder -= share;
       shares[i] = share;
     }
