@@ -44,7 +44,7 @@ class Money implements Comparable<Money> {
 
   @override
   int compareTo(Money other) {
-    _assertSameCurrency(other);
+    _assertAcceptableMoneyArgument(other);
 
     return amount.compareTo(other.amount);
   }
@@ -66,28 +66,37 @@ class Money implements Comparable<Money> {
   }
 
   Money operator +(Money other) {
-    _assertSameCurrency(other);
+    _assertAcceptableMoneyArgument(other);
 
     return new Money(amount + other.amount, currency);
   }
 
   Money operator -(Money other) {
-    _assertSameCurrency(other);
+    _assertAcceptableMoneyArgument(other);
 
     return new Money(amount - other.amount, currency);
   }
 
   Money operator *(num multiplier) {
-    if (multiplier == null) {
-      throw new ArgumentError.notNull('multiplier');
-    }
+    _assertNotNull(multiplier, 'multiplier');
 
     return new Money(_round(amount * multiplier), currency);
   }
 
-  void _assertSameCurrency(Money other) {
+  void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
+    _assertNotNull(money, name);
+    _assertSameCurrency(money, name);
+  }
+
+  void _assertNotNull(Object arg, String name) {
+    if (arg == null) {
+      throw new ArgumentError.notNull(name);
+    }
+  }
+
+  void _assertSameCurrency(Money other, String name) {
     if (!isSameCurrency(other)) {
-      throw new ArgumentError.value(other, 'other', 'Currencies must be equal');
+      throw new ArgumentError.value(other, name, 'Currencies must be equal');
     }
   }
 

@@ -81,7 +81,7 @@ void main() {
       });
     });
 
-    test('shold throw an exception when currency is different during comparison', () {
+    test('throws an exception when currency is different during comparison', () {
       final another = new Money(amount, otherCurrency);
       expect(() => money.compareTo(another), throwsArgumentError);
       expect(() => money < another, throwsArgumentError);
@@ -90,11 +90,23 @@ void main() {
       expect(() => money >= another, throwsArgumentError);
     });
 
-    test('adds an another money', () {
+    test('throws an error if operand is null during comparison', () {
+      expect(() => money.compareTo(null), throwsArgumentError);
+      expect(() => money < null, throwsArgumentError);
+      expect(() => money <= null, throwsArgumentError);
+      expect(() => money > null, throwsArgumentError);
+      expect(() => money >= null, throwsArgumentError);
+    });
+
+    test('adds an oher money', () {
       final result = new Money(amount, currency) + new Money(otherAmount, currency);
       expect(result, const isInstanceOf<Money>());
       expect(result.amount, equals(amount + otherAmount));
       expect(result.currency, equals(currency));
+    });
+
+    test('throws an error if operand is null during addition', () {
+      expect(() => money + null, throwsArgumentError);
     });
 
     test('throws an error if currency is different during addition', () {
@@ -106,6 +118,10 @@ void main() {
       expect(result, const isInstanceOf<Money>());
       expect(result.amount, equals(amount - otherAmount));
       expect(result.currency, equals(currency));
+    });
+
+    test('throws an error if operand is null during substraction', () {
+      expect(() => money - null, throwsArgumentError);
     });
 
     test('throws an error if currency is different during subtraction', () {
