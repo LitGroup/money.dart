@@ -3,7 +3,7 @@
 // with this source code in the file LICENSE.
 
 import 'package:test/test.dart';
-import 'package:money/money.dart' show Money, RoundingStrategy, Currency;
+import 'package:money/money.dart' show Money, Currency;
 
 import 'round_examples.dart';
 
