@@ -130,8 +130,7 @@ void main() {
     });
 
     roundExamples.test('has a multiplication operator, which multiplies the amount with half-up rounding', (example) {
-      var result = new Money(1, currency) * example.operand;
-
+      final result = new Money(1, currency) * example.operand;
       expect(result, const isInstanceOf<Money>());
       expect(result.currency, same(currency));
       expect(result.amount, example.expectedResult);
@@ -142,8 +141,7 @@ void main() {
     });
 
     roundExamples.test('has a division operator, which divides the amount with half-up rounding', (example) {
-      var result = new Money(1, currency) / (1 / example.operand);
-
+      final result = new Money(1, currency) / (1 / example.operand);
       expect(result, const isInstanceOf<Money>());
       expect(result.currency, same(currency));
       expect(result.amount, example.expectedResult);
