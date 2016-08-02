@@ -67,19 +67,19 @@ class Money implements Comparable<Money> {
   Money operator +(Money other) {
     _assertAcceptableMoneyArgument(other);
 
-    return new Money(amount + other.amount, currency);
+    return _newMoney(amount + other.amount);
   }
 
   Money operator -(Money other) {
     _assertAcceptableMoneyArgument(other);
 
-    return new Money(amount - other.amount, currency);
+    return _newMoney(amount - other.amount);
   }
 
   Money operator *(num multiplier) {
     _assertNotNull(multiplier, 'multiplier');
 
-    return new Money(_round(amount * multiplier), currency);
+    return _newMoney(_round(amount * multiplier));
   }
 
   Money operator /(num divider) {
@@ -89,32 +89,14 @@ class Money implements Comparable<Money> {
           divider, 'divider', 'Division of a money by zero is forbidden.');
     }
 
-    return new Money(_round(amount / divider), currency);
+    return _newMoney(_round(amount / divider));
   }
 
   List<Money> allocate(List<int> ratios) {
-    if (ratios == null || ratios.isEmpty) {
-      throw new ArgumentError.value(
-          ratios, 'ratios', 'Cannot allocate to nothing.');
-    }
-    ratios.forEach((ratio) {
-      if (ratio == null) {
-        throw new ArgumentError.value(ratios, 'ratios', 'Cannon contain null');
-      }
-      if (ratio < 0) {
-        throw new ArgumentError.value(
-            ratio, 'ratios', 'Cannot contain negativ value.');
-      }
-    });
+    _assertNotNull(ratios, 'ratios');
 
     final shares = new List<int>(ratios.length);
-
-    final total = ratios.reduce((a, b) => a + b);
-    if (total == 0) {
-      throw new ArgumentError.value(
-          ratios, 'ratios', 'Sum of elements cannot be 0');
-    }
-
+    final total = _calculateRatiosTotal(ratios);
     var remainder = amount;
 
     for (var i = 0; i < ratios.length; ++i) {
@@ -128,8 +110,7 @@ class Money implements Comparable<Money> {
       remainder -= 1;
     }
 
-    return new List<Money>.unmodifiable(
-        shares.map((share) => new Money(share, currency)));
+    return new List<Money>.unmodifiable(shares.map(_newMoney));
   }
 
   void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
@@ -149,7 +130,30 @@ class Money implements Comparable<Money> {
     }
   }
 
+  Money _newMoney(int amount) => new Money(amount, currency);
+
   int _round(num number) {
     return number.round();
+  }
+
+  int _calculateRatiosTotal(List<int> ratios) {
+    var total = 0;
+    for (var ratio in ratios) {
+      if (ratio == null) {
+        throw new ArgumentError.value(ratios, 'ratios', 'Cannon contain null');
+      }
+      if (ratio < 0) {
+        throw new ArgumentError.value(
+            ratio, 'ratios', 'Cannot contain a negative value.');
+      }
+      total += ratio;
+    }
+
+    if (total == 0) {
+      throw new ArgumentError.value(
+          ratios, 'ratios', 'Sum of ratios cannot be 0');
+    }
+
+    return total;
   }
 }
