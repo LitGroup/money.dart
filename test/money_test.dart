@@ -162,5 +162,10 @@ void main() {
       expect(() => money / null, throwsArgumentError);
     });
 
+    test('throws an error when divider is 0 during division', () {
+      expect(() => money / 0, throwsArgumentError);
+      expect(() => money / 0.0, throwsArgumentError);
+    });
+
   });
 }

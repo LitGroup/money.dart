@@ -85,6 +85,10 @@ class Money implements Comparable<Money> {
 
   Money operator /(num divider) {
     _assertNotNull(divider, 'divider');
+    if (divider == 0) {
+      throw new ArgumentError.value(
+          divider, 'divider', 'Division of a money by zero is forbidden.');
+    }
 
     return new Money(_round(amount / divider), currency);
   }

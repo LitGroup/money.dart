@@ -20,7 +20,7 @@ install:
 script:
   - pub run dart_dev format --check
   - pub run dart_dev analyze
-  - pub run dart_dev test -p "vm,phantomjs" -j 1
+  - pub run dart_dev test -p "vm,phantomjs" -j 2
 
 after_success:
   # Check coverage
