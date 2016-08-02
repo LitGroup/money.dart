@@ -151,7 +151,7 @@ class Money implements Comparable<Money> {
 
     if (total == 0) {
       throw new ArgumentError.value(
-          ratios, 'ratios', 'Sum of ratios cannot be 0');
+          ratios, 'ratios', 'Sum of ratios must not be 0');
     }
 
     return total;
