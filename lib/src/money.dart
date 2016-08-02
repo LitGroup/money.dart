@@ -128,9 +128,8 @@ class Money implements Comparable<Money> {
       remainder -= 1;
     }
 
-    return new List<Money>.from(
-        shares.map((share) => new Money(share, currency)),
-        growable: false);
+    return new List<Money>.unmodifiable(
+        shares.map((share) => new Money(share, currency)));
   }
 
   void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
