@@ -171,7 +171,7 @@ void main() {
     group('allocates amount', () {
       var exampleNum = 0;
       allocationExamples.forEach((example) {
-        test('(Example #${exampleNum++}', (){
+        test('(Example #)${exampleNum++}', (){
           final allocated = new Money(example.amount, currency).allocate(example.ratios);
 
           expect(allocated.length, equals(example.allocatedAmounts.length));
