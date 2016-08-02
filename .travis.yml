@@ -1,28 +1,27 @@
 language: dart
 sudo: false
 dart:
-  - "stable"
-  - "1.17.0"
-  - "1.16.0"
-  - "dev"
-
+- stable
+- 1.17.0
+- 1.16.0
+- dev
 matrix:
   allow_failures:
-    - dart: "dev"
-
+  - dart: dev
 install:
-  - mkdir travis-phantomjs
-  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
-  - tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs
-  - export PATH=$PWD/travis-phantomjs:$PATH
-  - pub get
-
+- mkdir travis-phantomjs
+- wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+  -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+- tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs
+- export PATH=$PWD/travis-phantomjs:$PATH
+- pub get
 script:
-  - pub run dart_dev format --check
-  - pub run dart_dev analyze
-  - pub run dart_dev test -p "vm,phantomjs" -j 2
-
+- pub run dart_dev format --check
+- pub run dart_dev analyze
+- pub run dart_dev test -p "vm,phantomjs" -j 2
 after_success:
-  # Check coverage
-  - pub run dart_dev coverage --no-html --no-open
-  - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov
+- pub run dart_dev coverage --no-html --no-open
+- bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov
+notifications:
+  slack:
+    secure: EC4aNPBz+zQLUCkJghPqTTAu/VXOBIH0JA82ROKI0tc1vom5zygFP/XqNCCoIzDzVSCEs5DyFzYbFG3jKWBSV8MGumofdFJFMiZv9AkR/JnatzjBS9O0bLusNpNFXt13+W2dd98ZvGqtGu4HEs2x58JvESwzqFUCdlUj8RrmkoQ=
