@@ -83,6 +83,15 @@ class Money implements Comparable<Money> {
     return new Money(_round(amount * multiplier), currency);
   }
 
+  Money operator /(num divider) {
+    _assertNotNull(divider, 'divider');
+
+    return new Money(
+        _round(amount / divider),
+        currency
+    );
+  }
+
   void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
     _assertNotNull(money, name);
     _assertSameCurrency(money, name);
