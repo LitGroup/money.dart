@@ -63,7 +63,7 @@ void main() {
         expect(money >= another, isTrue);
       });
 
-      test('(one less than another)', () {
+      test('(the first is less than the second)', () {
         final another = new Money(amount + 1, currency);
         expect(money.compareTo(another), equals(-1));
         expect(money < another, isTrue);
@@ -72,7 +72,7 @@ void main() {
         expect(money >= another, isFalse);
       });
 
-      test('(one greater than another)', () {
+      test('(the first is greater than  the second)', () {
         final another = new Money(amount - 1, currency);
         expect(money.compareTo(another), equals(1));
         expect(money < another, isFalse);

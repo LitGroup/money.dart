@@ -14,11 +14,11 @@ void main() {
       expect(currency.code, same('USD'));
     });
 
-    test('should throw an error if code is NULL', () {
+    test('throws an error if code is NULL', () {
       expect(() => new Currency(null), throwsArgumentError);
     });
 
-    test('should throw an error if code is empty string', () {
+    test('throws an error if code is empty string', () {
       expect(() => new Currency(''), throwsArgumentError);
       expect(() => new Currency('  '), throwsArgumentError);
     });
