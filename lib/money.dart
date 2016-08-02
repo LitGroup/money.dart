@@ -6,4 +6,3 @@ library ru.litgroup.money;
 
 part 'src/currency.dart';
 part 'src/money.dart';
-part 'src/rounding_strategy.dart';

@@ -3,7 +3,9 @@
 // with this source code in the file LICENSE.
 
 import 'package:test/test.dart';
-import 'package:money/money.dart' show Money, Currency;
+import 'package:money/money.dart' show Money, RoundingStrategy, Currency;
+
+import 'round_examples.dart';
 
 final amount = 10;
 final otherAmount = 5;
@@ -110,6 +112,21 @@ void main() {
       expect(() => money - new Money(amount, otherCurrency), throwsArgumentError);
     });
 
+    group('has multiplication operator, which multiplies the amount with half-up rounding', () {
+      var exampleNum = 0;
+      roundExamples.forEach((example) {
+        test('(Example #${exampleNum++})', () {
+          var result = new Money(1, currency) * example.operand;
 
+          expect(result, const isInstanceOf<Money>());
+          expect(result.currency, same(currency));
+          expect(result.amount, example.expectedResult);
+        });
+      });
+    });
+
+    test('throws an error when operand is null during multiplication', () {
+      expect(() => money * null, throwsArgumentError);
+    });
   });
 }

@@ -1,4 +1,5 @@
 // (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
+
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
@@ -76,9 +77,21 @@ class Money implements Comparable<Money> {
     return new Money(amount - other.amount, currency);
   }
 
+  Money operator *(num multiplier) {
+    if (multiplier == null) {
+      throw new ArgumentError.notNull('multiplier');
+    }
+
+    return new Money(_round(amount * multiplier), currency);
+  }
+
   void _assertSameCurrency(Money other) {
     if (!isSameCurrency(other)) {
       throw new ArgumentError.value(other, 'other', 'Currencies must be equal');
     }
+  }
+
+  int _round(num number) {
+    return number.round();
   }
 }
