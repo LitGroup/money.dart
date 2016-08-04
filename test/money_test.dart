@@ -129,6 +129,16 @@ void main() {
       expect(() => money - new Money(amount, otherCurrency), throwsArgumentError);
     });
 
+    test('has unary minus operator, which returns money with negative amount', () {
+      final zero = new Money(0, currency);
+      final positive = new Money(1, currency);
+      final negative = new Money(-1, currency);
+
+      expect(-zero, equals(zero));
+      expect(-positive, equals(negative));
+      expect(-negative, equals(positive));
+    });
+
     roundExamples.test('has a multiplication operator, which multiplies the amount with half-up rounding', (example) {
       final result = new Money(1, currency) * example.operand;
       expect(result, const isInstanceOf<Money>());
