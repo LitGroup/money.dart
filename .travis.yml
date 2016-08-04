@@ -18,7 +18,7 @@ install:
 script:
 - pub run dart_dev format --check
 - pub run dart_dev analyze
-- pub run dart_dev test -p "vm,phantomjs" -j 2
+- pub run dart_dev test --platform="vm,phantomjs" --concurrency=2
 after_success:
 - pub run dart_dev coverage --no-html --no-open
 - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov

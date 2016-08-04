@@ -21,6 +21,10 @@ class Money implements Comparable<Money> {
     }
   }
 
+  bool get isZero => amount == 0;
+  bool get isPositive => amount > 0;
+  bool get isNegative => amount < 0;
+
   /// Checks whether a Money has the same Currency as this.
   bool isSameCurrency(Money other) {
     return currency == other.currency;
