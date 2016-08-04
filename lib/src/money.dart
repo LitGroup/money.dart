@@ -70,6 +70,10 @@ class Money implements Comparable<Money> {
     return _newMoney(amount + other.amount);
   }
 
+  Money operator -() {
+    return _newMoney(-amount);
+  }
+
   Money operator -(Money other) {
     _assertAcceptableMoneyArgument(other);
 
