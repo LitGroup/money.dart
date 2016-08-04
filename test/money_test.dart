@@ -53,6 +53,21 @@ void main() {
       expect(money.hashCode, isNot(equals(new Money(amount + 1, otherCurrency).hashCode)));
     });
 
+    test('has comparators', () {
+      expect(new Money(0, currency).isZero, isTrue);
+      expect(new Money(0, currency).isPositive, isFalse);
+      expect(new Money(0, currency).isNegative, isFalse);
+
+      expect(new Money(1, currency).isZero, isFalse);
+      expect(new Money(1, currency).isPositive, isTrue);
+      expect(new Money(1, currency).isNegative, isFalse);
+      expect(new Money(1, currency).isNegative, isFalse);
+
+      expect(new Money(-1, currency).isZero, isFalse);
+      expect(new Money(-1, currency).isPositive, isFalse);
+      expect(new Money(-1, currency).isNegative, isTrue);
+    });
+
     group('compares two amounts', () {
       test('(both are equal)', () {
         final another = new Money(amount, currency);
