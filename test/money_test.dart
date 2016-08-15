@@ -182,12 +182,12 @@ void main() {
     });
 
     allocationExamples.test('allocates amount', (example) {
-      final allocated = new Money(example.amount, currency).allocate(example.ratios);
+      final targets = new Money(example.amount, currency).allocate(example.ratios);
 
-      expect(allocated.length, equals(example.allocatedAmounts.length));
+      expect(targets.length, equals(example.allocatedAmounts.length));
       for (var i = 0; i < example.allocatedAmounts.length; ++i) {
-        expect(allocated[i].currency, same(currency));
-        expect(allocated[i].amount, equals(example.allocatedAmounts[i]));
+        expect(targets[i].currency, same(currency));
+        expect(targets[i].amount, equals(example.allocatedAmounts[i]));
       }
     });
 
@@ -209,6 +209,25 @@ void main() {
 
     test('throws an error when sum of ratios is 0', () {
       expect(() => money.allocate([0, 0]), throwsArgumentError);
+    });
+
+    allocationToTargetsExamples.test('allocates amount to N targets', (example) {
+      final targets = new Money(example.amount, currency).allocateTo(example.numberOfTargets);
+
+      expect(targets.length, equals(example.numberOfTargets));
+      for (var i = 0; i < example.numberOfTargets; ++i) {
+        expect(targets[i].currency, same(currency));
+        expect(targets[i].amount, equals(example.allocatedAmounts[i]));
+      }
+    });
+
+    test('throws an error if N is null during allocation to the N targets', () {
+      expect(() => money.allocateTo(null), throwsArgumentError);
+    });
+
+    test('throws an error if N is less than 1 during allocation to the N targets', () {
+      expect(() => money.allocateTo(0), throwsArgumentError);
+      expect(() => money.allocateTo(-1), throwsArgumentError);
     });
   });
 }

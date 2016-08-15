@@ -1,4 +1,5 @@
 // (c) 2016 Roman Shamritskiy <roman@litgroup.ru>
+
 // This source file is subject to the MIT license that is bundled
 // with this source code in the file LICENSE.
 
@@ -22,7 +23,9 @@ class Money implements Comparable<Money> {
   }
 
   bool get isZero => amount == 0;
+
   bool get isPositive => amount > 0;
+
   bool get isNegative => amount < 0;
 
   /// Checks whether a Money has the same Currency as this.
@@ -119,6 +122,17 @@ class Money implements Comparable<Money> {
     }
 
     return new List<Money>.unmodifiable(shares.map(_newMoney));
+  }
+
+  List<Money> allocateTo(int n) {
+    _assertNotNull(n, 'n');
+
+    if (n < 1) {
+      throw new ArgumentError.value(
+          n, 'n', 'Number of targets must not be less than 1');
+    }
+
+    return allocate(new List<int>.filled(n, 1));
   }
 
   void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
