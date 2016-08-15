@@ -8,7 +8,7 @@ environment:
   sdk: ">=1.16.0 <2.0.0"
 dev_dependencies:
   test: ">=0.12.14 <0.13.0"
-  mockito: ">=0.11.0 <0.12.0"
+  mockito: ">=1.0.0 <2.0.0"
   coverage: any
   dart_style: any
   dart_dev: any

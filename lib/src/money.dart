@@ -94,7 +94,7 @@ class Money implements Comparable<Money> {
     _assertNotNull(divider, 'divider');
     if (divider == 0) {
       throw new ArgumentError.value(
-          divider, 'divider', 'Division of a money by zero is forbidden.');
+          divider, 'divider', 'Division by zero is forbidden.');
     }
 
     return _newMoney(_round(amount / divider));
