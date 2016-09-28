@@ -1,6 +1,5 @@
 name: money
-description: >
-  Dart implementation of Fowler's Money pattern
+description: Dart implementation of Fowler's Money pattern
 version: 0.1.5
 author: Roman Shamritskiy <roman@litgroup.ru>
 homepage: https://github.com/litgroup/money.dart
