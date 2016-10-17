@@ -24,9 +24,6 @@ part of money;
 
 /// Money Value Object.
 class Money implements Comparable<Money> {
-  final int amount;
-  final Currency currency;
-
   /// Constructs money value initialized with [amount] and [currency].
   ///
   /// Where [amount] expressed in the smallest units of currency (eg cents).
@@ -39,6 +36,10 @@ class Money implements Comparable<Money> {
     }
   }
 
+  final int amount;
+
+  final Currency currency;
+
   bool get isZero => amount == 0;
 
   bool get isPositive => amount > 0;
@@ -50,10 +51,10 @@ class Money implements Comparable<Money> {
     return currency == other.currency;
   }
 
-  /// Returns `true` if [other] is [Money] with same amount and currency.
+  /// Returns `true` if [another] is [Money] with same amount and currency.
   @override
-  bool operator ==(Object other) {
-    return other is Money && isSameCurrency(other) && amount == other.amount;
+  bool operator ==(Object another) {
+    return another is Money && isSameCurrency(another) && amount == another.amount;
   }
 
   @override
@@ -66,48 +67,48 @@ class Money implements Comparable<Money> {
   }
 
   @override
-  int compareTo(Money other) {
-    _assertAcceptableMoneyArgument(other);
+  int compareTo(Money another) {
+    _assertAcceptableMoneyArgument(another);
 
-    return amount.compareTo(other.amount);
+    return amount.compareTo(another.amount);
   }
 
-  bool operator <(Money other) {
-    return compareTo(other) < 0;
+  bool operator <(Money another) {
+    return compareTo(another) < 0;
   }
 
-  bool operator <=(Money other) {
-    return compareTo(other) <= 0;
+  bool operator <=(Money another) {
+    return compareTo(another) <= 0;
   }
 
-  bool operator >(Money other) {
-    return compareTo(other) > 0;
+  bool operator >(Money another) {
+    return compareTo(another) > 0;
   }
 
-  bool operator >=(Money other) {
-    return compareTo(other) >= 0;
+  bool operator >=(Money another) {
+    return compareTo(another) >= 0;
   }
 
-  Money operator +(Money other) {
-    _assertAcceptableMoneyArgument(other);
+  Money operator +(Money another) {
+    _assertAcceptableMoneyArgument(another);
 
-    return _newMoney(amount + other.amount);
+    return _withAmount(amount + another.amount);
   }
 
   Money operator -() {
-    return _newMoney(-amount);
+    return _withAmount(-amount);
   }
 
-  Money operator -(Money other) {
-    _assertAcceptableMoneyArgument(other);
+  Money operator -(Money another) {
+    _assertAcceptableMoneyArgument(another);
 
-    return _newMoney(amount - other.amount);
+    return _withAmount(amount - another.amount);
   }
 
   Money operator *(num multiplier) {
     _assertNotNull(multiplier, 'multiplier');
 
-    return _newMoney(_round(amount * multiplier));
+    return _withAmount(_round(amount * multiplier));
   }
 
   Money operator /(num divider) {
@@ -117,7 +118,7 @@ class Money implements Comparable<Money> {
           divider, 'divider', 'Division by zero is forbidden.');
     }
 
-    return _newMoney(_round(amount / divider));
+    return _withAmount(_round(amount / divider));
   }
 
   List<Money> allocate(List<int> ratios) {
@@ -138,7 +139,7 @@ class Money implements Comparable<Money> {
       remainder -= 1;
     }
 
-    return new List<Money>.unmodifiable(shares.map(_newMoney));
+    return new List<Money>.unmodifiable(shares.map(_withAmount));
   }
 
   List<Money> allocateTo(int n) {
@@ -169,7 +170,7 @@ class Money implements Comparable<Money> {
     }
   }
 
-  Money _newMoney(int amount) => new Money(amount, currency);
+  Money _withAmount(int amount) => new Money(amount, currency);
 
   int _round(num number) {
     return number.round();
