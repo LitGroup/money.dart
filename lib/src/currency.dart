@@ -31,7 +31,7 @@ class Currency {
 
   /// Constructor.
   ///
-  /// Argument [code] is required, it cannot be null or empty string.
+  /// Argument [code] is required, it must not be null or empty.
   Currency(this.code) {
     if (code == null) {
       throw new ArgumentError.notNull('code');

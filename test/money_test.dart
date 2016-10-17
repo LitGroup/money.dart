@@ -23,13 +23,10 @@
 import 'package:test/test.dart';
 import 'package:money/money.dart' show Money, Currency;
 
-import 'round_examples.dart';
-import 'allocation_examles.dart';
-
 final amount = 10;
-final otherAmount = 5;
+final anotherAmount = 5;
 final currency = new Currency('USD');
-final otherCurrency = new Currency('EUR');
+final anotherCurrency = new Currency('EUR');
 final money = new Money(amount, currency);
 
 void main() {
@@ -42,24 +39,25 @@ void main() {
       expect(money.currency, same(currency));
     });
 
-    test('throws an error if amount is null', () {
+    test('throws an error when amount is null during instantiation', () {
       expect(() => new Money(null, currency), throwsArgumentError);
     });
 
-    test('throws an error if currency is null', () {
+    test('throws an error when currency is null during instantiaion', () {
       expect(() => new Money(1, null), throwsArgumentError);
     });
 
     test('tests currency equality', () {
       expect(money.isSameCurrency(new Money(amount, currency)), isTrue);
-      expect(money.isSameCurrency(new Money(amount, otherCurrency)), isFalse);
+      expect(money.isSameCurrency(new Money(anotherAmount, currency)), isTrue);
+      expect(money.isSameCurrency(new Money(amount, anotherCurrency)), isFalse);
     });
 
     test('equals to another money', () {
       expect(money == new Money(amount, currency), isTrue);
       expect(money == new Money(amount + 1, currency), isFalse);
-      expect(money == new Money(amount, otherCurrency), isFalse);
-      expect(money == new Money(amount + 1, otherCurrency), isFalse);
+      expect(money == new Money(amount - 1, currency), isFalse);
+      expect(money == new Money(amount, anotherCurrency), isFalse);
       expect(money == 'not a money', isFalse);
     });
 
@@ -67,8 +65,8 @@ void main() {
       expect(money.hashCode, const isInstanceOf<int>());
       expect(money.hashCode, equals(new Money(amount, currency).hashCode));
       expect(money.hashCode, isNot(equals(new Money(amount + 1, currency).hashCode)));
-      expect(money.hashCode, isNot(equals(new Money(amount, otherCurrency).hashCode)));
-      expect(money.hashCode, isNot(equals(new Money(amount + 1, otherCurrency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount - 1, currency).hashCode)));
+      expect(money.hashCode, isNot(equals(new Money(amount, anotherCurrency).hashCode)));
     });
 
     test('has comparators', () {
@@ -78,7 +76,6 @@ void main() {
 
       expect(new Money(1, currency).isZero, isFalse);
       expect(new Money(1, currency).isPositive, isTrue);
-      expect(new Money(1, currency).isNegative, isFalse);
       expect(new Money(1, currency).isNegative, isFalse);
 
       expect(new Money(-1, currency).isZero, isFalse);
@@ -115,8 +112,8 @@ void main() {
       });
     });
 
-    test('throws an exception when currency is different during comparison', () {
-      final another = new Money(amount, otherCurrency);
+    test('throws an error when currency is different during comparison', () {
+      final another = new Money(amount, anotherCurrency);
       expect(() => money.compareTo(another), throwsArgumentError);
       expect(() => money < another, throwsArgumentError);
       expect(() => money <= another, throwsArgumentError);
@@ -124,7 +121,7 @@ void main() {
       expect(() => money >= another, throwsArgumentError);
     });
 
-    test('throws an error if operand is null during comparison', () {
+    test('throws an error when operand is null during comparison', () {
       expect(() => money.compareTo(null), throwsArgumentError);
       expect(() => money < null, throwsArgumentError);
       expect(() => money <= null, throwsArgumentError);
@@ -132,34 +129,34 @@ void main() {
       expect(() => money >= null, throwsArgumentError);
     });
 
-    test('adds an oher money', () {
-      final result = new Money(amount, currency) + new Money(otherAmount, currency);
+    test('adds anoher money', () {
+      final result = new Money(amount, currency) + new Money(anotherAmount, currency);
       expect(result, const isInstanceOf<Money>());
-      expect(result.amount, equals(amount + otherAmount));
+      expect(result.amount, equals(amount + anotherAmount));
       expect(result.currency, equals(currency));
     });
 
-    test('throws an error if operand is null during addition', () {
+    test('throws an error when operand is null during addition', () {
       expect(() => money + null, throwsArgumentError);
     });
 
-    test('throws an error if currency is different during addition', () {
-      expect(() => money + new Money(amount, otherCurrency), throwsArgumentError);
+    test('throws an error when currencies are different during addition', () {
+      expect(() => money + new Money(amount, anotherCurrency), throwsArgumentError);
     });
 
-    test('subtracts an another money', () {
-      final result = new Money(amount, currency) - new Money(otherAmount, currency);
+    test('subtracts another money', () {
+      final result = new Money(amount, currency) - new Money(anotherAmount, currency);
       expect(result, const isInstanceOf<Money>());
-      expect(result.amount, equals(amount - otherAmount));
+      expect(result.amount, equals(amount - anotherAmount));
       expect(result.currency, equals(currency));
     });
 
-    test('throws an error if operand is null during substraction', () {
+    test('throws an error when operand is null during substraction', () {
       expect(() => money - null, throwsArgumentError);
     });
 
-    test('throws an error if currency is different during subtraction', () {
-      expect(() => money - new Money(amount, otherCurrency), throwsArgumentError);
+    test('throws an error when currencies are different during subtraction', () {
+      expect(() => money - new Money(amount, anotherCurrency), throwsArgumentError);
     });
 
     test('has unary minus operator, which returns money with negative amount', () {
@@ -172,22 +169,38 @@ void main() {
       expect(-negative, equals(positive));
     });
 
-    roundExamples.test('has a multiplication operator, which multiplies the amount with half-up rounding', (example) {
-      final result = new Money(1, currency) * example.operand;
-      expect(result, const isInstanceOf<Money>());
-      expect(result.currency, same(currency));
-      expect(result.amount, example.expectedResult);
+    test('has a multiplication operator, which multiplies the amount with half-up rounding', () {
+      final one = new Money(1, currency);
+
+      expect(one * 2.2, equals(new Money(2, currency)));
+      expect(one * 2.4, equals(new Money(2, currency)));
+      expect(one * 2.5, equals(new Money(3, currency)));
+      expect(one * 2.6, equals(new Money(3, currency)));
+      expect(one * 2, equals(new Money(2, currency)));
+      expect(one * -2.5, equals(new Money(-3, currency)));
+      expect(one * -2, equals(new Money(-2, currency)));
+      expect(one * -1.5, equals(new Money(-2, currency)));
+      expect(one * -8328.578947368, equals(new Money(-8329, currency)));
+      expect(one * -8328.5, equals(new Money(-8329, currency)));
     });
 
     test('throws an error when operand is null during multiplication', () {
       expect(() => money * null, throwsArgumentError);
     });
 
-    roundExamples.test('has a division operator, which divides the amount with half-up rounding', (example) {
-      final result = new Money(1, currency) / (1 / example.operand);
-      expect(result, const isInstanceOf<Money>());
-      expect(result.currency, same(currency));
-      expect(result.amount, example.expectedResult);
+    test('has a division operator, which divides the amount with half-up rounding', () {
+      final one = new Money(1, currency);
+
+      expect(one / (1 / 2.2), equals(new Money(2, currency)));
+      expect(one / (1 / 2.4), equals(new Money(2, currency)));
+      expect(one / (1 / 2.5), equals(new Money(3, currency)));
+      expect(one / (1 / 2.6), equals(new Money(3, currency)));
+      expect(one / (1 / 2), equals(new Money(2, currency)));
+      expect(one / (1 / -2.5), equals(new Money(-3, currency)));
+      expect(one / (1 / -2), equals(new Money(-2, currency)));
+      expect(one / (1 / -1.5), equals(new Money(-2, currency)));
+      expect(one / (1 / -8328.578947368), equals(new Money(-8329, currency)));
+      expect(one / (1 / -8328.5), equals(new Money(-8329, currency)));
     });
 
     test('throws an error when operand is null during division', () {
@@ -199,21 +212,38 @@ void main() {
       expect(() => money / 0.0, throwsArgumentError);
     });
 
-    allocationExamples.test('allocates amount', (example) {
-      final targets = new Money(example.amount, currency).allocate(example.ratios);
-
-      expect(targets.length, equals(example.allocatedAmounts.length));
-      for (var i = 0; i < example.allocatedAmounts.length; ++i) {
-        expect(targets[i].currency, same(currency));
-        expect(targets[i].amount, equals(example.allocatedAmounts[i]));
-      }
+    test('allocates amount by ratio', () {
+      expect(new Money(0,currency).allocate([1, 1]),
+          equals(<Money>[new Money(0, currency), new Money(0, currency)]));
+      expect(new Money(1, currency).allocate([1, 1]),
+          equals(<Money>[new Money(1, currency), new Money(0, currency)]));
+      expect(new Money(2, currency).allocate([1, 1]),
+          equals(<Money>[new Money(1, currency), new Money(1, currency)]));
+      expect(new Money(2, currency).allocate([1, 0]),
+          equals(<Money>[new Money(2, currency), new Money(0, currency)]));
+      expect(new Money(2, currency).allocate([0, 1]),
+          equals(<Money>[new Money(0, currency), new Money(2, currency)]));
+      expect(new Money(100, currency).allocate([1, 1, 1]),
+          equals(<Money>[new Money(34, currency), new Money(33, currency), new Money(33, currency)]));
+      expect(new Money(101, currency).allocate([1, 1, 1]),
+          equals(<Money>[new Money(34, currency), new Money(34, currency), new Money(33, currency)]));
+      expect(new Money(101, currency).allocate([3, 7]),
+          equals(<Money>[new Money(31, currency), new Money(70, currency)]));
+      expect(new Money(101, currency).allocate([7, 3]),
+          equals(<Money>[new Money(71, currency), new Money(30, currency)]));
+      expect(new Money(-101, currency).allocate([1, 1]),
+          equals(<Money>[new Money(-50, currency), new Money(-51, currency)]));
+      expect(new Money(-101, currency).allocate([7, 3]),
+          equals(<Money>[new Money(-70, currency), new Money(-31, currency)]));
+      expect(new Money(-101, currency).allocate([3, 7]),
+          equals(<Money>[new Money(-30, currency), new Money(-71, currency)]));
     });
 
-    test('throws an error when allocate target is null', () {
+    test('throws an error when ratio is null during allocation', () {
       expect(() => money.allocate(null), throwsArgumentError);
     });
 
-    test('throws an error when allocate target is empty', () {
+    test('throws an error when list of ratios is empty during allocation', () {
       expect(() => money.allocate([]), throwsArgumentError);
     });
 
@@ -229,21 +259,22 @@ void main() {
       expect(() => money.allocate([0, 0]), throwsArgumentError);
     });
 
-    allocationToTargetsExamples.test('allocates amount to N targets', (example) {
-      final targets = new Money(example.amount, currency).allocateTo(example.numberOfTargets);
-
-      expect(targets.length, equals(example.numberOfTargets));
-      for (var i = 0; i < example.numberOfTargets; ++i) {
-        expect(targets[i].currency, same(currency));
-        expect(targets[i].amount, equals(example.allocatedAmounts[i]));
-      }
+    test('allocates amount to N targets', () {
+      expect(new Money(15, currency).allocateTo(1),
+          equals(<Money>[new Money(15, currency)]));
+      expect(new Money(15, currency).allocateTo(2),
+          equals(<Money>[new Money(8, currency), new Money(7, currency)]));
+      expect(new Money(10, currency).allocateTo(2),
+          equals(<Money>[new Money(5, currency), new Money(5, currency)]));
+      expect(new Money(10, currency).allocateTo(3),
+          equals(<Money>[new Money(4, currency), new Money(3, currency), new Money(3, currency)]));
     });
 
-    test('throws an error if N is null during allocation to the N targets', () {
+    test('throws an error when N is null during allocation to the N targets', () {
       expect(() => money.allocateTo(null), throwsArgumentError);
     });
 
-    test('throws an error if N is less than 1 during allocation to the N targets', () {
+    test('throws an error when N is less than 1 during allocation to the N targets', () {
       expect(() => money.allocateTo(0), throwsArgumentError);
       expect(() => money.allocateTo(-1), throwsArgumentError);
     });

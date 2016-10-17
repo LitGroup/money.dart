@@ -32,11 +32,11 @@ void main() {
       expect(currency.code, same('USD'));
     });
 
-    test('throws an error if code is NULL', () {
+    test('throws an error when code is NULL during instantiation', () {
       expect(() => new Currency(null), throwsArgumentError);
     });
 
-    test('throws an error if code is empty string', () {
+    test('throws an error when code is empty during instantiation', () {
       expect(() => new Currency(''), throwsArgumentError);
       expect(() => new Currency('  '), throwsArgumentError);
     });
