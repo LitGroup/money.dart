@@ -54,7 +54,9 @@ class Money implements Comparable<Money> {
   /// Returns `true` if [another] is [Money] with same amount and currency.
   @override
   bool operator ==(Object another) {
-    return another is Money && isSameCurrency(another) && amount == another.amount;
+    return another is Money &&
+        isSameCurrency(another) &&
+        amount == another.amount;
   }
 
   @override
