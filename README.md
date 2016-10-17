@@ -8,7 +8,7 @@
 [![codecov](https://codecov.io/gh/LitGroup/money.dart/branch/master/graph/badge.svg)](https://codecov.io/gh/LitGroup/money.dart)
 [![Build Status](https://travis-ci.org/LitGroup/money.dart.svg?branch=master)](https://travis-ci.org/LitGroup/money.dart)
 
-[![Stories in Ready](https://badge.waffle.io/LitGroup/money.dart.svg?label=to%20do&title=To%20do)](http://waffle.io/LitGroup/money.dart)
+[![Stories in Ready](https://badge.waffle.io/LitGroup/money.dart.svg?label=ready&title=Ready)](http://waffle.io/LitGroup/money.dart)
 
 **This is a development branch of 1.x milestone**
 
