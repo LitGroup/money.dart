@@ -22,7 +22,7 @@
 
 part of money;
 
-/// Money Value Object.
+/// Money value object.
 class Money implements Comparable<Money> {
   /// Constructs money value initialized with [amount] and [currency].
   ///
@@ -47,9 +47,7 @@ class Money implements Comparable<Money> {
   bool get isNegative => amount < 0;
 
   /// Checks whether a Money has the same Currency as this.
-  bool isSameCurrency(Money other) {
-    return currency == other.currency;
-  }
+  bool isSameCurrency(Money another) => currency == another.currency;
 
   /// Returns `true` if [another] is [Money] with same amount and currency.
   @override
@@ -172,6 +170,7 @@ class Money implements Comparable<Money> {
     }
   }
 
+  /// Creates new [Money] instance with same [Currency].
   Money _withAmount(int amount) => new Money(amount, currency);
 
   int _round(num number) {
