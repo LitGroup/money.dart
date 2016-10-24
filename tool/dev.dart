@@ -9,7 +9,7 @@ main(List<String> args) async {
     ..strong = true;
 
   config.test
-    ..unitTests = const['test/'];
+    ..unitTests = const['test/unit/'];
 
   config.coverage
     ..html = true
