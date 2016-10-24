@@ -20,8 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-library money;
+part of money;
 
-part 'src/currency.dart';
-part 'src/currencies.dart';
-part 'src/money.dart';
+/// Interface for repository of currencies.
+///
+/// Implement this interface to provide needed set of currencies
+/// in your application.
+abstract class Currencies {
+  /// Returns [Currency] of [code].
+  ///
+  /// It returns [null] if [Currency] with requested [code] does not exist
+  /// in the current context.
+  Currency findOf(String code);
+
+  /// Returns list with all currecies available in the current context.
+  List<Currency> all();
+
+  /// Checks whether a [currency] is available in the current context.
+  bool contains(Currency currency);
+
+  /// Checks whether a currency of [code] is available it the current context.
+  bool containsOf(String code);
+}
