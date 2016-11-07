@@ -34,10 +34,10 @@ class Currency {
   /// Argument [code] is required, it must not be null or empty.
   Currency(this.code) {
     if (code == null) {
-      throw new ArgumentError.notNull('code');
+      throw new ArgumentError.notNull("code");
     }
     if (code.trim().isEmpty) {
-      throw new ArgumentError('Argument "code" cannot be an empty string');
+      throw new ArgumentError.value(code, "code", "Cannot be empty");
     }
   }
 
