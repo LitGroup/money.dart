@@ -20,8 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-library money;
+import "package:test/test.dart";
+import "package:money/money.dart" show CurrencyNotFoundException;
 
-part "src/currency.dart";
-part "src/currencies.dart";
-part "src/money.dart";
+void main() {
+  group("CurrencyNotFoundException", () {
+    test("is contantly instantiable", () {
+      const CurrencyNotFoundException();
+    });
+    test("is a subtype of Exception", () {
+      expect(const CurrencyNotFoundException(), const isInstanceOf<Exception>());
+    });
+  });
+}

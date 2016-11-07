@@ -29,10 +29,10 @@ class Money implements Comparable<Money> {
   /// Where [amount] expressed in the smallest units of currency (eg cents).
   Money(this.amount, this.currency) {
     if (amount == null) {
-      throw new ArgumentError.notNull('amount');
+      throw new ArgumentError.notNull("amount");
     }
     if (currency == null) {
-      throw new ArgumentError.notNull('currency');
+      throw new ArgumentError.notNull("currency");
     }
   }
 
@@ -106,23 +106,23 @@ class Money implements Comparable<Money> {
   }
 
   Money operator *(num multiplier) {
-    _assertNotNull(multiplier, 'multiplier');
+    _assertNotNull(multiplier, "multiplier");
 
     return _withAmount(_round(amount * multiplier));
   }
 
   Money operator /(num divider) {
-    _assertNotNull(divider, 'divider');
+    _assertNotNull(divider, "divider");
     if (divider == 0) {
       throw new ArgumentError.value(
-          divider, 'divider', 'Division by zero is forbidden.');
+          divider, "divider", "Division by zero is forbidden.");
     }
 
     return _withAmount(_round(amount / divider));
   }
 
   List<Money> allocate(List<int> ratios) {
-    _assertNotNull(ratios, 'ratios');
+    _assertNotNull(ratios, "ratios");
 
     final shares = new List<int>(ratios.length);
     final total = _calculateRatiosTotal(ratios);
@@ -143,17 +143,17 @@ class Money implements Comparable<Money> {
   }
 
   List<Money> allocateTo(int n) {
-    _assertNotNull(n, 'n');
+    _assertNotNull(n, "n");
 
     if (n < 1) {
       throw new ArgumentError.value(
-          n, 'n', 'Number of targets must not be less than 1');
+          n, "n", "Number of targets must not be less than 1");
     }
 
     return allocate(new List<int>.filled(n, 1));
   }
 
-  void _assertAcceptableMoneyArgument(Money money, [String name = 'other']) {
+  void _assertAcceptableMoneyArgument(Money money, [String name = "other"]) {
     _assertNotNull(money, name);
     _assertSameCurrency(money, name);
   }
@@ -166,7 +166,7 @@ class Money implements Comparable<Money> {
 
   void _assertSameCurrency(Money other, String name) {
     if (!isSameCurrency(other)) {
-      throw new ArgumentError.value(other, name, 'Currencies must be equal');
+      throw new ArgumentError.value(other, name, "Currencies must be equal");
     }
   }
 
@@ -181,18 +181,18 @@ class Money implements Comparable<Money> {
     var total = 0;
     for (var ratio in ratios) {
       if (ratio == null) {
-        throw new ArgumentError.value(ratios, 'ratios', 'Cannon contain null');
+        throw new ArgumentError.value(ratios, "ratios", "Cannon contain null");
       }
       if (ratio < 0) {
         throw new ArgumentError.value(
-            ratio, 'ratios', 'Cannot contain a negative value.');
+            ratio, "ratios", "Cannot contain a negative value.");
       }
       total += ratio;
     }
 
     if (total == 0) {
       throw new ArgumentError.value(
-          ratios, 'ratios', 'Sum of ratios must not be 0');
+          ratios, "ratios", "Sum of ratios must not be 0");
     }
 
     return total;
