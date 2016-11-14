@@ -23,5 +23,5 @@
 library money;
 
 part "src/currency.dart";
-part "src/currencies.dart";
+part "src/currency_repository.dart";
 part "src/money.dart";

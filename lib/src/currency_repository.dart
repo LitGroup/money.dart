@@ -25,7 +25,7 @@ part of money;
 /// Interface for repository of currencies.
 ///
 /// Implement this interface to provide set of currencies to your application.
-abstract class Currencies {
+abstract class CurrencyRepository {
   /// Returns a currency with a specified [code].
   ///
   /// Throws a [CurrencyNotFoundException] if this repository does not
