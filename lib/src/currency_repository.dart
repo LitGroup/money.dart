@@ -45,3 +45,25 @@ abstract class CurrencyRepository {
 class CurrencyNotFoundException implements Exception {
   const CurrencyNotFoundException();
 }
+
+/// Base class for implementing [CurrencyRepository].
+///
+/// This class implements of methods of [CurrencyRepository]
+/// except of [findAll].
+abstract class CurrencyRepositoryBase implements CurrencyRepository {
+  @override
+  Currency find(String code) {
+    return findAll().firstWhere((c) => c.code == code,
+        orElse: () => throw new CurrencyNotFoundException());
+  }
+
+  @override
+  bool containsWithCode(String code) {
+    return findAll().where((c) => c.code == code).isNotEmpty;
+  }
+
+  @override
+  bool contains(Currency currency) {
+    return findAll().contains(currency);
+  }
+}
