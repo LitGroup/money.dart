@@ -48,7 +48,7 @@ class CurrencyNotFoundException implements Exception {
 
 /// Base class for implementing [CurrencyRepository].
 ///
-/// This class implements of methods of [CurrencyRepository]
+/// This class implements all methods of [CurrencyRepository]
 /// except of [findAll].
 abstract class CurrencyRepositoryBase implements CurrencyRepository {
   @override
