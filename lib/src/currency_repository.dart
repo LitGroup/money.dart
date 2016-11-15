@@ -28,7 +28,7 @@ part of money;
 abstract class CurrencyRepository {
   /// Returns a currency with a specified [code].
   ///
-  /// Throws a [CurrencyNotFoundException] if this repository does not
+  /// Throws a [UnknownCurrencyException] if this repository does not
   /// contain a currency with a specified code.
   Currency find(String code);
 
@@ -42,8 +42,14 @@ abstract class CurrencyRepository {
   bool containsWithCode(String code);
 }
 
-class CurrencyNotFoundException implements Exception {
-  const CurrencyNotFoundException();
+class UnknownCurrencyException implements Exception {
+  final String unknownCurrencyCode;
+
+  UnknownCurrencyException(this.unknownCurrencyCode);
+
+  @override
+  String toString() =>
+      'UnknownCurrencyException: Unknown currency "$unknownCurrencyCode".';
 }
 
 /// Base class for implementing [CurrencyRepository].
@@ -54,7 +60,7 @@ abstract class CurrencyRepositoryBase implements CurrencyRepository {
   @override
   Currency find(String code) {
     return findAll().firstWhere((c) => c.code == code,
-        orElse: () => throw new CurrencyNotFoundException());
+        orElse: () => throw new UnknownCurrencyException(code));
   }
 
   @override
@@ -87,7 +93,7 @@ class AggregateCurrencyRepository implements CurrencyRepository {
       }
     }
 
-    throw new CurrencyNotFoundException();
+    throw new UnknownCurrencyException(code);
   }
 
   @override

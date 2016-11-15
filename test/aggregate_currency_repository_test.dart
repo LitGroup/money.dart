@@ -24,7 +24,7 @@ import "package:mockito/mockito.dart";
 import "package:test/test.dart";
 
 import "package:money/money.dart"
-    show AggregateCurrencyRepository, CurrencyRepository, Currency, CurrencyNotFoundException;
+    show AggregateCurrencyRepository, CurrencyRepository, Currency, UnknownCurrencyException;
 
 class MockCurrencyRepository extends Mock implements CurrencyRepository {}
 
@@ -70,11 +70,11 @@ void main() {
       when(repository.containsWithCode(code)).thenReturn(true);
       when(repository.containsWithCode(anotherCode)).thenReturn(false);
       when(repository.find(code)).thenReturn(currency);
-      when(repository.find(anotherCode)).thenThrow(new CurrencyNotFoundException());
+      when(repository.find(anotherCode)).thenThrow(new UnknownCurrencyException(anotherCode));
 
       when(anotherRepository.containsWithCode(code)).thenReturn(false);
       when(anotherRepository.containsWithCode(anotherCode)).thenReturn(true);
-      when(anotherRepository.find(code)).thenThrow(new CurrencyNotFoundException());
+      when(anotherRepository.find(code)).thenThrow(new UnknownCurrencyException(code));
       when(anotherRepository.find(anotherCode)).thenReturn(anotherCurrency);
 
       expect(aggregate.find(code), equals(currency));
@@ -84,10 +84,10 @@ void main() {
     test("throws an exception when currency with some code cannot be found", () {
       when(repository.containsWithCode(code)).thenReturn(false);
       when(anotherRepository.containsWithCode(code)).thenReturn(false);
-      when(repository.find(code)).thenThrow(new CurrencyNotFoundException());
-      when(anotherRepository.find(code)).thenThrow(new CurrencyNotFoundException());
+      when(repository.find(code)).thenThrow(new UnknownCurrencyException(code));
+      when(anotherRepository.find(code)).thenThrow(new UnknownCurrencyException(code));
 
-      expect(() => aggregate.find(code), throwsA(const isInstanceOf<CurrencyNotFoundException>()));
+      expect(() => aggregate.find(code), throwsA(const isInstanceOf<UnknownCurrencyException>()));
     });
 
     test("checks that any of repositories contains currency", () {
