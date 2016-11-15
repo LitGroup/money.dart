@@ -21,15 +21,27 @@
 // THE SOFTWARE.
 
 import "package:test/test.dart";
-import "package:money/money.dart" show CurrencyNotFoundException;
+
+import "package:money/money.dart" show UnknownCurrencyException;
+
+const code = "USD";
+const message = "Some message";
 
 void main() {
-  group("CurrencyNotFoundException", () {
-    test("is contantly instantiable", () {
-      const CurrencyNotFoundException();
+  group("UnknownCurrencyException", () {
+    test("is an exception", () {
+      final exception = new UnknownCurrencyException(code);
+      expect(exception, const isInstanceOf<Exception>());
     });
-    test("is a subtype of Exception", () {
-      expect(const CurrencyNotFoundException(), const isInstanceOf<Exception>());
+
+    test("has a code of an unknown currency", () {
+      final exception = new UnknownCurrencyException(code);
+      expect(exception.unknownCurrencyCode, equals(code));
+    });
+
+    test("can be converted to string", () {
+      final exception = new UnknownCurrencyException(code);
+      expect(exception.toString(), equals('UnknownCurrencyException: Unknown currency "$code".'));
     });
   });
 }

@@ -23,7 +23,7 @@
 import "package:test/test.dart";
 
 import "package:money/money.dart"
-    show CurrencyRepository, CurrencyRepositoryBase, Currency, CurrencyNotFoundException;
+    show CurrencyRepository, CurrencyRepositoryBase, Currency, UnknownCurrencyException;
 
 final code = "USD";
 final anotherCode = "RUB";
@@ -52,7 +52,7 @@ void main() {
       repository = new TestCurrencyRepository();
     });
 
-    test("is a subtype of CurrencyRepository", () {
+    test("is a currency repository", () {
       expect(repository, const isInstanceOf<CurrencyRepository>());
     });
 
@@ -63,7 +63,7 @@ void main() {
 
     test("throws an exception when currency cannot be found by a given code", () {
       expect(() => repository.find(notInRepoCode),
-          throwsA(const isInstanceOf<CurrencyNotFoundException>()));
+          throwsA(const isInstanceOf<UnknownCurrencyException>()));
     });
 
     test("checks whether a currency is available in this repository", () {
