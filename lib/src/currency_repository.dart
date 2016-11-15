@@ -79,7 +79,6 @@ class AggregateCurrencyRepository implements CurrencyRepository {
     }
   }
 
-
   @override
   Currency find(String code) {
     for (final repository in _repositories) {
