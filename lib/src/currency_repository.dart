@@ -67,3 +67,59 @@ abstract class CurrencyRepositoryBase implements CurrencyRepository {
     return findAll().contains(currency);
   }
 }
+
+/// Aggregates several currency repositories.
+class AggregateCurrencyRepository implements CurrencyRepository {
+  final List<CurrencyRepository> _repositories;
+
+  AggregateCurrencyRepository(Iterable<CurrencyRepository> repositories)
+      : _repositories = repositories.toList(growable: false) {
+    if (_repositories.isEmpty) {
+      throw new ArgumentError("List of repositories cannot be empty.");
+    }
+  }
+
+
+  @override
+  Currency find(String code) {
+    for (final repository in _repositories) {
+      if (repository.containsWithCode(code)) {
+        return repository.find(code);
+      }
+    }
+
+    throw new CurrencyNotFoundException();
+  }
+
+  @override
+  bool containsWithCode(String code) {
+    for (final repository in _repositories) {
+      if (repository.containsWithCode(code)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  @override
+  bool contains(Currency currency) {
+    for (final repository in _repositories) {
+      if (repository.contains(currency)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  @override
+  List<Currency> findAll() {
+    final result = <Currency>[];
+    for (final repository in _repositories) {
+      result.addAll(repository.findAll());
+    }
+
+    return result.toList(growable: false);
+  }
+}
