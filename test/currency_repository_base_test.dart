@@ -36,7 +36,7 @@ final notInRepoCurrency = new Currency("EUR");
 
 class TestCurrencyRepository extends CurrencyRepositoryBase {
   @override
-  List<Currency> findAll() {
+  List<Currency> allCurrencies() {
     return <Currency>[
       currency,
       anotherCurrency
@@ -57,25 +57,25 @@ void main() {
     });
 
     test("fiends currency by its code", () {
-      expect(repository.find(code), equals(currency));
-      expect(repository.find(anotherCode), equals(anotherCurrency));
+      expect(repository.currencyOf(code), equals(currency));
+      expect(repository.currencyOf(anotherCode), equals(anotherCurrency));
     });
 
     test("throws an exception when currency cannot be found by a given code", () {
-      expect(() => repository.find(notInRepoCode),
+      expect(() => repository.currencyOf(notInRepoCode),
           throwsA(const isInstanceOf<UnknownCurrencyException>()));
     });
 
     test("checks whether a currency is available in this repository", () {
-      expect(repository.contains(currency), isTrue);
-      expect(repository.contains(anotherCurrency), isTrue);
-      expect(repository.contains(notInRepoCurrency), isFalse);
+      expect(repository.containsCurrency(currency), isTrue);
+      expect(repository.containsCurrency(anotherCurrency), isTrue);
+      expect(repository.containsCurrency(notInRepoCurrency), isFalse);
     });
 
     test("checks whether a currency with a given code is in this repository", () {
-      expect(repository.containsWithCode(code), isTrue);
-      expect(repository.containsWithCode(anotherCode), isTrue);
-      expect(repository.containsWithCode(notInRepoCode), isFalse);
+      expect(repository.containsCurrencyOf(code), isTrue);
+      expect(repository.containsCurrencyOf(anotherCode), isTrue);
+      expect(repository.containsCurrencyOf(notInRepoCode), isFalse);
     });
   });
 }

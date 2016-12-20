@@ -30,16 +30,16 @@ abstract class CurrencyRepository {
   ///
   /// Throws a [UnknownCurrencyException] if this repository does not
   /// contain a currency with a specified code.
-  Currency find(String code);
+  Currency currencyOf(String code);
 
-  /// Returns list with all currencies in this repository.
-  List<Currency> findAll();
+  /// Returns list with all currencies from this repository.
+  List<Currency> allCurrencies();
 
   /// Checks whether a [currency] is available in this repository.
-  bool contains(Currency currency);
+  bool containsCurrency(Currency currency);
 
   /// Checks whether a currency with [code] is available in this repository.
-  bool containsWithCode(String code);
+  bool containsCurrencyOf(String code);
 }
 
 class UnknownCurrencyException implements Exception {
@@ -55,22 +55,22 @@ class UnknownCurrencyException implements Exception {
 /// Base class for implementing [CurrencyRepository].
 ///
 /// This class implements all methods of [CurrencyRepository]
-/// except of [findAll].
+/// except of [allCurrencies].
 abstract class CurrencyRepositoryBase implements CurrencyRepository {
   @override
-  Currency find(String code) {
-    return findAll().firstWhere((c) => c.code == code,
+  Currency currencyOf(String code) {
+    return allCurrencies().firstWhere((c) => c.code == code,
         orElse: () => throw new UnknownCurrencyException(code));
   }
 
   @override
-  bool containsWithCode(String code) {
-    return findAll().where((c) => c.code == code).isNotEmpty;
+  bool containsCurrencyOf(String code) {
+    return allCurrencies().where((c) => c.code == code).isNotEmpty;
   }
 
   @override
-  bool contains(Currency currency) {
-    return findAll().contains(currency);
+  bool containsCurrency(Currency currency) {
+    return allCurrencies().contains(currency);
   }
 }
 
@@ -86,10 +86,10 @@ class AggregateCurrencyRepository implements CurrencyRepository {
   }
 
   @override
-  Currency find(String code) {
+  Currency currencyOf(String code) {
     for (final repository in _repositories) {
-      if (repository.containsWithCode(code)) {
-        return repository.find(code);
+      if (repository.containsCurrencyOf(code)) {
+        return repository.currencyOf(code);
       }
     }
 
@@ -97,9 +97,9 @@ class AggregateCurrencyRepository implements CurrencyRepository {
   }
 
   @override
-  bool containsWithCode(String code) {
+  bool containsCurrencyOf(String code) {
     for (final repository in _repositories) {
-      if (repository.containsWithCode(code)) {
+      if (repository.containsCurrencyOf(code)) {
         return true;
       }
     }
@@ -108,9 +108,9 @@ class AggregateCurrencyRepository implements CurrencyRepository {
   }
 
   @override
-  bool contains(Currency currency) {
+  bool containsCurrency(Currency currency) {
     for (final repository in _repositories) {
-      if (repository.contains(currency)) {
+      if (repository.containsCurrency(currency)) {
         return true;
       }
     }
@@ -119,10 +119,10 @@ class AggregateCurrencyRepository implements CurrencyRepository {
   }
 
   @override
-  List<Currency> findAll() {
+  List<Currency> allCurrencies() {
     final result = <Currency>[];
     for (final repository in _repositories) {
-      result.addAll(repository.findAll());
+      result.addAll(repository.allCurrencies());
     }
 
     return result.toList(growable: false);
