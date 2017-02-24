@@ -11,11 +11,17 @@ main(List<String> args) async {
     ..strong = true;
 
   config.format
-    ..exclude = const['lib/src/currencies.dart'];
+    ..exclude = const ['lib/src/currencies.dart'];
 
   config.coverage
     ..html = true
     ..output = 'build/coverage/';
+
+  config.copyLicense
+    ..directories = const [
+        'lib/',
+        'test/'
+      ];
 
   await dev(args);
 }
