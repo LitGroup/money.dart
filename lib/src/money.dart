@@ -38,7 +38,7 @@ class Money implements Comparable<Money> {
   ///     new Money.fromString('120.000', new Currency('IQD');
   ///
   factory Money.fromString(String amount, Currency currency) {
-    final pattern = r'^(-?\d+)(?:\.(\d{' +
+    final pattern = r'^(-)?(\d+)(?:\.(\d{' +
         currency.defaultFractionDigits.toString() +
         r'}))?$';
     final match = (new RegExp(pattern, multiLine: false)).firstMatch(amount);
@@ -47,13 +47,18 @@ class Money implements Comparable<Money> {
       throw new FormatException('String representation of amount is invalid.');
     }
 
-    final integerPart = int.parse(match.group(1)) * currency.subUnit;
-    final fractionPart =
-        (match.group(2) != null) ? int.parse(match.group(2)) : 0;
+    final isNegative = match.group(1) != null;
 
-    final intAmount = (integerPart > 0)
-        ? (integerPart + fractionPart)
-        : (integerPart - fractionPart);
+    final integerPart = int.parse(match.group(2)) * currency.subUnit;
+
+    final fractionPart =
+        (match.group(3) != null) ? int.parse(match.group(3)) : 0;
+
+    var intAmount = integerPart + fractionPart;
+
+    if (isNegative) {
+      intAmount *= -1;
+    }
 
     return new Money(intAmount, currency);
   }

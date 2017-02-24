@@ -97,6 +97,20 @@ void main() {
         expect(money.currency, MockCurrency.iqd);
       });
 
+      test('for 0.30 and USD currency', () {
+        final money = new Money.fromString('0.30', MockCurrency.usd);
+
+        expect(money.amount, 30);
+        expect(money.currency, MockCurrency.usd);
+      });
+
+      test('for -0.30 and USD currency', () {
+        final money = new Money.fromString('-0.30', MockCurrency.usd);
+
+        expect(money.amount, -30);
+        expect(money.currency, MockCurrency.usd);
+      });
+
       test('throws FormatException for "120.00" and IQD currency (3 fraction digits should be)', () {
         expect(
           () => new Money.fromString('120.00', MockCurrency.iqd),
