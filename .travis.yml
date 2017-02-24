@@ -2,7 +2,7 @@ language: dart
 sudo: false
 dart:
   - "stable"
-  - "1.14.0"
+  - "1.19.0"
   - "dev"
 
 matrix:
