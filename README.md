@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/LitGroup/money.dart.png?label=ready&title=Ready)](https://waffle.io/LitGroup/money.dart)
 # Money
 
 > Dart implementation of [Fowler's Money pattern](http://martinfowler.com/eaaCatalog/money.html).
