@@ -1,24 +1,25 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016 - 2017 Roman Shamritskiy
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2016 - 2018 Roman Shamritskiy
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 part of money;
 
@@ -33,18 +34,18 @@ class Money implements Comparable<Money> {
   /// [FormatException] will be thrown if string representation of amount is incorrect.
   ///
   /// Examples:
-  ///     new Money.fromString('120', new Currency('USD');
-  ///     new Money.fromString('120.00', new Currency('USD');
-  ///     new Money.fromString('120.000', new Currency('IQD');
+  ///     Money.fromString('120', Currency('USD');
+  ///     Money.fromString('120.00', Currency('USD');
+  ///     Money.fromString('120.000', Currency('IQD');
   ///
   factory Money.fromString(String amount, Currency currency) {
     final pattern = r'^(-)?(\d+)(?:\.(\d{' +
         currency.defaultFractionDigits.toString() +
         r'}))?$';
-    final match = (new RegExp(pattern, multiLine: false)).firstMatch(amount);
+    final match = (RegExp(pattern, multiLine: false)).firstMatch(amount);
 
     if (match == null) {
-      throw new FormatException('String representation of amount is invalid.');
+      throw FormatException('String representation of amount is invalid.');
     }
 
     final isNegative = match.group(1) != null;
@@ -60,18 +61,18 @@ class Money implements Comparable<Money> {
       intAmount *= -1;
     }
 
-    return new Money(intAmount, currency);
+    return Money(intAmount, currency);
   }
 
   factory Money.fromDouble(double amount, Currency currency) {
-    return new Money((amount * currency.subUnit).round(), currency);
+    return Money((amount * currency.subUnit).round(), currency);
   }
 
   /// String representation of the [amount].
   String get amountAsString {
     final integerPart = (amount ~/ currency.subUnit).toString();
     final fractionPart = amount.remainder(currency.subUnit).abs().toString();
-    final buffer = new StringBuffer();
+    final buffer = StringBuffer();
 
     buffer..write(integerPart)..write('.');
 
@@ -119,7 +120,7 @@ class Money implements Comparable<Money> {
     }
 
     var remainder = amount;
-    var results = new List<Money>(ratios.length);
+    var results = List<Money>(ratios.length);
     for (var i = 0; i < results.length; i++) {
       results[i] = _newMoney(amount * ratios[i] ~/ total);
       remainder -= results[i].amount;
@@ -181,12 +182,12 @@ class Money implements Comparable<Money> {
   }
 
   Money _newMoney(int amount) {
-    return new Money(amount, currency);
+    return Money(amount, currency);
   }
 
   void _assertSameCurrency(Money money) {
     if (money.currency != currency) {
-      throw new ArgumentError('Money math mismatch. Currencies are different.');
+      throw ArgumentError('Money math mismatch. Currencies are different.');
     }
   }
 }
