@@ -5,11 +5,7 @@
 [![Pub version](https://img.shields.io/pub/v/money.svg)](https://pub.dartlang.org/packages/money)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/LitGroup/money.dart/blob/master/LICENSE)
 [![documentation](https://img.shields.io/badge/Documentation-money-blue.svg)](https://www.dartdocs.org/documentation/money/latest/)
-[![codecov](https://codecov.io/gh/LitGroup/money.dart/branch/master/graph/badge.svg)](https://codecov.io/gh/LitGroup/money.dart)
 [![Build Status](https://travis-ci.org/LitGroup/money.dart.svg?branch=support%2F0.1.x)](https://travis-ci.org/LitGroup/money.dart)
-
-
-[![Stories in Ready](https://badge.waffle.io/LitGroup/money.dart.svg?label=ready&title=Stories%20in%20Ready)](http://waffle.io/LitGroup/money.dart)
 
 
 Usage Examples
@@ -19,7 +15,7 @@ Usage Examples
 
 ```dart
 // Create a money object that represents 1 USD
-var money = new Money(100, new Currency('USD'));
+final money = Money(100, Currency('USD'));
 
 // Access the Money object's monetary value
 print(money.amount); // => 100
@@ -32,7 +28,7 @@ print(money.amountAsString); // => 1.00
 #### Creating a Money object from a string value
 
 ```dart
-var money = new Money.fromString('12.50', new Currency('USD'));
+final money = Money.fromString('12.50', Currency('USD'));
 
 print(money.amount); // => 1250
 ```
@@ -41,7 +37,7 @@ print(money.amount); // => 1250
 #### Creating a money from a double value
 
 ```dart
-var money = new Money.fromDouble(12.34, new Currency('USD'));
+final money = Money.fromDouble(12.34, Currency('USD'));
 
 print(money.amount); // => 1234
 ```
@@ -50,7 +46,7 @@ print(money.amount); // => 1234
 ### Simple conversion to a string
 
 ```dart
-var money = new Money(150, new Currency('USD'));
+final money = Money(150, Currency('USD'));
 
 print(money.toString()); // => 1.50 USD
 ```
@@ -60,8 +56,8 @@ print(money.toString()); // => 1.50 USD
 
 ```dart
 // Create two Money objects that represent 1 USD and 2 USD, respectively
-final a = new Money(100, new Currency('USD'));
-final b = new Money(200, new Currency('USD'));
+final a = Money(100, Currency('USD'));
+final b = Money(200, Currency('USD'));
 
 var c = null;
 
@@ -87,8 +83,8 @@ print(c); // => 2.00 USD
 ### Comparing Money objects
 
 ```dart
-final a = new Money(100, new Currency('USD'));
-final b = new Money(200, new Currency('USD'));
+final a = Money(100, Currency('USD'));
+final b = Money(200, Currency('USD'));
 
 a < b; // => true
 a > b; // => false
@@ -109,7 +105,7 @@ The `compareTo()` method returns an integer less than, equal to, or greater than
 ### Allocate the monetary value represented by a Money object using a list of ratios
 
 ```dart
-final a = new Money(5, new Currency('USD'));
+final a = Money(5, Currency('USD'));
 
 for (var c in a.allocate(3, 7)) {
   print(c);

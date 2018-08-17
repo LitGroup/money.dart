@@ -1,20 +1,22 @@
 language: dart
 sudo: false
 dart:
-  - "stable"
-  - "1.19.0"
   - "dev"
+  - "stable"
+  - "2.0.0"
+
+dart_task:
+- dartanalyzer: '--fatal-warnings lib/ test/'
+- test: --platform vm
 
 matrix:
   allow_failures:
     - dart: "dev"
 
 script:
-  - pub run dart_dev format --check
-  - pub run dart_dev analyze
-  - pub run dart_dev test
-  - pub run dart_dev coverage --no-html
+  - dartanalyzer --fatal-warnings lib/ test/
+  - pub run test --platform=vm
 
-after_success:
-  # Check coverage
-  - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov
+#after_success:
+#  # Check coverage
+#  - bash <(curl -s https://codecov.io/bash) -f build/coverage/coverage.lcov
