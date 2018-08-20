@@ -6,16 +6,13 @@ dart:
   - "2.0.0"
 
 dart_task:
-- dartanalyzer: '--fatal-warnings lib/ test/'
-- test: --platform vm
+  - dartanalyzer: '--fatal-warnings lib/ test/'
+  - test: --platform vm
+  - test: --platform firefox
 
 matrix:
   allow_failures:
     - dart: "dev"
-
-script:
-  - dartanalyzer --fatal-warnings lib/ test/
-  - pub run test --platform=vm
 
 #after_success:
 #  # Check coverage

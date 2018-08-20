@@ -31,7 +31,8 @@ class Money implements Comparable<Money> {
 
   /// Parses amount from string representation.
   ///
-  /// [FormatException] will be thrown if string representation of amount is incorrect.
+  /// [FormatException] will be thrown if string representation of amount
+  /// is incorrect.
   ///
   /// Examples:
   ///     Money.fromString('120', Currency('USD');
@@ -133,6 +134,14 @@ class Money implements Comparable<Money> {
     return results;
   }
 
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + amount.hashCode;
+    result = 37 * result + currency.hashCode;
+
+    return result;
+  }
+
   /// Returns true if [amount] and [currency] of this object
   /// are equal to amount and currency of other.
   bool operator ==(Object other) {
@@ -141,32 +150,32 @@ class Money implements Comparable<Money> {
         (amount == other.amount);
   }
 
-  int get hashCode {
-    var result = 66;
-    result = 37 * result + amount.hashCode;
-    result = 37 * result + currency.hashCode;
-
-    return result;
-  }
-
   /// Relational less than operator.
   bool operator <(Money other) {
-    return compareTo(other) < 0;
+    _assertSameCurrency(other);
+
+    return amount < other.amount;
   }
 
   /// Relational less than or equal operator.
   bool operator <=(Money other) {
-    return compareTo(other) <= 0;
+    _assertSameCurrency(other);
+
+    return amount <= other.amount;
   }
 
   /// Relational greater than operator.
   bool operator >(Money other) {
-    return compareTo(other) > 0;
+    _assertSameCurrency(other);
+
+    return amount > other.amount;
   }
 
   /// Relational greater than or equal operator.
   bool operator >=(Money other) {
-    return compareTo(other) >= 0;
+    _assertSameCurrency(other);
+
+    return amount >= other.amount;
   }
 
   int compareTo(Money other) {
