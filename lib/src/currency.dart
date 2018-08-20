@@ -43,8 +43,7 @@ class Currency {
   /// It throws [ArgumentError] if [code] is unregistered ISO code of currency.
   factory Currency(String code) {
     if (code == null || !_currencies.containsKey(code.toUpperCase())) {
-      throw ArgumentError.value(
-          code, 'code', 'Unknown currency code "$code".');
+      throw ArgumentError.value(code, 'code', 'Unknown currency code "$code".');
     }
 
     return _currencies[code.toUpperCase()];

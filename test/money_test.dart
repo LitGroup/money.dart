@@ -211,6 +211,15 @@ void main() {
     });
 
     group('==()', () {
+      test('0.00 USD == 0.00 USD', () {
+        final a = Money(0, MockCurrency.usd);
+        final b = Money(-0, MockCurrency.usd);
+
+        expect(a == a, isTrue);
+        expect(a == b, isTrue);
+        expect(b == a, isTrue);
+      });
+
       test('the same amount and currencies', () {
         final money1 = Money(1000, MockCurrency.usd);
         final money2 = Money(1000, MockCurrency.usd);
@@ -360,13 +369,6 @@ void main() {
         expect(a.compareTo(b), equals(0));
       });
 
-      test('0.00 USD equal to -0.00 USD', () {
-        final a = Money(0, MockCurrency.usd);
-        final b = Money(0, MockCurrency.usd);
-
-        expect(a.compareTo(-b), equals(0));
-      });
-
       test('0.00 USD greater than -0.01 USD', () {
         final a = Money(1, MockCurrency.usd);
         final b = Money(0, MockCurrency.usd);
@@ -401,6 +403,15 @@ void main() {
       });
 
       group('<()', () {
+        test('0.00 USD < 0.00 USD', () {
+          final a = Money(0, MockCurrency.usd);
+          final b = Money(-0, MockCurrency.usd);
+
+          expect(a < a, isFalse);
+          expect(a < b, isFalse);
+          expect(b < a, isFalse);
+        });
+
         test('1.00 USD < 2.00 USD (true)', () {
           final a = Money(100, MockCurrency.usd);
           final b = Money(200, MockCurrency.usd);
@@ -424,6 +435,15 @@ void main() {
       });
 
       group('<=()', () {
+        test('0.00 USD <= 0.00 USD', () {
+          final a = Money(0, MockCurrency.usd);
+          final b = Money(-0, MockCurrency.usd);
+
+          expect(a <= a, isTrue);
+          expect(a <= b, isTrue);
+          expect(b <= a, isTrue);
+        });
+
         test('1.00 USD <= 2.00 USD (true)', () {
           final a = Money(100, MockCurrency.usd);
           final b = Money(200, MockCurrency.usd);
@@ -447,6 +467,15 @@ void main() {
       });
 
       group('>()', () {
+        test('0.00 USD > 0.00 USD', () {
+          final a = Money(0, MockCurrency.usd);
+          final b = Money(-0, MockCurrency.usd);
+
+          expect(a > a, isFalse);
+          expect(a > b, isFalse);
+          expect(b > a, isFalse);
+        });
+
         test('2.00 USD > 1.00 USD (true)', () {
           final a = Money(200, MockCurrency.usd);
           final b = Money(100, MockCurrency.usd);
@@ -470,6 +499,15 @@ void main() {
       });
 
       group('>=()', () {
+        test('0.00 USD >= 0.00 USD', () {
+          final a = Money(0, MockCurrency.usd);
+          final b = Money(-0, MockCurrency.usd);
+
+          expect(a >= a, isTrue);
+          expect(a >= b, isTrue);
+          expect(b >= a, isTrue);
+        });
+
         test('2.00 USD >= 1.00 USD (true)', () {
           final a = Money(200, MockCurrency.usd);
           final b = Money(100, MockCurrency.usd);
