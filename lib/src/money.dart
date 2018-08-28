@@ -41,12 +41,11 @@ class Money implements Comparable<Money> {
   ///
   factory Money.fromString(String amount, Currency currency) {
     final pattern = r'^(-)?(\d+)(?:\.(\d{' +
-        currency.defaultFractionDigits.toString() +
-        r'}))?$';
-    final match = (RegExp(pattern, multiLine: false)).firstMatch(amount);
+        currency.defaultFractionDigits.toString() + r'}))?$';
+    final match = new RegExp(pattern, multiLine: false).firstMatch(amount);
 
     if (match == null) {
-      throw FormatException('String representation of amount is invalid.');
+      throw new FormatException('String representation of amount is invalid.');
     }
 
     final isNegative = match.group(1) != null;
@@ -62,18 +61,18 @@ class Money implements Comparable<Money> {
       intAmount *= -1;
     }
 
-    return Money(intAmount, currency);
+    return new Money(intAmount, currency);
   }
 
   factory Money.fromDouble(double amount, Currency currency) {
-    return Money((amount * currency.subUnit).round(), currency);
+    return new Money((amount * currency.subUnit).round(), currency);
   }
 
   /// String representation of the [amount].
   String get amountAsString {
     final integerPart = (amount ~/ currency.subUnit).toString();
     final fractionPart = amount.remainder(currency.subUnit).abs().toString();
-    final buffer = StringBuffer();
+    final buffer = new StringBuffer();
 
     buffer..write(integerPart)..write('.');
 
@@ -121,7 +120,7 @@ class Money implements Comparable<Money> {
     }
 
     var remainder = amount;
-    var results = List<Money>(ratios.length);
+    var results = new List<Money>(ratios.length);
     for (var i = 0; i < results.length; i++) {
       results[i] = _newMoney(amount * ratios[i] ~/ total);
       remainder -= results[i].amount;
@@ -191,12 +190,12 @@ class Money implements Comparable<Money> {
   }
 
   Money _newMoney(int amount) {
-    return Money(amount, currency);
+    return new Money(amount, currency);
   }
 
   void _assertSameCurrency(Money money) {
     if (money.currency != currency) {
-      throw ArgumentError('Money math mismatch. Currencies are different.');
+      throw new ArgumentError('Money math mismatch. Currencies are different.');
     }
   }
 }

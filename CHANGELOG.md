@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.2 - 2018-08-28
+### Changed
+- SDK constraint was changed to `>=2.0.0-dev.54.0 <3.0.0` to support
+  the current release of Flutter SDK.
+
 ## 0.2.1 - 2018-08-21
 ### Fixed
 - Fixes comparison of `0` and `-0` amount in a browser.
