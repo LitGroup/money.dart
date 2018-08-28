@@ -29,12 +29,12 @@ void main() {
 
     group('default factory', () {
       test('must throw error if non-existent code given', () {
-        expect(() => Currency('WTFCURRENCY'), throwsArgumentError);
-        expect(() => Currency(null), throwsArgumentError);
+        expect(() => new Currency('WTFCURRENCY'), throwsArgumentError);
+        expect(() => new Currency(null), throwsArgumentError);
       });
 
       test('create from uppercase code', () {
-        final currency = Currency('USD');
+        final currency = new Currency('USD');
         expect(currency, const TypeMatcher<Currency>());
         expect(currency.code, equals('USD'));
         expect(currency.name, equals('US Dollar'));
@@ -44,16 +44,16 @@ void main() {
       });
 
       test('create from lowercase string', () {
-        final currency = Currency('usd');
+        final currency = new Currency('usd');
         expect(currency, const TypeMatcher<Currency>());
         expect(currency.code, equals('USD'));
       });
     });
 
     test('==() and hashCcode', () {
-      var currency1 = Currency('USD');
-      var currency2 = Currency('USD');
-      var currency3 = Currency('EUR');
+      var currency1 = new Currency('USD');
+      var currency2 = new Currency('USD');
+      var currency3 = new Currency('EUR');
 
       expect(currency1 == currency2, isTrue);
       expect(currency1.hashCode, equals(currency2.hashCode));
@@ -62,7 +62,7 @@ void main() {
     });
 
     test('toString()', () {
-      var currency = Currency('USD');
+      var currency = new Currency('USD');
 
       expect(currency.toString(), equals('USD'));
     });
