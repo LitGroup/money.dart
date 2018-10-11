@@ -23,6 +23,8 @@
 
 part of money;
 
+Iterable<Currency> currencies = _currencies.values;
+
 const Map<String, Currency> _currencies = const <String, Currency>{
   'AED': Currency._private('AED', 'UAE Dirham', 784, 2, 100),
   'AFN': Currency._private('AFN', 'Afghani', 971, 2, 100),
