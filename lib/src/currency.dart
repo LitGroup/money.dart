@@ -1,7 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 - 2018 Roman Shamritskiy
+ * Copyright (c) 2016 - 2019 LitGroup LLC
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -21,38 +22,31 @@
  * THE SOFTWARE.
  */
 
-part of money;
-
-/// Currency Value Object.
+/// Value-type representing a currency.
+///
+/// **NOTE: This is a value type, do not extend or re-implement it.**
 class Currency {
-  /// The ISO 4217 currency code of this currency.
+  /// The code of the currency (e.g. 'USD').
   final String code;
 
-  /// The name that is suitable for displaying this currency.
-  final String name;
+  /// The number of decimals for the currency (zero or more).
+  final int precision;
 
-  /// The ISO 4217 numeric code of this currency.
-  final int numericCode;
-
-  /// The default number of fraction digits used with this currency.
-  final int defaultFractionDigits;
-  final int subUnit;
-
-  /// Constructs currency by ISO 4217 code.
-  ///
-  /// It throws [ArgumentError] if [code] is unregistered ISO code of currency.
-  factory Currency(String code) {
-    if (code == null || !_currencies.containsKey(code.toUpperCase())) {
-      throw ArgumentError.value(code, 'code', 'Unknown currency code "$code".');
+  /// Creates a currency with a given [code] and [precision].
+  Currency.withCodeAndPrecision(this.code, this.precision) {
+    if (code == null || code.isEmpty) {
+      throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
-
-    return _currencies[code.toUpperCase()];
+    if (precision == null || precision.isNegative) {
+      throw ArgumentError.value(
+          precision, 'precision', 'Must be a non-negative value.');
+    }
   }
 
-  const Currency._private(this.code, this.name, this.numericCode,
-      this.defaultFractionDigits, this.subUnit);
-
-  /// Returns the ISO 4217 currency code of this currency.
   @override
-  String toString() => code;
+  int get hashCode => code.hashCode;
+
+  @override
+  bool operator ==(other) =>
+      other is Currency && code == other.code && precision == other.precision;
 }

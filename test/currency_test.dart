@@ -1,7 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 - 2018 Roman Shamritskiy
+ * Copyright (c) 2016 - 2019 LitGroup LLC
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -25,46 +26,46 @@ import 'package:test/test.dart';
 import 'package:money/money.dart';
 
 void main() {
-  group('Currency', () {
+  group('A currency', () {
+    test('has a code and a precision', () {
+      var currency = Currency.withCodeAndPrecision('JPY', 0);
+      expect(currency.code, equals('JPY'));
+      expect(currency.precision, equals(0));
 
-    group('default factory', () {
-      test('must throw error if non-existent code given', () {
-        expect(() => Currency('WTFCURRENCY'), throwsArgumentError);
-        expect(() => Currency(null), throwsArgumentError);
-      });
-
-      test('create from uppercase code', () {
-        final currency = Currency('USD');
-        expect(currency, const TypeMatcher<Currency>());
-        expect(currency.code, equals('USD'));
-        expect(currency.name, equals('US Dollar'));
-        expect(currency.numericCode, equals(840));
-        expect(currency.defaultFractionDigits, equals(2));
-        expect(currency.subUnit, equals(100));
-      });
-
-      test('create from lowercase string', () {
-        final currency = Currency('usd');
-        expect(currency, const TypeMatcher<Currency>());
-        expect(currency.code, equals('USD'));
-      });
+      currency = Currency.withCodeAndPrecision('USD', 2);
+      expect(currency.code, equals('USD'));
+      expect(currency.precision, equals(2));
     });
 
-    test('==() and hashCcode', () {
-      var currency1 = Currency('USD');
-      var currency2 = Currency('USD');
-      var currency3 = Currency('EUR');
-
-      expect(currency1 == currency2, isTrue);
-      expect(currency1.hashCode, equals(currency2.hashCode));
-
-      expect(currency1 != currency3, isTrue);
+    test('cannot be instantiated with null or empty code', () {
+      expect(() => Currency.withCodeAndPrecision(null, 0), throwsArgumentError);
+      expect(() => Currency.withCodeAndPrecision('', 0), throwsArgumentError);
     });
 
-    test('toString()', () {
-      var currency = Currency('USD');
+    test('cannot be instantiated with null or negative precision', () {
+      expect(() => Currency.withCodeAndPrecision('SOME', null),
+          throwsArgumentError);
 
-      expect(currency.toString(), equals('USD'));
+      expect(
+          () => Currency.withCodeAndPrecision('SOME', -1), throwsArgumentError);
+      expect(
+          () => Currency.withCodeAndPrecision('SOME', -2), throwsArgumentError);
+    });
+
+    test('is equatable', () {
+      final usd = Currency.withCodeAndPrecision('USD', 2);
+
+      expect(usd, equals(Currency.withCodeAndPrecision('USD', 2)));
+      expect(usd, isNot(equals(Currency.withCodeAndPrecision('EUR', 2))));
+      expect(usd, isNot(equals(Currency.withCodeAndPrecision('USD', 0))));
+      expect(usd, isNot(equals(Currency.withCodeAndPrecision('JPY', 0))));
+    });
+
+    test('is hashable', () {
+      final usd = Currency.withCodeAndPrecision('USD', 2);
+
+      expect(usd.hashCode,
+          equals(Currency.withCodeAndPrecision('USD', 2).hashCode));
     });
   });
 }

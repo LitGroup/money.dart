@@ -22,9 +22,33 @@
  * THE SOFTWARE.
  */
 
-library money;
+import 'currency.dart';
 
-export 'src/currency.dart';
-export 'src/currencies.dart';
-export 'src/money.dart';
-export 'src/money_format.dart';
+/// DTO for exchange of data between an instance of [Money] and [MoneyEncoder]
+/// or [MoneyDecoder].
+class MoneyData {
+  /// Amount of money in the smallest units (like cent for USD).
+  final BigInt subunits;
+
+  /// The currency of the subunits.
+  final Currency currency;
+
+  MoneyData.from(this.subunits, this.currency) {
+    if (subunits == null) {
+      throw ArgumentError.notNull('subunits');
+    }
+    if (currency == null) {
+      throw ArgumentError.notNull('currency');
+    }
+  }
+}
+
+abstract class MoneyEncoder<T> {
+  /// Returns encoded representation of money data.
+  T encode(MoneyData data);
+}
+
+abstract class MoneyDecoder<S> {
+  /// Returns decoded [MoneyData] or throws a [FormatException].
+  MoneyData decode(S encoded);
+}

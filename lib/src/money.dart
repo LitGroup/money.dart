@@ -1,7 +1,8 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 - 2018 Roman Shamritskiy
+ * Copyright (c) 2016 - 2019 LitGroup LLC
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -21,182 +22,339 @@
  * THE SOFTWARE.
  */
 
-part of money;
+import 'currency.dart';
+import 'money_format.dart';
 
+/// A value-type representing some money.
+///
+/// **NOTE: This is a value type, do not extend or re-implement it.**
+///
+/// Current implementation uses [BigInt] internally to represent an amount
+/// in subunits.
 class Money implements Comparable<Money> {
-  final int amount;
-  final Currency currency;
+  final _Subunits _subunits;
+  final Currency _currency;
 
-  Money(this.amount, this.currency);
+  /* Instantiation ************************************************************/
 
-  /// Parses amount from string representation.
+  /// Creates an instance of [Money] with [amount] in the minimal subunits
+  /// of [currency].
+  factory Money.withSubunits(BigInt amount, Currency currency) {
+    if (amount == null) {
+      throw ArgumentError.notNull('amount');
+    }
+    if (currency == null) {
+      throw ArgumentError.notNull('currency');
+    }
+
+    return Money._with(_Subunits.from(amount), currency);
+  }
+
+  /* Internal constructor *****************************************************/
+
+  Money._with(this._subunits, this._currency);
+
+  /* Encoding/Decoding ********************************************************/
+
+  /// Returns a [Money] instance decoded from [value] by [decoder].
   ///
-  /// [FormatException] will be thrown if string representation of amount
-  /// is incorrect.
+  /// Throws [FormatException] in case of invalid format of value.
+  static Money decoding<S>(S value, MoneyDecoder<S> decoder) {
+    final data = decoder.decode(value);
+
+    return Money.withSubunits(data.subunits, data.currency);
+  }
+
+  /// Returns this money representation encoded by [encoder].
+  T encodedBy<T>(MoneyEncoder<T> encoder) {
+    return encoder.encode(MoneyData.from(_subunits.toBigInt(), _currency));
+  }
+
+  /* Amount predicates ********************************************************/
+
+  /// Returns `true` when amount of this money is zero.
+  bool get isZero => _subunits.isZero;
+
+  /// Returns `true` when amount of this money is negative.
+  bool get isNegative => _subunits.isNegative;
+
+  /// Returns `true` when amount of this money is positive (greater than zero).
   ///
-  /// Examples:
-  ///     Money.fromString('120', Currency('USD');
-  ///     Money.fromString('120.00', Currency('USD');
-  ///     Money.fromString('120.000', Currency('IQD');
-  ///
-  factory Money.fromString(String amount, Currency currency) {
-    final pattern = r'^(-)?(\d+)(?:\.(\d{' +
-        currency.defaultFractionDigits.toString() +
-        r'}))?$';
-    final match = (RegExp(pattern, multiLine: false)).firstMatch(amount);
+  /// **TIP:** If you need to check that this value is zero or greater,
+  /// use expression `!money.isNegative` instead.
+  bool get isPositive => _subunits.isPositive;
 
-    if (match == null) {
-      throw FormatException('String representation of amount is invalid.');
-    }
+  /* Hash Code ****************************************************************/
 
-    final isNegative = match.group(1) != null;
-
-    final integerPart = int.parse(match.group(2)) * currency.subUnit;
-
-    final fractionPart =
-        (match.group(3) != null) ? int.parse(match.group(3)) : 0;
-
-    var intAmount = integerPart + fractionPart;
-
-    if (isNegative) {
-      intAmount *= -1;
-    }
-
-    return Money(intAmount, currency);
-  }
-
-  factory Money.fromDouble(double amount, Currency currency) {
-    return Money((amount * currency.subUnit).round(), currency);
-  }
-
-  /// String representation of the [amount].
-  String get amountAsString {
-    final integerPart = (amount ~/ currency.subUnit).toString();
-    final fractionPart = amount.remainder(currency.subUnit).abs().toString();
-    final buffer = StringBuffer();
-
-    buffer..write(integerPart)..write('.');
-
-    for (var digits = fractionPart.length;
-        digits < currency.defaultFractionDigits;
-        digits++) {
-      buffer.write('0');
-    }
-
-    buffer.write(fractionPart);
-
-    return buffer.toString();
-  }
-
-  /// Negate operator.
-  Money operator -() {
-    return _newMoney(-amount);
-  }
-
-  /// Subtraction operator.
-  Money operator -(Money other) {
-    _assertSameCurrency(other);
-
-    return _newMoney(amount - other.amount);
-  }
-
-  /// Addition operator.
-  Money operator +(Money other) {
-    _assertSameCurrency(other);
-
-    return _newMoney(amount + other.amount);
-  }
-
-  /// Multiplication operator.
-  Money operator *(num factor) {
-    return _newMoney((amount * factor).round());
-  }
-
-  /// Allocate the monetary value represented by this Money object
-  /// using a list of [ratios].
-  List<Money> allocate(List<int> ratios) {
-    var total = 0;
-    for (var i = 0; i < ratios.length; i++) {
-      total += ratios[i];
-    }
-
-    var remainder = amount;
-    var results = List<Money>(ratios.length);
-    for (var i = 0; i < results.length; i++) {
-      results[i] = _newMoney(amount * ratios[i] ~/ total);
-      remainder -= results[i].amount;
-    }
-
-    for (var i = 0; i < remainder; i++) {
-      results[i] = _newMoney(results[i].amount + 1);
-    }
-
-    return results;
-  }
-
+  @override
   int get hashCode {
     var result = 17;
-    result = 37 * result + amount.hashCode;
-    result = 37 * result + currency.hashCode;
+    result = 37 * result + _subunits.hashCode;
+    result = 37 * result + _currency.hashCode;
 
     return result;
   }
 
-  /// Returns true if [amount] and [currency] of this object
-  /// are equal to amount and currency of other.
-  bool operator ==(Object other) {
-    return (other is Money) &&
-        (currency == other.currency) &&
-        (amount == other.amount);
-  }
+  /* Comparison ***************************************************************/
 
-  /// Relational less than operator.
-  bool operator <(Money other) {
-    _assertSameCurrency(other);
+  /// Returns `true` if this money value is in the specified [currency].
+  bool isInCurrency(Currency currency) => _currency == currency;
 
-    return amount < other.amount;
-  }
+  /// Returns `true` if this money value is in same currency as [other].
+  bool isInSameCurrencyAs(Money other) => isInCurrency(other._currency);
 
-  /// Relational less than or equal operator.
-  bool operator <=(Money other) {
-    _assertSameCurrency(other);
-
-    return amount <= other.amount;
-  }
-
-  /// Relational greater than operator.
-  bool operator >(Money other) {
-    _assertSameCurrency(other);
-
-    return amount > other.amount;
-  }
-
-  /// Relational greater than or equal operator.
-  bool operator >=(Money other) {
-    _assertSameCurrency(other);
-
-    return amount >= other.amount;
-  }
-
+  /// Compares this to [other].
+  ///
+  /// [other] has to be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
   int compareTo(Money other) {
-    _assertSameCurrency(other);
+    _preconditionThatCurrencyTheSameFor(other);
 
-    return amount.compareTo(other.amount);
+    return _subunits.compareTo(other._subunits);
   }
 
-  /// Returns string representation of money.
-  /// For example: "1.50 USD".
-  String toString() {
-    return '${amountAsString} ${currency.code}';
+  /// Returns `true` if [other] is the same amount of money in the same currency.
+  @override
+  bool operator ==(other) =>
+      other is Money &&
+      isInSameCurrencyAs(other) &&
+      other._subunits == _subunits;
+
+  /// Returns `true` when this money is less than [other].
+  ///
+  /// Both operands have to be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  bool operator <(Money other) {
+    _preconditionThatCurrencyTheSameFor(
+        other, () => 'Cannot compare money in different currencies.');
+
+    return _subunits < other._subunits;
   }
 
-  Money _newMoney(int amount) {
-    return Money(amount, currency);
+  /// Returns `true` when this money is less than or equal to [other].
+  ///
+  /// Both operands have to be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  bool operator <=(Money other) {
+    _preconditionThatCurrencyTheSameFor(
+        other, () => 'Cannot compare money in different currencies.');
+
+    return _subunits <= other._subunits;
   }
 
-  void _assertSameCurrency(Money money) {
-    if (money.currency != currency) {
-      throw ArgumentError('Money math mismatch. Currencies are different.');
+  /// Returns `true` when this money is greater than [other].
+  ///
+  /// Both operands have to be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  bool operator >(Money other) {
+    _preconditionThatCurrencyTheSameFor(
+        other, () => 'Cannot compare money in different currencies.');
+
+    return _subunits > other._subunits;
+  }
+
+  /// Returns `true` when this money is greater than or equal to [other].
+  ///
+  /// Both operands have to be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  bool operator >=(Money other) {
+    _preconditionThatCurrencyTheSameFor(
+        other, () => 'Cannot compare money in different currencies.');
+
+    return _subunits >= other._subunits;
+  }
+
+  /* Allocation ***************************************************************/
+
+  /// Returns allocation of this money according to `ratios`.
+  ///
+  /// A value of the parameter [ratios] must be a non-empty list, with
+  /// not negative values and sum of these values must be greater than zero.
+  List<Money> allocationAccordingTo(List<int> ratios) =>
+      _subunits.allocationAccordingTo(ratios).map(_withAmount).toList();
+
+  /// Returns allocation of this money to N `targets`.
+  ///
+  /// A value of the parameter [targets] must be greater than zero.
+  List<Money> allocationTo(int targets) {
+    if (targets < 1) {
+      throw ArgumentError.value(targets, 'targets',
+          'Number of targets must not be less than one, cannot allocate to nothing.');
+    }
+
+    return allocationAccordingTo(List<int>.filled(targets, 1));
+  }
+
+  /* Arithmetic ***************************************************************/
+
+  /// Adds operands.
+  ///
+  /// Both operands must be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  Money operator +(Money summand) {
+    _preconditionThatCurrencyTheSameFor(summand);
+
+    return _withAmount(_subunits + summand._subunits);
+  }
+
+  Money operator -() => _withAmount(-_subunits);
+
+  /// Subtracts right operand from the left one.
+  ///
+  /// Both operands must be in same currency, [ArgumentError] will be thrown
+  /// otherwise.
+  Money operator -(Money subtrahend) {
+    _preconditionThatCurrencyTheSameFor(subtrahend);
+
+    return _withAmount(_subunits - subtrahend._subunits);
+  }
+
+  /// Returns [Money] multiplied by [multiplier], using schoolbook rounding.
+  Money operator *(num multiplier) {
+    return _withAmount(_subunits * multiplier);
+  }
+
+  /// Returns [Money] divided by [divisor], using schoolbook rounding.
+  Money operator /(num divisor) {
+    return _withAmount(_subunits / divisor);
+  }
+
+  /* ************************************************************************ */
+
+  /// Creates new instance with the same currency and given [amount].
+  Money _withAmount(_Subunits amount) => Money._with(amount, _currency);
+
+  void _preconditionThatCurrencyTheSameFor(Money other, [String message()]) {
+    String defaultMessage() =>
+        'Cannot operate with money values in different currencies.';
+
+    if (!isInSameCurrencyAs(other)) {
+      throw ArgumentError((message ?? defaultMessage)());
     }
   }
+}
+
+class _Subunits implements Comparable<_Subunits> {
+  final BigInt _value;
+
+  _Subunits.from(BigInt value) : _value = value {
+    assert(value != null);
+  }
+
+  bool get isZero => _value == BigInt.zero;
+
+  bool get isNegative => _value < BigInt.zero;
+
+  bool get isPositive => _value > BigInt.zero;
+
+  int compareTo(_Subunits other) => _value.compareTo(other._value);
+
+  @override
+  int get hashCode => _value.hashCode;
+
+  @override
+  bool operator ==(other) => other is _Subunits && _value == other._value;
+
+  bool operator <(_Subunits other) => _value < other._value;
+
+  bool operator <=(_Subunits other) => _value <= other._value;
+
+  bool operator >(_Subunits other) => _value > other._value;
+
+  bool operator >=(_Subunits other) => _value >= other._value;
+
+  /* Allocation ***************************************************************/
+
+  List<_Subunits> allocationAccordingTo(List<int> ratios) {
+    if (ratios.isEmpty) {
+      throw ArgumentError.value(ratios, 'ratios',
+          'List of ratios must not be empty, cannot allocate to nothing.');
+    }
+
+    return _doAllocationAccordingTo(ratios.map((ratio) {
+      if (ratio < 0) {
+        throw ArgumentError.value(
+            ratios, 'ratios', 'Ratio must not be negative.');
+      }
+
+      return BigInt.from(ratio);
+    }).toList());
+  }
+
+  List<_Subunits> _doAllocationAccordingTo(List<BigInt> ratios) {
+    final totalVolume = ratios.reduce((a, b) => a + b);
+
+    if (totalVolume == BigInt.zero) {
+      throw ArgumentError(
+          'Sum of ratios must be greater than zero, cannot allocate to nothing.');
+    }
+
+    final absoluteValue = _value.abs();
+    var remainder = absoluteValue;
+
+    var shares = ratios.map((ratio) {
+      final share = absoluteValue * ratio ~/ totalVolume;
+      remainder -= share;
+
+      return share;
+    }).toList();
+
+    for (var i = 0; remainder > BigInt.zero && i < shares.length; ++i) {
+      if (ratios[i] > BigInt.zero) {
+        shares[i] += BigInt.one;
+        remainder -= BigInt.one;
+      }
+    }
+
+    return shares
+        .map((share) => _Subunits.from(_value.isNegative ? -share : share))
+        .toList();
+  }
+
+  /* Arithmetic ***************************************************************/
+
+  _Subunits operator +(_Subunits summand) =>
+      _Subunits.from(_value + summand._value);
+
+  _Subunits operator -() => _Subunits.from(-_value);
+
+  _Subunits operator -(_Subunits subtrahend) =>
+      _Subunits.from(_value - subtrahend._value);
+
+  _Subunits operator *(num multiplier) {
+    if (multiplier is int) {
+      return _Subunits.from(_value * BigInt.from(multiplier));
+    }
+
+    if (multiplier is double) {
+      const floatingDecimalFactor = 1e14;
+      final decimalFactor = BigInt.from(100000000000000); // 1e14
+      final roundingFactor = BigInt.from(50000000000000); // 5 * 1e14
+
+      final product = _value *
+          BigInt.from((multiplier.abs() * floatingDecimalFactor).round());
+
+      var result = product ~/ decimalFactor;
+      if (product.remainder(decimalFactor) >= roundingFactor) {
+        result += BigInt.one;
+      }
+      if (multiplier.isNegative) {
+        result *= -BigInt.one;
+      }
+
+      return _Subunits.from(result);
+    }
+
+    throw UnsupportedError(
+        'Unsupported type of multiplier: "${multiplier.runtimeType}", '
+        '(int or double are expected)');
+  }
+
+  _Subunits operator /(num divisor) {
+    return this * (1.0 / divisor.toDouble());
+  }
+
+  /* Type Conversion **********************************************************/
+
+  BigInt toBigInt() => _value;
 }

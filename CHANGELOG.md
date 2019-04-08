@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.0.0-alpha.1 (Unreleased)
+
+> **This release was made from scratch and provides API incompatible with `0.2.1`.**
+
+### Added
+- `Currency` value-type.
+- The interface `Currencies` for representation of currency directories.
+- Implementation of currencies which can be initialized by any `Iterable<Currency>`
+(see the factory `Currencies.from(Iterable<Currency>)`).
+- Aggregating `Currencies` implementation (see the factory
+`Currencies.aggregating(Iterable<Currencies>)`).
+- Adds `Money` value-type:
+    - amount predicates: `.isZero`, `.isPositive`, `.isNegative`;
+    - currency predicates `.isInCurrency(Currency)`, `.isInSameCurrencyAs(Money)`;
+    - comparison operators: `==`, `<`, `<=`, `>`, `>=`;
+    - conformance to `Comparable<Money>`;
+    - arithmetic operators (`+(Money)`, `-(Money)`, `*(num)`, `/(num)`);
+    - allocation according to ratios with `.allocationAccordingTo(List<int>)`;
+    - allocation to _N_ targets with `.allocationTo(int)`;
+    - `.encodedBy(MoneyDecoder)`;
+    - `Money.decoding(MoneyEncoder)`.
+- Interface `MoneyEncoder`.
+- Interface `MoneyDecoder`.
+- `MoneyData` — DTO for encoding/decoding.
+
 ## 0.2.1 - 2018-08-21
 ### Fixed
 - Fixes comparison of `0` and `-0` amount in a browser.

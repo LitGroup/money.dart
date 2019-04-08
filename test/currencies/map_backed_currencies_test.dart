@@ -22,9 +22,27 @@
  * THE SOFTWARE.
  */
 
-library money;
+import 'package:test/test.dart';
+import 'package:money/money.dart';
 
-export 'src/currency.dart';
-export 'src/currencies.dart';
-export 'src/money.dart';
-export 'src/money_format.dart';
+void main() {
+  group('_MapBackedCurrencies', () {
+    final usd = Currency.withCodeAndPrecision('USD', 2);
+    final eur = Currency.withCodeAndPrecision('EUR', 2);
+
+    Currencies currencies;
+
+    setUp(() {
+      currencies = Currencies.from([usd, eur]);
+    });
+
+    test('returns a currency identified by code', () {
+      expect(currencies.find('USD'), equals(usd));
+      expect(currencies.find('EUR'), equals(eur));
+    });
+
+    test('returns null if a currency cannot be found', () {
+      expect(currencies.find('BTC'), isNull);
+    });
+  });
+}
