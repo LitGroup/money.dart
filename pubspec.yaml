@@ -2,7 +2,7 @@ name: money
 description: Dart implementation of Fowler's Money pattern
 version: 1.0.0-alpha.1
 homepage: https://github.com/litgroup/money.dart
-author: Roman Shamritskiy <roman@litgroup.ru>
+author: LitGroup LLC <opensource@litgroup.ru>
 
 environment:
   sdk: '>=2.1.0 <3.0.0'
