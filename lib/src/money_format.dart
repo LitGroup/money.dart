@@ -22,10 +22,14 @@
  * THE SOFTWARE.
  */
 
+import 'package:meta/meta.dart' show sealed, immutable;
+
 import 'currency.dart';
 
 /// DTO for exchange of data between an instance of [Money] and [MoneyEncoder]
 /// or [MoneyDecoder].
+@sealed
+@immutable
 class MoneyData {
   /// Amount of money in the smallest units (like cent for USD).
   final BigInt subunits;

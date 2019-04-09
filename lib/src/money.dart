@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+import 'package:meta/meta.dart' show sealed, immutable;
 import 'currency.dart';
 import 'money_format.dart';
 
@@ -31,6 +32,8 @@ import 'money_format.dart';
 ///
 /// Current implementation uses [BigInt] internally to represent an amount
 /// in subunits.
+@sealed
+@immutable
 class Money implements Comparable<Money> {
   final _Subunits _subunits;
   final Currency _currency;
