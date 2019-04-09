@@ -22,9 +22,13 @@
  * THE SOFTWARE.
  */
 
+import 'package:meta/meta.dart' show sealed, immutable;
+
 /// Value-type representing a currency.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
+@sealed
+@immutable
 class Currency {
   /// The code of the currency (e.g. 'USD').
   final String code;
