@@ -23,6 +23,7 @@
  */
 
 import 'package:meta/meta.dart' show sealed, immutable;
+import 'package:money/money.dart';
 import 'currency.dart';
 import 'money_format.dart';
 
@@ -31,7 +32,9 @@ import 'money_format.dart';
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
 /// Current implementation uses [BigInt] internally to represent an amount
-/// in subunits.
+/// in subunits (e.g. cents)
+/// 
+
 @sealed
 @immutable
 class Money implements Comparable<Money> {
@@ -40,17 +43,26 @@ class Money implements Comparable<Money> {
 
   /* Instantiation ************************************************************/
 
-  /// Creates an instance of [Money] with [amount] in the minimal subunits
-  /// of [currency].
-  factory Money.withSubunits(BigInt amount, Currency currency) {
-    if (amount == null) {
-      throw ArgumentError.notNull('amount');
+  /// Creates an instance of [Money].
+  /// [subunits] - the minimal subunits of the [currency], e.g (cents).
+  /// 
+  /// e.g.
+  /// USA dollars with 2 decimal places.
+  /// 
+  /// final usd = Currency.withCodeAndPrecision('USD', 2);
+  /// 
+  /// 500 cents is $5 USD.
+  /// let fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+  /// 
+  factory Money.withSubunits(BigInt subunits, Currency currency) {
+    if (subunits == null) {
+      throw ArgumentError.notNull('subunits');
     }
     if (currency == null) {
       throw ArgumentError.notNull('currency');
     }
 
-    return Money._with(_Subunits.from(amount), currency);
+    return Money._with(_Subunits.from(subunits), currency);
   }
 
   /* Internal constructor *****************************************************/
