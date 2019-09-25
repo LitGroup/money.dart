@@ -21,6 +21,7 @@ smallest subunits of a currency. This enables computation of any arbitrary
 amount of money in any currency.
 
 * [Creating a Money Value](#creating-a-money-value)
+* [Formatting](#formatting)
 * [Comparison](#comparison)
 * [Arithmetic Operations](#arithmetic-operations)
 * [Allocation](#allocation)
@@ -36,12 +37,83 @@ amount of money in any currency.
 currency (e.g. cents):
 
 ```dart
-// Create a currency:
+// Create a currency that normally displays 2 decimal places:
 final usd = Currency.withCodeAndPrecision('USD', 2);
 
-// Create a money value:
-let fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+// Current a currency for Japan's yen with the correct symbol (we default to $)
+final usd = Currency.withCodeAndPrecision('JPY', 0, '¥');
+
+// Create a money value of $5.10 usd.
+Money fiveDollars = Money.withInt(510, usd);
+
+// Create a money value of $250.10 from a big int.
+Money bigDollars = Money.withSubunits(BigInt.from(25010), usd);
 ```
+
+## formatting
+
+The money class provides a simple way of formatting currency using a pattern.
+
+ pattern - 
+     The supported patterns are:
+
+     S outputs the currencies sign e.g. $.
+
+     C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
+
+        C - U
+
+        CC - US
+
+        CCC - USD
+
+     # denotes a digit.
+
+     0 denotes a digit and with the addition of defining leading and trailing zeros.
+
+     , (comma) a placeholder for the grouping separtor
+
+     . (period) a place holder fo rthe decimal separator 
+     
+     sign - the currencies sign. Defaults to $.
+
+Examples:
+
+```
+final usd = Currency.withCodeAndPrecision('USD', 2);
+Money costPrice = Money.withInt(100345.30, usd);  // 100,345.30 usd
+
+costPrice.format("###,###.##); 
+> 100,345.30
+
+costPrice.format("S###,###.##); 
+> $100,345.30
+
+costPrice.format("CC###,###.##); 
+> US100,345.30
+
+costPrice.format("CCC###,###.##); 
+> USD100,345.30
+
+costPrice.format("SCC###,###.##); 
+> $US100,345.30
+
+final usd = Currency.withCodeAndPrecision('USD', 2);
+Money costPrice = Money.withInt(45.30, usd);  // 45.30 usd
+costPrice.format("SCC###,###.##); 
+> $US100,345.30
+
+final jpy = Currency.withCodeAndPrecision('JPY', 0, symbol = '¥');
+Money costPrice = Money.withInt(345, jpy);  // 345 yen
+costPrice.format("SCCC#); 
+> ¥JPY245
+
+// Bahraini dinar
+final bhd = Currency.withCodeAndPrecision('BHD', 3, symbol='BD');
+Money costPrice = Money.withInt(100345, jpy);  // 100.345 bhd
+costPrice.format("SCCC0###.###); 
+> BDBHD0100.345
+```  
 
 ## Comparison
 
@@ -225,8 +297,16 @@ as a string in the format like "USD 5.00".
 ```dart
 class MyMoneyEncoder implements MoneyEncoder<String> {
   String encode(MoneyData data) {
-    // Receives MoneyData DTO and produces
+    // Receives MoneyData DTO and produce
     // a string representation of money value...
+    
+    double precisionFactor = BigInt.from(pow(10, data.currency.precision)
+
+     String major =
+        (data.subunits ~/ precisionFactor)).toString();
+    String minor = (data.subunits % precisionFactor).toString();
+
+    return major + "." + minor;
   }
 }
 ```

@@ -33,7 +33,7 @@ import 'money_format.dart';
 ///
 /// Current implementation uses [BigInt] internally to represent an amount
 /// in subunits (e.g. cents)
-/// 
+///
 
 @sealed
 @immutable
@@ -45,15 +45,15 @@ class Money implements Comparable<Money> {
 
   /// Creates an instance of [Money].
   /// [subunits] - the minimal subunits of the [currency], e.g (cents).
-  /// 
+  ///
   /// e.g.
   /// USA dollars with 2 decimal places.
-  /// 
+  ///
   /// final usd = Currency.withCodeAndPrecision('USD', 2);
-  /// 
+  ///
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.withSubunits(BigInt.from(500), usd);
-  /// 
+  ///
   factory Money.withSubunits(BigInt subunits, Currency currency) {
     if (subunits == null) {
       throw ArgumentError.notNull('subunits');
@@ -65,21 +65,63 @@ class Money implements Comparable<Money> {
     return Money._with(_Subunits.from(subunits), currency);
   }
 
+  /// Creates an instance of [Money].
+  ///
+  /// /// [subunits] - the no. subunits of the [currency], e.g (cents).
+  factory Money.fromInt(int subunits, Currency currency) {
+    return Money.withSubunits(BigInt.from(subunits), currency);
+  }
+
   /* Internal constructor *****************************************************/
 
   Money._with(this._subunits, this._currency);
+
+  ///
+  /// Provides a simple means of formating a [Money] instance as a string.
+  ///
+  /// pattern - 
+  ///   The supported patterns are:
+  ///   S outputs the currencies sign e.g. $.
+  ///   C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
+  ///      C - U
+  ///      CC - US
+  ///      CCC - USD
+  ///   # denotes a digit.
+  ///   0 denotes a digit and with the addition of defining leading and trailing zeros.
+  ///   , (comma) a placeholder for the grouping separtor
+  ///   . (period) a place holder fo rthe decimal separator
+  ///   
+  /// sign - the currencies sign. Defaults to $.
+  ///
+  String format(String pattern, [String sign='\$']) {
+
+    return this.encodedBy(PatternEncoder(this, pattern, sign));
+    
+  }
 
   /* Encoding/Decoding ********************************************************/
 
   /// Returns a [Money] instance decoded from [value] by [decoder].
   ///
-  /// Throws [FormatException] in case of invalid format of value.
-  static Money decoding<S>(S value, MoneyDecoder<S> decoder) {
+  /// Create your own [decoder]s to convert from any type to a [Money] instance.
+  ///
+  /// <T> - the type you are decoding from.
+  ///
+  /// Throws [FormatException] when the passed value contains an invalid format.
+  static Money decoding<T>(T value, MoneyDecoder<T> decoder) {
     final data = decoder.decode(value);
 
     return Money.withSubunits(data.subunits, data.currency);
   }
 
+  /// Encodes a [Money] instance as a <T>.
+  ///
+  /// Create your own encoders to convert a Money instance to
+  /// any other type.
+
+  /// You can use this to format a [Money] instance as a string.
+  ///
+  /// <T> - the type you want to encode the [Money]
   /// Returns this money representation encoded by [encoder].
   T encodedBy<T>(MoneyEncoder<T> encoder) {
     return encoder.encode(MoneyData.from(_subunits.toBigInt(), _currency));
@@ -249,6 +291,7 @@ class Money implements Comparable<Money> {
   }
 }
 
+
 class _Subunits implements Comparable<_Subunits> {
   final BigInt _value;
 
@@ -372,4 +415,12 @@ class _Subunits implements Comparable<_Subunits> {
   /* Type Conversion **********************************************************/
 
   BigInt toBigInt() => _value;
+}
+
+
+class IllegalPatternException implements Exception {
+  String message;
+  IllegalPatternException(this.message);
+
+  String toString() => message;
 }

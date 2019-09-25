@@ -22,7 +22,10 @@
  * THE SOFTWARE.
  */
 
+import 'dart:math';
+
 import 'package:meta/meta.dart' show sealed, immutable;
+import 'package:money/src/money.dart';
 
 import 'currency.dart';
 
@@ -52,7 +55,127 @@ abstract class MoneyEncoder<T> {
   T encode(MoneyData data);
 }
 
-abstract class MoneyDecoder<S> {
+abstract class MoneyDecoder<T> {
   /// Returns decoded [MoneyData] or throws a [FormatException].
-  MoneyData decode(S encoded);
+  MoneyData decode(T encoded);
+}
+
+class PatternEncoder implements MoneyEncoder<String> {
+  Money money;
+  String pattern;
+  String sign;
+
+  PatternEncoder(this.money, this.pattern, this.sign);
+
+  @override
+  String encode(MoneyData data) {
+    String formatted = "";
+    int indexC = 0;
+
+    String major =
+        (data.subunits ~/ BigInt.from(pow(10, data.currency.precision)))
+            .toString();
+    String minor =
+        (data.subunits % BigInt.from(pow(10, data.currency.precision)))
+            .toString();
+
+    String partSource = major;
+    bool inMajor = true;
+    int partIndex = 0;
+
+    int majorDigits = countMajorPatternDigits(pattern);
+    int minorDigits = countMinorPatternDigits(pattern);
+
+    int partDigits = majorDigits;
+
+    String code = data.currency.code;
+
+    for (int i = 0; i < pattern.length; i++) {
+      var char = pattern[i];
+      switch (char) {
+        case 'S':
+          formatted += sign;
+          break;
+        case 'C':
+          formatted += code[indexC % 3];
+          indexC++;
+          break;
+        case '#':
+          formatted += partSource[partIndex++];
+          break;
+        case '0':
+          //if (partIndex > partDigits )
+          // throw IllegalPatternException("")
+          if (inMajor) {
+            if (partDigits - partIndex > partSource.length) {
+              formatted += '0';
+            } else {
+              formatted += partSource[partIndex++];
+            }
+          } else {
+            if (partIndex >= partSource.length) {
+              formatted += '0';
+            } else {
+              formatted += partSource[partIndex++];
+            }
+          }
+          break;
+        case ',':
+          formatted += ",";
+          break;
+        case '.':
+          formatted += ".";
+          inMajor = false;
+          partSource = minor;
+          partIndex = 0;
+          partDigits = minorDigits;
+          break;
+        case ' ':
+          formatted += ' ';
+          break;
+        default:
+          throw IllegalPatternException(
+              "The pattern contains an unknown character: '$char'");
+      }
+    }
+    return formatted;
+  }
+
+  // counts the no. of # and 0s in the pattern before the '.'.
+  int countMajorPatternDigits(String pattern) {
+    int count = 0;
+    for (int i = 0; i < pattern.length; i++) {
+      var char = pattern[i];
+      if (char == '.') {
+        break;
+      }
+
+      if (char == '#' || char == '0') {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // counts the no. of # and 0s in the pattern before the '.'.
+  int countMinorPatternDigits(String pattern) {
+    int count = 0;
+    bool foundPeriod = false;
+
+    for (int i = 0; i < pattern.length; i++) {
+      var char = pattern[i];
+      if (char == '.') {
+        foundPeriod = true;
+      }
+
+      if (!foundPeriod) {
+        continue;
+      }
+
+      if (char == '#' || char == '0') {
+        count++;
+      }
+    }
+    return count;
+  }
 }
