@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.0.0-beta.6
+Minor cleanups of the readme.md
+
 ## version: 1.0.0-beta.5
 Updated the name of example.dart to please google package gods.
 
