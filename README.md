@@ -1,4 +1,4 @@
-# Money
+# Money2
 
 This is a Dart implementation of the Money pattern, as described in
 [\[Fowler PoEAA\]](https://martinfowler.com/books/eaa.html):
@@ -32,7 +32,7 @@ This is a Dart implementation of the Money pattern, as described in
 
 ## Overview
 
-Money 2 is a fork of LitGroup's Money package.
+Money2 is a fork of LitGroup's Money package.
 
 The aim of this fork is to improve the documentation and introduce a number of convenience methods to make it easier to work with Money.
 This package also changes some of the naming convention to provide a (hopefully) more intuiative api.
@@ -152,37 +152,37 @@ Examples:
 
 ```
 final usd = Currency.create('USD', 2);
-Money costPrice = Money.fromInt(100345.30, usd);  // 100,345.30 usd
+Money costPrice = Money.fromInt(10034530, usd);  // 100,345.30 usd
 
-costPrice.format("###,###.##); 
+costPrice.format("###,###.##"); 
 > 100,345.30
 
-costPrice.format("S###,###.##); 
+costPrice.format("S###,###.##"); 
 > $100,345.3
 
-costPrice.format("CC###,###.#0); 
+costPrice.format("CC###,###.#0"); 
 > US100,345.30
 
-costPrice.format("CCC###,###.##); 
+costPrice.format("CCC###,###.##"); 
 > USD100,345.3
 
-costPrice.format("SCC###,###.#0); 
+costPrice.format("SCC###,###.#0"); 
 > $US100,345.30
 
 final usd = Currency.create('USD', 2);
 Money costPrice = Money.fromInt(45.30, usd);  // 45.30 usd
-costPrice.format("SCC###,###.##); 
+costPrice.format("SCC###,###.##"); 
 > $US100,345.3
 
 final jpy = Currency.create('JPY', 0, symbol = '¥');
 Money costPrice = Money.fromInt(345, jpy);  // 345 yen
-costPrice.format("SCCC#); 
+costPrice.format("SCCC#"); 
 > ¥JPY245
 
 // Bahraini dinar
 final bhd = Currency.create('BHD', 3, symbol='BD');
 Money costPrice = Money.withInt(100345, jpy);  // 100.345 bhd
-costPrice.format("SCCC0###.###); 
+costPrice.format("SCCC0###.###"); 
 > BDBHD0100.345
 ```  
 

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:intl/intl.dart';
 
-import '../money.dart';
+import 'money.dart';
 import 'money_data.dart';
 
 abstract class MoneyEncoder<T> {

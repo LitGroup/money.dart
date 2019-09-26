@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.0.0-beta.5
+Updated the name of example.dart to please google package gods.
+
+## version: 1.0.0-beta.4
+Update to please the google package gods.
+
+### Added
+- longer description
+- fixed to broken annotations.
+
+## version: 1.0.0-beta.3
+Updated the description.
+
+### Removed
+- Dependency on `meta ^1.1.7`.
+### Updated
+- Dependancy on `intl: ^0.16.0`.
 
 ## 1.0.0-beta.1 - 2019-9-26
 ### Added

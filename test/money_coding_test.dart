@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import 'package:money2/money.dart';
+import 'package:money2/money2.dart';
 import 'package:money2/src/encoders.dart';
 import 'package:money2/src/money_data.dart';
 import 'package:test/test.dart';

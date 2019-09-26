@@ -24,7 +24,7 @@
 
 import 'dart:math';
 
-import 'package:meta/meta.dart' show sealed, immutable;
+// import 'package:meta/meta.dart' show sealed, immutable;
 
 /// Value-type representing a currency.
 ///
@@ -37,8 +37,8 @@ import 'package:meta/meta.dart' show sealed, immutable;
 /// If you wish you can register each Currency instance with the Currencies
 /// which then is able to provides a global directory of Currency instances.
 ///
-@sealed
-@immutable
+//@sealed
+// @immutable
 class Currency {
   /// The code of the currency (e.g. 'USD').
   final String code;

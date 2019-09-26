@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import 'package:meta/meta.dart' show sealed, immutable;
+// import 'package:meta/meta.dart' show sealed, immutable;
 import 'currency.dart';
 import 'encoders.dart';
 import 'minor_units.dart';
@@ -36,8 +36,8 @@ import 'money_data.dart';
 /// in minorUnits (e.g. cents)
 ///
 
-@sealed
-@immutable
+// @sealed
+// @immutable
 class Money implements Comparable<Money> {
   final MinorUnits _minorUnits;
   final Currency _currency;
@@ -80,7 +80,7 @@ class Money implements Comparable<Money> {
   ///
   /// Provides a simple means of formating a [Money] instance as a string.
   ///
-  /// pattern - 
+  /// pattern -
   ///   The supported patterns are:
   ///   S outputs the currencies symbol e.g. $.
   ///   C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
@@ -93,13 +93,10 @@ class Money implements Comparable<Money> {
   ///   . (period) a place holder fo rthe decimal separator
   ///
   String format(String pattern) {
-
     return this.encodedBy(PatternEncoder(this, pattern));
-    
   }
 
-  String toString()
-  {
+  String toString() {
     return this.encodedBy(PatternEncoder(this, _currency.defaultPattern));
   }
 
@@ -294,9 +291,6 @@ class Money implements Comparable<Money> {
     }
   }
 }
-
-
-
 
 class IllegalPatternException implements Exception {
   String message;

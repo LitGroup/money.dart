@@ -23,7 +23,7 @@
  */
 
 
-import 'package:money2/money.dart';
+import 'package:money2/money2.dart';
 import 'package:test/test.dart';
 
 

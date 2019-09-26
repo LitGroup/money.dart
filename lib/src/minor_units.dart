@@ -17,7 +17,8 @@ class MinorUnits implements Comparable<MinorUnits> {
   int get hashCode => _value.hashCode;
 
   @override
-  bool operator ==(dynamic other) => other is MinorUnits && _value == other._value;
+  bool operator ==(dynamic other) =>
+      other is MinorUnits && _value == other._value;
 
   bool operator <(MinorUnits other) => _value < other._value;
 
@@ -95,8 +96,8 @@ class MinorUnits implements Comparable<MinorUnits> {
       final decimalFactor = BigInt.from(100000000000000); // 1e14
       final roundingFactor = BigInt.from(50000000000000); // 5 * 1e14
 
-      final product = _value *
-          BigInt.from((operand.abs() * floatingDecimalFactor).round());
+      final product =
+          _value * BigInt.from((operand.abs() * floatingDecimalFactor).round());
 
       var result = product ~/ decimalFactor;
       if (product.remainder(decimalFactor) >= roundingFactor) {
