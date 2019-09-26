@@ -22,58 +22,60 @@
  * THE SOFTWARE.
  */
 
+
+import 'package:money2/money.dart';
 import 'package:test/test.dart';
-import 'package:money/money.dart';
+
 
 void main() {
-  final usd = Currency.withCodeAndPrecision('USD', 2);
-  final eur = Currency.withCodeAndPrecision('EUR', 2);
+  final usd = Currency.create('USD', 2);
+  final eur = Currency.create('EUR', 2);
 
   group('Money', () {
     group('instantiation', () {
-      test('with subunits', () {
-        var _ = Money.withSubunits(BigInt.from(0), usd);
-        _ = Money.withSubunits(BigInt.from(1), usd);
-        _ = Money.withSubunits(BigInt.from(-1), usd);
+      test('with minorUnits', () {
+        var _ = Money.fromBigInt(BigInt.from(0), usd);
+        _ = Money.fromBigInt(BigInt.from(1), usd);
+        _ = Money.fromBigInt(BigInt.from(-1), usd);
       });
 
-      test('with subunits throws an error for null amount', () {
-        expect(() => Money.withSubunits(null, usd), throwsArgumentError);
+      test('with minorUnits throws an error for null amount', () {
+        expect(() => Money.fromBigInt(null, usd), throwsArgumentError);
       });
 
-      test('with subunits throws an error for null currency', () {
-        expect(() => Money.withSubunits(BigInt.from(100), null),
+      test('with minorUnits throws an error for null currency', () {
+        expect(() => Money.fromBigInt(BigInt.from(100), null),
             throwsArgumentError);
       });
     });
 
     test('hash value', () {
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+      final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
 
       expect(fiveDollars.hashCode,
-          equals(Money.withSubunits(BigInt.from(500), usd).hashCode));
+          equals(Money.fromBigInt(BigInt.from(500), usd).hashCode));
     });
 
     test('predicate of currency', () {
-      final oneDollars = Money.withSubunits(BigInt.from(100), usd);
+      final oneDollars = Money.fromBigInt(BigInt.from(100), usd);
 
       expect(oneDollars.isInCurrency(usd), isTrue);
       expect(oneDollars.isInCurrency(eur), isFalse);
     });
 
     test('predicate of currency match', () {
-      final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-      final twoDollars = Money.withSubunits(BigInt.from(200), usd);
-      final oneEuro = Money.withSubunits(BigInt.from(100), eur);
+      final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+      final twoDollars = Money.fromBigInt(BigInt.from(200), usd);
+      final oneEuro = Money.fromBigInt(BigInt.from(100), eur);
 
       expect(oneDollar.isInSameCurrencyAs(twoDollars), isTrue);
       expect(oneDollar.isInSameCurrencyAs(oneEuro), isFalse);
     });
 
     group('amount predicates:', () {
-      final zeroCents = Money.withSubunits(BigInt.zero, usd);
-      final oneCent = Money.withSubunits(BigInt.one, usd);
-      final minusOneCent = Money.withSubunits(-BigInt.one, usd);
+      final zeroCents = Money.fromBigInt(BigInt.zero, usd);
+      final oneCent = Money.fromBigInt(BigInt.one, usd);
+      final minusOneCent = Money.fromBigInt(-BigInt.one, usd);
 
       test('isZero', () {
         expect(zeroCents.isZero, isTrue);
@@ -95,14 +97,14 @@ void main() {
     }); // amount predicates
 
     group('comparison', () {
-      final fourDollars = Money.withSubunits(BigInt.from(400), usd);
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
-      final sixDollars = Money.withSubunits(BigInt.from(600), usd);
+      final fourDollars = Money.fromBigInt(BigInt.from(400), usd);
+      final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
+      final sixDollars = Money.fromBigInt(BigInt.from(600), usd);
 
-      final fiveEuros = Money.withSubunits(BigInt.from(500), eur);
+      final fiveEuros = Money.fromBigInt(BigInt.from(500), eur);
 
       test('==()', () {
-        expect(fiveDollars, equals(Money.withSubunits(BigInt.from(500), usd)));
+        expect(fiveDollars, equals(Money.fromBigInt(BigInt.from(500), usd)));
         expect(fiveDollars, isNot(equals(fourDollars)));
         expect(fiveDollars, isNot(equals(sixDollars)));
         expect(fiveDollars, isNot(equals(fiveEuros)));
@@ -156,47 +158,47 @@ void main() {
 
     group('arithmetic:', () {
       test('addition', () {
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final twoDollars = Money.withSubunits(BigInt.from(200), usd);
-        final threeDollars = Money.withSubunits(BigInt.from(300), usd);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final twoDollars = Money.fromBigInt(BigInt.from(200), usd);
+        final threeDollars = Money.fromBigInt(BigInt.from(300), usd);
 
         expect(oneDollar + twoDollars, equals(threeDollars));
       });
 
       test('addition error for summands in different currencies', () {
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final oneEuro = Money.withSubunits(BigInt.from(100), eur);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final oneEuro = Money.fromBigInt(BigInt.from(100), eur);
 
         expect(() => oneDollar + oneEuro, throwsArgumentError);
       });
 
       test('unary minus', () {
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final minusOneDollar = Money.withSubunits(BigInt.from(-100), usd);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final minusOneDollar = Money.fromBigInt(BigInt.from(-100), usd);
 
         expect(-oneDollar, equals(minusOneDollar));
         expect(-minusOneDollar, equals(oneDollar));
       });
 
       test('subtraction', () {
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final twoDollars = Money.withSubunits(BigInt.from(200), usd);
-        final threeDollars = Money.withSubunits(BigInt.from(300), usd);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final twoDollars = Money.fromBigInt(BigInt.from(200), usd);
+        final threeDollars = Money.fromBigInt(BigInt.from(300), usd);
 
         expect(threeDollars - oneDollar, equals(twoDollars));
       });
 
       test('subtraction error for operands in different currencies', () {
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final oneEuro = Money.withSubunits(BigInt.from(100), eur);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final oneEuro = Money.fromBigInt(BigInt.from(100), eur);
 
         expect(() => oneDollar - oneEuro, throwsArgumentError);
       });
 
       test('multiplication', () {
-        final zeroDollars = Money.withSubunits(BigInt.from(0), usd);
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final twoDollars = Money.withSubunits(BigInt.from(200), usd);
+        final zeroDollars = Money.fromBigInt(BigInt.from(0), usd);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final twoDollars = Money.fromBigInt(BigInt.from(200), usd);
 
         // Test integral multiplication:
         expect(oneDollar * 0, equals(zeroDollars));
@@ -210,29 +212,29 @@ void main() {
         expect(oneDollar * -1.0, equals(-oneDollar));
 
         expect(
-            oneDollar * 0.5, equals(Money.withSubunits(BigInt.from(50), usd)));
+            oneDollar * 0.5, equals(Money.fromBigInt(BigInt.from(50), usd)));
         expect(oneDollar * 2.01,
-            equals(Money.withSubunits(BigInt.from(201), usd)));
+            equals(Money.fromBigInt(BigInt.from(201), usd)));
         expect(
-            oneDollar * 0.99, equals(Money.withSubunits(BigInt.from(99), usd)));
+            oneDollar * 0.99, equals(Money.fromBigInt(BigInt.from(99), usd)));
 
         // Test schoolbook rounding:
         expect(
-            oneDollar * 0.094, equals(Money.withSubunits(BigInt.from(9), usd)));
+            oneDollar * 0.094, equals(Money.fromBigInt(BigInt.from(9), usd)));
         expect(oneDollar * -0.094,
-            equals(Money.withSubunits(BigInt.from(-9), usd)));
+            equals(Money.fromBigInt(BigInt.from(-9), usd)));
 
         expect(oneDollar * 0.095,
-            equals(Money.withSubunits(BigInt.from(10), usd)));
+            equals(Money.fromBigInt(BigInt.from(10), usd)));
         expect(oneDollar * -0.095,
-            equals(Money.withSubunits(BigInt.from(-10), usd)));
+            equals(Money.fromBigInt(BigInt.from(-10), usd)));
       });
 
       test('division', () {
-        final zeroDollars = Money.withSubunits(BigInt.from(0), usd);
-        final fiftyCents = Money.withSubunits(BigInt.from(50), usd);
-        final oneDollar = Money.withSubunits(BigInt.from(100), usd);
-        final twoDollars = Money.withSubunits(BigInt.from(200), usd);
+        final zeroDollars = Money.fromBigInt(BigInt.from(0), usd);
+        final fiftyCents = Money.fromBigInt(BigInt.from(50), usd);
+        final oneDollar = Money.fromBigInt(BigInt.from(100), usd);
+        final twoDollars = Money.fromBigInt(BigInt.from(200), usd);
 
         // Test with integral divisor:
         expect(zeroDollars / 2, equals(zeroDollars));
@@ -242,53 +244,53 @@ void main() {
         expect(twoDollars / -2, equals(-oneDollar));
 
         expect(oneDollar / 2, equals(fiftyCents));
-        expect(oneDollar / 3, equals(Money.withSubunits(BigInt.from(33), usd)));
+        expect(oneDollar / 3, equals(Money.fromBigInt(BigInt.from(33), usd)));
 
         // Test with floating-point divisor:
         expect(oneDollar / 0.5, equals(twoDollars));
         expect(oneDollar / 0.5, equals(twoDollars));
 
         expect(oneDollar / 1.094,
-            equals(Money.withSubunits(BigInt.from(91), usd)));
+            equals(Money.fromBigInt(BigInt.from(91), usd)));
         expect(oneDollar / -1.094,
-            equals(Money.withSubunits(BigInt.from(-91), usd)));
+            equals(Money.fromBigInt(BigInt.from(-91), usd)));
 
         expect(oneDollar / 1.092,
-            equals(Money.withSubunits(BigInt.from(92), usd)));
+            equals(Money.fromBigInt(BigInt.from(92), usd)));
         expect(oneDollar / -1.092,
-            equals(Money.withSubunits(BigInt.from(-92), usd)));
+            equals(Money.fromBigInt(BigInt.from(-92), usd)));
       });
     }); // arithmetic
 
     group('allocation according to ratios', () {
       test('throws an error when list of ratios is empty', () {
-        final money = Money.withSubunits(BigInt.one, usd);
+        final money = Money.fromBigInt(BigInt.one, usd);
 
         expect(() => money.allocationAccordingTo([]), throwsArgumentError);
       });
 
       test('throws an error if any of ratios is negative', () {
-        final money = Money.withSubunits(BigInt.one, usd);
+        final money = Money.fromBigInt(BigInt.one, usd);
 
         expect(() => money.allocationAccordingTo([-1]), throwsArgumentError);
         expect(() => money.allocationAccordingTo([4, -1]), throwsArgumentError);
       });
 
       test('throws an error if sum of ratios euals zero', () {
-        final money = Money.withSubunits(BigInt.one, usd);
+        final money = Money.fromBigInt(BigInt.one, usd);
 
         expect(() => money.allocationAccordingTo([0]), throwsArgumentError);
         expect(() => money.allocationAccordingTo([0, 0]), throwsArgumentError);
       });
 
       test('provides list with allocated money values', () {
-        void testAllocation(int subunits, List<int> ratios, List<int> result) {
-          final money = Money.withSubunits(BigInt.from(subunits), usd);
+        void testAllocation(int minorUnits, List<int> ratios, List<int> result) {
+          final money = Money.fromBigInt(BigInt.from(minorUnits), usd);
 
           expect(
               money.allocationAccordingTo(ratios),
-              equals(result.map((subunits) =>
-                  Money.withSubunits(BigInt.from(subunits), usd))));
+              equals(result.map((minorUnits) =>
+                  Money.fromBigInt(BigInt.from(minorUnits), usd))));
         }
 
         // Allocation of zero amount:
@@ -326,21 +328,21 @@ void main() {
 
     group('allocation to targets', () {
       test('throws an error if number of targets less than one', () {
-        final money = Money.withSubunits(BigInt.from(100), usd);
+        final money = Money.fromBigInt(BigInt.from(100), usd);
 
         expect(() => money.allocationTo(0), throwsArgumentError);
         expect(() => money.allocationTo(-1), throwsArgumentError);
       });
 
       test('returns a list with values allocated among N targets', () {
-        void testAllocation(int subunits, int targets, List<int> result) {
-          final money = Money.withSubunits(BigInt.from(subunits), usd);
+        void testAllocation(int minorUnits, int targets, List<int> result) {
+          final money = Money.fromBigInt(BigInt.from(minorUnits), usd);
 
           expect(
               money.allocationTo(targets),
               equals(result
-                  .map((subunits) =>
-                      Money.withSubunits(BigInt.from(subunits), usd))
+                  .map((minorUnits) =>
+                      Money.fromBigInt(BigInt.from(minorUnits), usd))
                   .toList()));
         }
 

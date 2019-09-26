@@ -22,50 +22,50 @@
  * THE SOFTWARE.
  */
 
+import 'package:money2/money.dart';
 import 'package:test/test.dart';
-import 'package:money/money.dart';
 
 void main() {
   group('A currency', () {
     test('has a code and a precision', () {
-      var currency = Currency.withCodeAndPrecision('JPY', 0);
+      var currency = Currency.create('JPY', 0);
       expect(currency.code, equals('JPY'));
-      expect(currency.precision, equals(0));
+      expect(currency.minorDigits, equals(0));
 
-      currency = Currency.withCodeAndPrecision('USD', 2);
+      currency = Currency.create('USD', 2);
       expect(currency.code, equals('USD'));
-      expect(currency.precision, equals(2));
+      expect(currency.minorDigits, equals(2));
     });
 
     test('cannot be instantiated with null or empty code', () {
-      expect(() => Currency.withCodeAndPrecision(null, 0), throwsArgumentError);
-      expect(() => Currency.withCodeAndPrecision('', 0), throwsArgumentError);
+      expect(() => Currency.create(null, 0), throwsArgumentError);
+      expect(() => Currency.create('', 0), throwsArgumentError);
     });
 
     test('cannot be instantiated with null or negative precision', () {
-      expect(() => Currency.withCodeAndPrecision('SOME', null),
+      expect(() => Currency.create('SOME', null),
           throwsArgumentError);
 
       expect(
-          () => Currency.withCodeAndPrecision('SOME', -1), throwsArgumentError);
+          () => Currency.create('SOME', -1), throwsArgumentError);
       expect(
-          () => Currency.withCodeAndPrecision('SOME', -2), throwsArgumentError);
+          () => Currency.create('SOME', -2), throwsArgumentError);
     });
 
     test('is equatable', () {
-      final usd = Currency.withCodeAndPrecision('USD', 2);
+      final usd = Currency.create('USD', 2);
 
-      expect(usd, equals(Currency.withCodeAndPrecision('USD', 2)));
-      expect(usd, isNot(equals(Currency.withCodeAndPrecision('EUR', 2))));
-      expect(usd, isNot(equals(Currency.withCodeAndPrecision('USD', 0))));
-      expect(usd, isNot(equals(Currency.withCodeAndPrecision('JPY', 0))));
+      expect(usd, equals(Currency.create('USD', 2)));
+      expect(usd, isNot(equals(Currency.create('EUR', 2))));
+      expect(usd, isNot(equals(Currency.create('USD', 0))));
+      expect(usd, isNot(equals(Currency.create('JPY', 0))));
     });
 
     test('is hashable', () {
-      final usd = Currency.withCodeAndPrecision('USD', 2);
+      final usd = Currency.create('USD', 2);
 
       expect(usd.hashCode,
-          equals(Currency.withCodeAndPrecision('USD', 2).hashCode));
+          equals(Currency.create('USD', 2).hashCode));
     });
   });
 }

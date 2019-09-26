@@ -24,50 +24,40 @@
 
 import 'currency.dart';
 
+/// Money2 does not create a default set of currencies instead you need to explicitly
+/// create each currency type you want to use.
+///
+/// The Currency directory lets you register
+///
+///
 /// An interface of currency directory.
-abstract class Currencies {
-  /* Factories ****************************************************************/
+class Currencies {
+  static Currencies _self = Currencies._internal();
+
+  final Map<String, Currency> _directory;
+
+  factory Currencies() {
+    _self = Currencies._internal();
+    return _self;
+  }
+
+  Currencies._internal() : _directory = Map();
+
+  void register(Currency currency) {
+    _directory[currency.code] = currency;
+  }
 
   /// Creates a directory of currencies initialized by [currencies].
-  factory Currencies.from(Iterable<Currency> currencies) =>
-      _MapBackedCurrencies(currencies);
-
-  /// Creates a currency directory aggregating given [directories].
-  factory Currencies.aggregating(Iterable<Currencies> directories) =>
-      _AggregatedCurrencies(directories);
+  void registerList(Iterable<Currency> currencies) {
+    currencies.forEach((currency) {
+      _directory[currency.code] = currency;
+    });
+  }
 
   /* Protocol *****************************************************************/
 
   /// Returns a [Currency] if found or `null`.
-  Currency find(String code);
-}
-
-class _MapBackedCurrencies implements Currencies {
-  final Map<String, Currency> _currencies;
-
-  _MapBackedCurrencies(Iterable<Currency> currencies)
-      : _currencies = Map.fromIterable(currencies,
-            key: (currency) => (currency as Currency).code);
-
   Currency find(String code) {
-    return _currencies[code];
-  }
-}
-
-class _AggregatedCurrencies implements Currencies {
-  final List<Currencies> _directories;
-
-  _AggregatedCurrencies(Iterable<Currencies> directories)
-      : _directories = directories.toList(growable: false);
-
-  Currency find(String code) {
-    for (final directory in _directories) {
-      final currency = directory.find(code);
-      if (currency != null) {
-        return currency;
-      }
-    }
-
-    return null;
+    return _directory[code];
   }
 }

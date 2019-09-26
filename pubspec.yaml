@@ -1,12 +1,17 @@
-name: money
-description: Dart implementation of Fowler's Money pattern
-version: 1.0.0-alpha.2
-homepage: https://github.com/litgroup/money.dart
-author: LitGroup LLC <opensource@litgroup.ru>
+name: money2
+description: Fork of LitGroup's Dart implementation of Fowler's Money pattern
+version: 1.0.0-beta.1
+homepage: https://github.com/noojee/money.dart
+authors: 
+  - LitGroup LLC <opensource@litgroup.ru>
+  - Noojee IT Pty Ltd <bsutton@noojee.com.au>
 
 environment:
   sdk: '>=2.1.0 <3.0.0'
   meta: ^1.1.7
+
+dependencies: 
+  intl: ^0.15.8
 
 dev_dependencies:
   pedantic: ^1.0.0

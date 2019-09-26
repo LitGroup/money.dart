@@ -27,4 +27,3 @@ library money;
 export 'src/currency.dart';
 export 'src/currencies.dart';
 export 'src/money.dart';
-export 'src/money_format.dart';

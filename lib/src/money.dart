@@ -23,28 +23,29 @@
  */
 
 import 'package:meta/meta.dart' show sealed, immutable;
-import 'package:money/money.dart';
 import 'currency.dart';
-import 'money_format.dart';
+import 'encoders.dart';
+import 'minor_units.dart';
+import 'money_data.dart';
 
 /// A value-type representing some money.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
 /// Current implementation uses [BigInt] internally to represent an amount
-/// in subunits (e.g. cents)
+/// in minorUnits (e.g. cents)
 ///
 
 @sealed
 @immutable
 class Money implements Comparable<Money> {
-  final _Subunits _subunits;
+  final MinorUnits _minorUnits;
   final Currency _currency;
 
   /* Instantiation ************************************************************/
 
   /// Creates an instance of [Money].
-  /// [subunits] - the minimal subunits of the [currency], e.g (cents).
+  /// [minorUnits] - the minimal minorUnits of the [currency], e.g (cents).
   ///
   /// e.g.
   /// USA dollars with 2 decimal places.
@@ -52,36 +53,36 @@ class Money implements Comparable<Money> {
   /// final usd = Currency.withCodeAndPrecision('USD', 2);
   ///
   /// 500 cents is $5 USD.
-  /// let fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+  /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
-  factory Money.withSubunits(BigInt subunits, Currency currency) {
-    if (subunits == null) {
-      throw ArgumentError.notNull('subunits');
+  factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
+    if (minorUnits == null) {
+      throw ArgumentError.notNull('minorUnits');
     }
     if (currency == null) {
       throw ArgumentError.notNull('currency');
     }
 
-    return Money._with(_Subunits.from(subunits), currency);
+    return Money._from(MinorUnits.from(minorUnits), currency);
   }
 
   /// Creates an instance of [Money].
   ///
-  /// /// [subunits] - the no. subunits of the [currency], e.g (cents).
-  factory Money.fromInt(int subunits, Currency currency) {
-    return Money.withSubunits(BigInt.from(subunits), currency);
+  /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
+  factory Money.fromInt(int minorUnits, Currency currency) {
+    return Money.fromBigInt(BigInt.from(minorUnits), currency);
   }
 
   /* Internal constructor *****************************************************/
 
-  Money._with(this._subunits, this._currency);
+  Money._from(this._minorUnits, this._currency);
 
   ///
   /// Provides a simple means of formating a [Money] instance as a string.
   ///
   /// pattern - 
   ///   The supported patterns are:
-  ///   S outputs the currencies sign e.g. $.
+  ///   S outputs the currencies symbol e.g. $.
   ///   C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
   ///      C - U
   ///      CC - US
@@ -90,13 +91,16 @@ class Money implements Comparable<Money> {
   ///   0 denotes a digit and with the addition of defining leading and trailing zeros.
   ///   , (comma) a placeholder for the grouping separtor
   ///   . (period) a place holder fo rthe decimal separator
-  ///   
-  /// sign - the currencies sign. Defaults to $.
   ///
-  String format(String pattern, [String sign='\$']) {
+  String format(String pattern) {
 
-    return this.encodedBy(PatternEncoder(this, pattern, sign));
+    return this.encodedBy(PatternEncoder(this, pattern));
     
+  }
+
+  String toString()
+  {
+    return this.encodedBy(PatternEncoder(this, _currency.defaultPattern));
   }
 
   /* Encoding/Decoding ********************************************************/
@@ -111,7 +115,7 @@ class Money implements Comparable<Money> {
   static Money decoding<T>(T value, MoneyDecoder<T> decoder) {
     final data = decoder.decode(value);
 
-    return Money.withSubunits(data.subunits, data.currency);
+    return Money.fromBigInt(data.minorUnits, data.currency);
   }
 
   /// Encodes a [Money] instance as a <T>.
@@ -124,29 +128,29 @@ class Money implements Comparable<Money> {
   /// <T> - the type you want to encode the [Money]
   /// Returns this money representation encoded by [encoder].
   T encodedBy<T>(MoneyEncoder<T> encoder) {
-    return encoder.encode(MoneyData.from(_subunits.toBigInt(), _currency));
+    return encoder.encode(MoneyData.from(_minorUnits.toBigInt(), _currency));
   }
 
   /* Amount predicates ********************************************************/
 
   /// Returns `true` when amount of this money is zero.
-  bool get isZero => _subunits.isZero;
+  bool get isZero => _minorUnits.isZero;
 
   /// Returns `true` when amount of this money is negative.
-  bool get isNegative => _subunits.isNegative;
+  bool get isNegative => _minorUnits.isNegative;
 
   /// Returns `true` when amount of this money is positive (greater than zero).
   ///
   /// **TIP:** If you need to check that this value is zero or greater,
   /// use expression `!money.isNegative` instead.
-  bool get isPositive => _subunits.isPositive;
+  bool get isPositive => _minorUnits.isPositive;
 
   /* Hash Code ****************************************************************/
 
   @override
   int get hashCode {
     var result = 17;
-    result = 37 * result + _subunits.hashCode;
+    result = 37 * result + _minorUnits.hashCode;
     result = 37 * result + _currency.hashCode;
 
     return result;
@@ -167,15 +171,15 @@ class Money implements Comparable<Money> {
   int compareTo(Money other) {
     _preconditionThatCurrencyTheSameFor(other);
 
-    return _subunits.compareTo(other._subunits);
+    return _minorUnits.compareTo(other._minorUnits);
   }
 
   /// Returns `true` if [other] is the same amount of money in the same currency.
   @override
-  bool operator ==(other) =>
+  bool operator ==(dynamic other) =>
       other is Money &&
       isInSameCurrencyAs(other) &&
-      other._subunits == _subunits;
+      other._minorUnits == _minorUnits;
 
   /// Returns `true` when this money is less than [other].
   ///
@@ -185,7 +189,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _subunits < other._subunits;
+    return _minorUnits < other._minorUnits;
   }
 
   /// Returns `true` when this money is less than or equal to [other].
@@ -196,7 +200,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _subunits <= other._subunits;
+    return _minorUnits <= other._minorUnits;
   }
 
   /// Returns `true` when this money is greater than [other].
@@ -207,7 +211,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _subunits > other._subunits;
+    return _minorUnits > other._minorUnits;
   }
 
   /// Returns `true` when this money is greater than or equal to [other].
@@ -218,7 +222,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _subunits >= other._subunits;
+    return _minorUnits >= other._minorUnits;
   }
 
   /* Allocation ***************************************************************/
@@ -228,7 +232,7 @@ class Money implements Comparable<Money> {
   /// A value of the parameter [ratios] must be a non-empty list, with
   /// not negative values and sum of these values must be greater than zero.
   List<Money> allocationAccordingTo(List<int> ratios) =>
-      _subunits.allocationAccordingTo(ratios).map(_withAmount).toList();
+      _minorUnits.allocationAccordingTo(ratios).map(_withAmount).toList();
 
   /// Returns allocation of this money to N `targets`.
   ///
@@ -251,10 +255,10 @@ class Money implements Comparable<Money> {
   Money operator +(Money summand) {
     _preconditionThatCurrencyTheSameFor(summand);
 
-    return _withAmount(_subunits + summand._subunits);
+    return _withAmount(_minorUnits + summand._minorUnits);
   }
 
-  Money operator -() => _withAmount(-_subunits);
+  Money operator -() => _withAmount(-_minorUnits);
 
   /// Subtracts right operand from the left one.
   ///
@@ -263,23 +267,23 @@ class Money implements Comparable<Money> {
   Money operator -(Money subtrahend) {
     _preconditionThatCurrencyTheSameFor(subtrahend);
 
-    return _withAmount(_subunits - subtrahend._subunits);
+    return _withAmount(_minorUnits - subtrahend._minorUnits);
   }
 
   /// Returns [Money] multiplied by [multiplier], using schoolbook rounding.
   Money operator *(num multiplier) {
-    return _withAmount(_subunits * multiplier);
+    return _withAmount(_minorUnits * multiplier);
   }
 
   /// Returns [Money] divided by [divisor], using schoolbook rounding.
   Money operator /(num divisor) {
-    return _withAmount(_subunits / divisor);
+    return _withAmount(_minorUnits / divisor);
   }
 
   /* ************************************************************************ */
 
   /// Creates new instance with the same currency and given [amount].
-  Money _withAmount(_Subunits amount) => Money._with(amount, _currency);
+  Money _withAmount(MinorUnits amount) => Money._from(amount, _currency);
 
   void _preconditionThatCurrencyTheSameFor(Money other, [String message()]) {
     String defaultMessage() =>
@@ -292,130 +296,6 @@ class Money implements Comparable<Money> {
 }
 
 
-class _Subunits implements Comparable<_Subunits> {
-  final BigInt _value;
-
-  _Subunits.from(BigInt value) : _value = value {
-    assert(value != null);
-  }
-
-  bool get isZero => _value == BigInt.zero;
-
-  bool get isNegative => _value < BigInt.zero;
-
-  bool get isPositive => _value > BigInt.zero;
-
-  int compareTo(_Subunits other) => _value.compareTo(other._value);
-
-  @override
-  int get hashCode => _value.hashCode;
-
-  @override
-  bool operator ==(other) => other is _Subunits && _value == other._value;
-
-  bool operator <(_Subunits other) => _value < other._value;
-
-  bool operator <=(_Subunits other) => _value <= other._value;
-
-  bool operator >(_Subunits other) => _value > other._value;
-
-  bool operator >=(_Subunits other) => _value >= other._value;
-
-  /* Allocation ***************************************************************/
-
-  List<_Subunits> allocationAccordingTo(List<int> ratios) {
-    if (ratios.isEmpty) {
-      throw ArgumentError.value(ratios, 'ratios',
-          'List of ratios must not be empty, cannot allocate to nothing.');
-    }
-
-    return _doAllocationAccordingTo(ratios.map((ratio) {
-      if (ratio < 0) {
-        throw ArgumentError.value(
-            ratios, 'ratios', 'Ratio must not be negative.');
-      }
-
-      return BigInt.from(ratio);
-    }).toList());
-  }
-
-  List<_Subunits> _doAllocationAccordingTo(List<BigInt> ratios) {
-    final totalVolume = ratios.reduce((a, b) => a + b);
-
-    if (totalVolume == BigInt.zero) {
-      throw ArgumentError(
-          'Sum of ratios must be greater than zero, cannot allocate to nothing.');
-    }
-
-    final absoluteValue = _value.abs();
-    var remainder = absoluteValue;
-
-    var shares = ratios.map((ratio) {
-      final share = absoluteValue * ratio ~/ totalVolume;
-      remainder -= share;
-
-      return share;
-    }).toList();
-
-    for (var i = 0; remainder > BigInt.zero && i < shares.length; ++i) {
-      if (ratios[i] > BigInt.zero) {
-        shares[i] += BigInt.one;
-        remainder -= BigInt.one;
-      }
-    }
-
-    return shares
-        .map((share) => _Subunits.from(_value.isNegative ? -share : share))
-        .toList();
-  }
-
-  /* Arithmetic ***************************************************************/
-
-  _Subunits operator +(_Subunits summand) =>
-      _Subunits.from(_value + summand._value);
-
-  _Subunits operator -() => _Subunits.from(-_value);
-
-  _Subunits operator -(_Subunits subtrahend) =>
-      _Subunits.from(_value - subtrahend._value);
-
-  _Subunits operator *(num multiplier) {
-    if (multiplier is int) {
-      return _Subunits.from(_value * BigInt.from(multiplier));
-    }
-
-    if (multiplier is double) {
-      const floatingDecimalFactor = 1e14;
-      final decimalFactor = BigInt.from(100000000000000); // 1e14
-      final roundingFactor = BigInt.from(50000000000000); // 5 * 1e14
-
-      final product = _value *
-          BigInt.from((multiplier.abs() * floatingDecimalFactor).round());
-
-      var result = product ~/ decimalFactor;
-      if (product.remainder(decimalFactor) >= roundingFactor) {
-        result += BigInt.one;
-      }
-      if (multiplier.isNegative) {
-        result *= -BigInt.one;
-      }
-
-      return _Subunits.from(result);
-    }
-
-    throw UnsupportedError(
-        'Unsupported type of multiplier: "${multiplier.runtimeType}", '
-        '(int or double are expected)');
-  }
-
-  _Subunits operator /(num divisor) {
-    return this * (1.0 / divisor.toDouble());
-  }
-
-  /* Type Conversion **********************************************************/
-
-  BigInt toBigInt() => _value;
-}
 
 
 class IllegalPatternException implements Exception {

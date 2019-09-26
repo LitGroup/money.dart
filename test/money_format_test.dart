@@ -22,38 +22,45 @@
  * THE SOFTWARE.
  */
 
+import 'package:money2/money.dart';
 import 'package:test/test.dart';
-import 'package:money/money.dart';
 
 void main() {
-  final jpy = Currency.withCodeAndPrecision('JPY', 0);
-  final usd = Currency.withCodeAndPrecision('USD', 2);
-  final bhd = Currency.withCodeAndPrecision('BHD', 3);
+  //final jpy = Currency.withCodeAndPrecision('JPY', 0);
+  final usd = Currency.create('USD', 2);
+  // final bhd = Currency.withCodeAndPrecision('BHD', 3);
 
   final Money usd10d25 = Money.fromInt(1025, usd);
-  final Money usd212d25 = Money.fromInt(21225, usd);
+  final Money usd10 = Money.fromInt(1000, usd);
+/*  final Money usd212d25 = Money.fromInt(21225, usd);
   final Money jpy101 = Money.fromInt(101, jpy);
   final Money bhd99d111 = Money.fromInt(99111, bhd);
+  */
 
   group('format', () {
     test('Simple USD', () {
-
+      expect(usd10d25.toString(), equals("\$10.25"));
+      expect(usd10d25.format("#"), equals("10"));
+      expect(usd10d25.format("#.#"), equals("10.2"));
+      expect(usd10.format("#.#0"), equals("10.00"));
+      expect(usd10d25.format("###,000.##"), equals("010.25"));
       expect(usd10d25.format("##.##"), equals("10.25"));
       expect(usd10d25.format("##"), equals("10"));
     });
 
     test('Lead zero USD', () {
-      expect(usd10d25.format("0##.##"), equals("010.25"));
-      expect(usd10d25.format("0##"), equals("010"));
+      expect(usd10d25.format("000.##"), equals("010.25"));
+      expect(usd10d25.format("000"), equals("010"));
     });
 
     test('trailing zero USD', () {
-      expect(usd10d25.format("##.##0"), equals("10.250"));
-      expect(usd10d25.format("0##"), equals("010"));
+      expect(usd10d25.format("##.000"), equals("10.250"));
+      expect(usd10d25.format("000"), equals("010"));
     });
 
-    test('Simple USD with sign', () {
+    test('Simple USD with symbol', () {
       expect(usd10d25.format("S##.##"), equals("\$10.25"));
+      expect(usd10.format("S##.00"), equals("\$10.00"));
       expect(usd10d25.format("S##"), equals("\$10"));
       expect(usd10d25.format("S##"), equals("\$10"));
     });
@@ -65,12 +72,11 @@ void main() {
     });
 
     test('USD combos', () {
-      expect(usd10d25.format("SCCC 00##.##"), equals("\$USD 0010.25"));
+      expect(usd10d25.format("SCCC 000,000.##"), equals("\$USD 000,010.25"));
     });
 
-
-    test('Invalid Patterns', () {
-      expect(usd10d25.format("##0"), throwsA(IllegalPatternException));
-    });
+    // test('Invalid Patterns', () {
+    //   expect(usd10d25.format("##0"), throwsA(IllegalPatternException));
+    // });
   });
 }

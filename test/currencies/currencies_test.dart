@@ -22,26 +22,28 @@
  * THE SOFTWARE.
  */
 
+import 'package:money2/money.dart';
 import 'package:test/test.dart';
-import 'package:money/money.dart';
 
 void main() {
-  group('_AggregatedCurrencies', () {
-    final usd = Currency.withCodeAndPrecision('USD', 2);
-    final eur = Currency.withCodeAndPrecision('EUR', 2);
-    final btc = Currency.withCodeAndPrecision('BTC', 8);
+  group('Currencies Register', () {
+    final usd = Currency.create('USD', 2);
+    final eur = Currency.create('EUR', 2);
 
-    final currencies = Currencies.aggregating([
-      Currencies.from([usd, eur]),
-      Currencies.from([usd, btc]),
-    ]);
+    Currencies currencies;
 
-    test('looking for currency across all aggregated currencies', () {
+    setUp(() {
+      currencies = Currencies();
+      currencies.registerList([usd, eur]);
+    });
+
+    test('returns a currency identified by code', () {
       expect(currencies.find('USD'), equals(usd));
       expect(currencies.find('EUR'), equals(eur));
-      expect(currencies.find('BTC'), equals(btc));
+    });
 
-      expect(currencies.find('ETH'), isNull);
+    test('returns null if a currency cannot be found', () {
+      expect(currencies.find('BTC'), isNull);
     });
   });
 }

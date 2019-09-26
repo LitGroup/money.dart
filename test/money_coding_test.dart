@@ -22,12 +22,14 @@
  * THE SOFTWARE.
  */
 
+import 'package:money2/money.dart';
+import 'package:money2/src/encoders.dart';
+import 'package:money2/src/money_data.dart';
 import 'package:test/test.dart';
-import 'package:money/money.dart';
 
 class _TestEncoder implements MoneyEncoder<String> {
   String encode(MoneyData data) {
-    return '${data.currency.code} ${data.subunits}';
+    return '${data.currency.code} ${data.minorUnits}';
   }
 }
 
@@ -44,10 +46,10 @@ class _FailingDecoder implements MoneyDecoder<String> {
 }
 
 void main() {
-  final usd = Currency.withCodeAndPrecision('USD', 2);
+  final usd = Currency.create('USD', 2);
 
   group('MoneyData', () {
-    test('throws an error during instantiation with null subunits', () {
+    test('throws an error during instantiation with null minorUnits', () {
       expect(() => MoneyData.from(null, usd), throwsArgumentError);
     });
 
@@ -55,18 +57,18 @@ void main() {
       expect(() => MoneyData.from(BigInt.from(100), null), throwsArgumentError);
     });
 
-    test('has properties: subunits, currency', () {
-      final subunits = BigInt.from(100);
+    test('has properties: minorUnits, currency', () {
+      final minorUnits = BigInt.from(100);
 
-      final data = MoneyData.from(subunits, usd);
-      expect(data.subunits, equals(subunits));
+      final data = MoneyData.from(minorUnits, usd);
+      expect(data.minorUnits, equals(minorUnits));
       expect(data.currency, equals(usd));
     });
   });
 
   group('Money', () {
     test('encoding', () {
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+      final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
 
       expect(fiveDollars.encodedBy(_TestEncoder()), equals('USD 500'));
     });
@@ -75,7 +77,7 @@ void main() {
       final money =
           Money.decoding(MoneyData.from(BigInt.from(500), usd), _TestDecoder());
 
-      expect(money, equals(Money.withSubunits(BigInt.from(500), usd)));
+      expect(money, equals(Money.fromBigInt(BigInt.from(500), usd)));
     });
 
     test('decoding exception', () {

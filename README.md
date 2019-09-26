@@ -16,10 +16,9 @@ This is a Dart implementation of the Money pattern, as described in
 > _— Fowler, M., D. Rice, M. Foemmel, E. Hieatt, R. Mee, and R. Stafford,
 > Patterns of Enterprise Application Architecture, Addison-Wesley, 2002._
 
-Actual implementation uses `BigInt` to represent amount of money in the
-smallest subunits of a currency. This enables computation of any arbitrary
-amount of money in any currency.
 
+* [Overview](#overview)
+* [Registering Currencies](#registering-a-currency)
 * [Creating a Money Value](#creating-a-money-value)
 * [Formatting](#formatting)
 * [Comparison](#comparison)
@@ -31,35 +30,108 @@ amount of money in any currency.
   * [Directory of Currencies](#directory-of-currencies)
 * [Money Coding](#money-coding)
 
+## Overview
+
+Money 2 is a fork of LitGroup's Money package.
+
+The aim of this fork is to improve the documentation and introduce a number of convenience methods to make it easier to work with Money.
+This package also changes some of the naming convention to provide a (hopefully) more intuiative api.
+
+The Money object stores the underlying values using a BigInt. The value is stored using the currencies 'minor' units (e.g. cents).
+This allows for precise calculations as required when handling money.
+
+The package use the following terms:
+
+* Minor Units - the smallest unit of a currency e.g. cents.
+* Major Units - the integer component of a currency - e.g. dollars
+* code - the currency code. e.g. USD
+* symbol - the currency symbol. e.g. '$'. It should be noted that not every currency has a symbol.
+* pattern - a pattern used to control the display format.
+* minorDigits - the number of minor Units (e.g. cents) which should be used when storing the currency.
+
+
+## Registering a Currency
+
+Before you can start creating Money instances you first need a Currency.
+
+The Money2 package does not contain any 'built-in' Currency types. Instead you must create your own Currency instances as required.
+
+Creating a Currency is simple:
+
+```
+// US dollars which have 2 digits after the decimal place ()
+final usd = Currency.create('USD', 2);
+
+// Current a currency for Japan's yen with the correct symbol (we default to $)
+final usd = Currency.create('JPY', 0, '¥');
+
+```
+
+You would normally create a single instance of a Currency and re-use that throughout your code base.
+
+To make your life easier we provide the Currencies class which is a factory that allows you to register your currencies 
+and quickly retrieve them from anywhere in your code.
+
+```
+Currency usd = Currency.create('USD', 2);
+Currencies.register(usd);
+
+Currency nowUseIt = Currencies.find('USD');
+
+```
+
+The Currency class also allows you to specify a default format when converting a Money instance to a String.
+
+```
+
+final jpy = Currency.create('JPY', 0, '¥', 'S#');
+
+final usd = Currency.create('USD', 2, '\$', 'S#.##');
+
+```
+You can also use the Money.format method to use a specific format where required.
+
 ## Creating a Money Value
 
-`Money` can be instantiated providing amount in the minimal subunits of
+`Money` can be instantiated providing amount in the minimal minor units of the
 currency (e.g. cents):
 
 ```dart
 // Create a currency that normally displays 2 decimal places:
-final usd = Currency.withCodeAndPrecision('USD', 2);
+final usd = Currency.create('USD', 2);
 
 // Current a currency for Japan's yen with the correct symbol (we default to $)
-final usd = Currency.withCodeAndPrecision('JPY', 0, '¥');
+final usd = Currency.create('JPY', 0, '¥');
 
-// Create a money value of $5.10 usd.
-Money fiveDollars = Money.withInt(510, usd);
+// Create a money value of $5.10 usd from an int
+Money fiveDollars = Money.fromInt(510, usd);
 
 // Create a money value of $250.10 from a big int.
-Money bigDollars = Money.withSubunits(BigInt.from(25010), usd);
+Money bigDollars = Money.fromBigInt(BigInt.from(25010), usd);
 ```
 
 ## formatting
 
 The money class provides a simple way of formatting currency using a pattern.
 
- pattern - 
-     The supported patterns are:
+When you create a Currency instance you can provide a default format pattern which is used to format
+an Money instance when you call Money.toString().
 
-     S outputs the currencies sign e.g. $.
+In some cases you may however want to format a Money instances in a specific manner. In this case you can use:
 
-     C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
+Money.format(String pattern);
+
+```
+final usd = Currency.create('USD', 2);
+Money fiveDollars = Money.fromInt(510, usd);
+fiveDollars.format("S#");
+ > $5
+ ```
+     The supported pattern characters are:
+
+     S outputs the currencies symbol e.g. $.
+
+     C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's
 
         C - U
 
@@ -75,41 +147,40 @@ The money class provides a simple way of formatting currency using a pattern.
 
      . (period) a place holder fo rthe decimal separator 
      
-     sign - the currencies sign. Defaults to $.
 
 Examples:
 
 ```
-final usd = Currency.withCodeAndPrecision('USD', 2);
-Money costPrice = Money.withInt(100345.30, usd);  // 100,345.30 usd
+final usd = Currency.create('USD', 2);
+Money costPrice = Money.fromInt(100345.30, usd);  // 100,345.30 usd
 
 costPrice.format("###,###.##); 
 > 100,345.30
 
 costPrice.format("S###,###.##); 
-> $100,345.30
+> $100,345.3
 
-costPrice.format("CC###,###.##); 
+costPrice.format("CC###,###.#0); 
 > US100,345.30
 
 costPrice.format("CCC###,###.##); 
-> USD100,345.30
+> USD100,345.3
 
-costPrice.format("SCC###,###.##); 
+costPrice.format("SCC###,###.#0); 
 > $US100,345.30
 
-final usd = Currency.withCodeAndPrecision('USD', 2);
-Money costPrice = Money.withInt(45.30, usd);  // 45.30 usd
+final usd = Currency.create('USD', 2);
+Money costPrice = Money.fromInt(45.30, usd);  // 45.30 usd
 costPrice.format("SCC###,###.##); 
-> $US100,345.30
+> $US100,345.3
 
-final jpy = Currency.withCodeAndPrecision('JPY', 0, symbol = '¥');
-Money costPrice = Money.withInt(345, jpy);  // 345 yen
+final jpy = Currency.create('JPY', 0, symbol = '¥');
+Money costPrice = Money.fromInt(345, jpy);  // 345 yen
 costPrice.format("SCCC#); 
 > ¥JPY245
 
 // Bahraini dinar
-final bhd = Currency.withCodeAndPrecision('BHD', 3, symbol='BD');
+final bhd = Currency.create('BHD', 3, symbol='BD');
 Money costPrice = Money.withInt(100345, jpy);  // 100.345 bhd
 costPrice.format("SCCC0###.###); 
 > BDBHD0100.345
@@ -181,10 +252,10 @@ final zeroDollars = fiveDollars - fiveDollars;
 ```
 
 Operators `*`, `/` receive a `num` as the second operand. Both operators use
-_schoolbook rounding_ to round result up to a minimal subunit of a currency.
+_schoolbook rounding_ to round result up to a minimal minorUnits of a currency.
 
 ```dart
-final fifteenCents = Money.withSubunits(BigInt.from(15), usd);
+final fifteenCents = Money.fromBigInt(BigInt.from(15), usd);
 
 final thirtyCents = fifteenCents * 2;  // $0.30
 final eightCents = fifteenCents * 0.5; // $0.08 (rounded from 0.075)
@@ -203,16 +274,16 @@ The best solution to avoid this pitfall is to use allocation according
 to ratios.
 
 ```dart
-final profit = Money.withSubunits(BigInt.from(5), usd); // 5¢
+final profit = Money.fromBigInt(BigInt.from(5), usd); // 5¢
 
 var allocation = profit.allocationAccordingTo([70, 30]);
-assert(allocation[0] == Money.withSubunits(BigInt.from(4), usd)); // 4¢
-assert(allocation[1] == Money.withSubunits(BigInt.from(1), usd)); // 1¢
+assert(allocation[0] == Money.fromBigInt(BigInt.from(4), usd)); // 4¢
+assert(allocation[1] == Money.fromBigInt(BigInt.from(1), usd)); // 1¢
 
 // The order of ratios is important:
 allocation = profit.allocationAccordingTo([30, 70]);
-assert(allocation[0] == Money.withSubunits(BigInt.from(2), usd)); // 2¢
-assert(allocation[1] == Money.withSubunits(BigInt.from(3), usd)); // 3¢
+assert(allocation[0] == Money.fromBigInt(BigInt.from(2), usd)); // 2¢
+assert(allocation[1] == Money.fromBigInt(BigInt.from(3), usd)); // 3¢
 ```
 
 ### Allocation to N Targets
@@ -220,69 +291,14 @@ assert(allocation[1] == Money.withSubunits(BigInt.from(3), usd)); // 3¢
 An amount of money can be allocated to N targets using `allocateTo()`.
 
 ```dart
-final value = Money.withSubunits(BigInt.from(800), usd); // $8.00
+final value = Money.fromBigInt(BigInt.from(800), usd); // $8.00
 
 final allocation = value.allocationTo(3);
-assert(allocation[0] == Money.withSubunits(BigInt.from(267), usd)); // $2.67
-assert(allocation[1] == Money.withSubunits(BigInt.from(267), usd)); // $2.67
-assert(allocation[2] == Money.withSubunits(BigInt.from(266), usd)); // $2.66
+assert(allocation[0] == Money.fromBigInt(BigInt.from(267), usd)); // $2.67
+assert(allocation[1] == Money.fromBigInt(BigInt.from(267), usd)); // $2.67
+assert(allocation[2] == Money.fromBigInt(BigInt.from(266), usd)); // $2.66
 ```
 
-## Working with Currency
-
-`Currency` value-type carries the most important information about a currency:
-`code` and `precision` (number of decimal places):
-
-```dart
-final usd = Currency.withCodeAndPrecision('USD', 2);
-
-print(usd.code);      // => USD
-print(usd.precision); // => 2
-```
-
-As a value-object, currency can be checked for equality (`==`) and used
-as a key for map.
-
-### Directory of Currencies
-
-Usually you will not instantiate a `Currency` each time you need one.
-Instead you can have some directory with currencies used in the application.
-
-The interface `Currencies` is provided by the package for this purpose:
-
-```dart
-abstract class Currencies {
-  /// Returns a [Currency] if found or `null`.
-  Currency find(String code);
-}
-```
-
-_**NOTE:** The method `find()` is synchronous! If you need to fetch currency
-from a database or external service — make a component with asynchronous API
-for fetching a whole directory of currencies at once._
-
-The package also provides a few implementations of `Currencies`.
-
-You can instantiate a directory from an `Iterable<Currency>`:
-
-```dart
-final currencies = Currencies.from([
-  Currency.withCodeAndPrecision('USD', 2),
-  Currency.withCodeAndPrecision('EUR', 2),
-  Currency.withCodeAndPrecision('BTC', 8),
-  Currency.withCodeAndPrecision('ETH', 18),
-  // ...
-]);
-```
-
-Or aggregate other directories:
-```dart
-final currencies = Currencies.aggregating([
-  Currencies.from([usd, eur]),
-  Currencies.from([btc, eth]),
-  // ...
-]);
-```
 
 ## Money Coding
 
@@ -299,12 +315,8 @@ class MyMoneyEncoder implements MoneyEncoder<String> {
   String encode(MoneyData data) {
     // Receives MoneyData DTO and produce
     // a string representation of money value...
-    
-    double precisionFactor = BigInt.from(pow(10, data.currency.precision)
-
-     String major =
-        (data.subunits ~/ precisionFactor)).toString();
-    String minor = (data.subunits % precisionFactor).toString();
+    String major = data.getMinorUnits().toString();
+    String minor = (data.getMajorUnits().toString();
 
     return major + "." + minor;
   }
@@ -342,10 +354,10 @@ class MyMoneyDecoder implements MoneyDecoder<String> {
       throw FormatException('Unknown currency: $currencyCode.');
     }
     
-    // Using `currency.precision`, extracts subunits from `encoded`:
-    final subunits = ...;
+    // Using `currency.precision`, extracts minorUnits from `encoded`:
+    final minorUnits = ...;
     
-    return MoneyData.from(subunits, currency);
+    return MoneyData.from(minorUnits, currency);
   }
 }
 ```

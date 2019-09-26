@@ -4,10 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+
+## 1.0.0-beta.1 - 2019-9-26
 ### Added
 - Dependency on `meta ^1.1.7`.
+- Dependancy on `intl: ^0.15.8`.
 - Annotations `@immutable` and `@sealed` to `Money`, `Currency`, `MoneyData`.
+- Added new format method on Money class to allow simply formating of amounts.
+- Modified the API to make it easier to follow.
+- Change the Currencies class to a factory and renamed methods to 'register' and 'registerList'.
+- Chaneged ctor for Money from withBigInt to fromBigInt
+- Added ctor for Money 'fromInt'
+- Added strong mode to the analyzer.
+- Renamed a number of classes for clarity.
+- Added unit tests for the new formatter.
+- Updated the readme.md for clarity and the details on the new formatter.
+- Removed the aggregated currency interface as couldn't see that it added significant value.
 
 ## 1.0.0-alpha.1 - 2019-04-09
 > **This release was made from scratch and provides API incompatible with `0.2.1`.**

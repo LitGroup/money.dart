@@ -22,27 +22,41 @@
  * THE SOFTWARE.
  */
 
-import 'package:test/test.dart';
-import 'package:money/money.dart';
 
-void main() {
-  group('_MapBackedCurrencies', () {
-    final usd = Currency.withCodeAndPrecision('USD', 2);
-    final eur = Currency.withCodeAndPrecision('EUR', 2);
+import 'package:meta/meta.dart' show sealed, immutable;
 
-    Currencies currencies;
+import '../money.dart';
+import 'currency.dart';
 
-    setUp(() {
-      currencies = Currencies.from([usd, eur]);
-    });
+/// DTO for exchange of data between an instance of [Money] and [MoneyEncoder]
+/// or [MoneyDecoder].
+@sealed
+@immutable
+class MoneyData {
+  /// Amount of money in the smallest units (e.g. cent for USD).
+  final BigInt minorUnits;
 
-    test('returns a currency identified by code', () {
-      expect(currencies.find('USD'), equals(usd));
-      expect(currencies.find('EUR'), equals(eur));
-    });
+  /// The currency
+  final Currency currency;
 
-    test('returns null if a currency cannot be found', () {
-      expect(currencies.find('BTC'), isNull);
-    });
-  });
+  MoneyData.from(this.minorUnits, this.currency) {
+    if (minorUnits == null) {
+      throw ArgumentError.notNull('minorUnits');
+    }
+    if (currency == null) {
+      throw ArgumentError.notNull('currency');
+    }
+  }
+
+  /// returns the major currency value of this MoneyData (e.g. the dollar amount)
+  BigInt getMajorUnits() {
+    return (minorUnits ~/ currency.minorDigitsFactor);
+  }
+
+  /// returns the minor currency value of this MoneyData (e.g. the cents amount)
+  BigInt getMinorUnits() {
+    return (minorUnits % currency.minorDigitsFactor);
+  }
 }
+
+
