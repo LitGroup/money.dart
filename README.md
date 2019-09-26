@@ -26,9 +26,7 @@ This is a Dart implementation of the Money pattern, as described in
 * [Allocation](#allocation)
   * [Allocation According to Ratios](#allocation-according-to-ratios)
   * [Allocation to N Targets](#allocation-to-n-targets)
-* [Working with Currency](#working-with-currency)
-  * [Directory of Currencies](#directory-of-currencies)
-* [Money Coding](#money-coding)
+* [Money encoding/decoding](#Money-encoding/decoding)
 
 ## Overview
 
@@ -131,7 +129,7 @@ fiveDollars.format("S#");
 
      S outputs the currencies symbol e.g. $.
 
-     C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's
+     C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's. Specifying CCC will output the full code regardless of its length.
 
         C - U
 
@@ -300,7 +298,7 @@ assert(allocation[2] == Money.fromBigInt(BigInt.from(266), usd)); // $2.66
 ```
 
 
-## Money Coding
+## Money encoding/decoding
 
 API for encoding/decoding a money value enables an application to store
 value in a database or send over the network.
@@ -318,7 +316,7 @@ class MyMoneyEncoder implements MoneyEncoder<String> {
     String major = data.getMinorUnits().toString();
     String minor = (data.getMajorUnits().toString();
 
-    return major + "." + minor;
+    return data.currency.code + " " + major + "." + minor;
   }
 }
 ```
