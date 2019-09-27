@@ -1,7 +1,7 @@
 name: money2
-description: A user friendly implementation of LitGroup's Dart Money.
+description: Simple to use Money and Currency classes.
   Provides Money and Currency classes with fixed precision maths operations and a nice Money formatter.
-version: 1.0.0-beta.6
+version: 1.0.0
 homepage: https://github.com/noojee/money.dart
 authors: 
   - LitGroup LLC <opensource@litgroup.ru>

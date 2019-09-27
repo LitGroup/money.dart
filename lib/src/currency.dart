@@ -52,23 +52,34 @@ class Currency {
   // e.g. if minorDigits is 1 then this value will be 100.
   final BigInt minorDigitsFactor;
 
-  final String defaultPattern;
+  final String pattern;
+
+  // Most western currencies use the period as the decimal separator and comma for formating.
+  // Some other currencies invert the use of periods and commas. If this value is true the invert version is used.
+  final bool invertSeparators;
+
+  final String decimalSeparator;
+  final String thousandSeparator;
 
   /// Creates a currency with a given [code] and [minorDigits].
   /// [code - the currency code e.g. USD
   /// [minorDigits] - the number of digits after the decimal place the the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
-  /// [defaultPattern] - the default output format used when you call toString on a Money instance created with this currency.
+  /// [pattern] - the default output format used when you call toString on a Money instance created with this currency.
   Currency.create(this.code, this.minorDigits,
-      {this.symbol = '\$', this.defaultPattern = "S#.##"})
-      : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits) {
+      {this.symbol = '\$', this.pattern = "S0.00", this.invertSeparators=false})
+      : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits)
+      , decimalSeparator = (invertSeparators ? ',' : '.') 
+       , thousandSeparator = (invertSeparators ? '.' : ',') {
     if (code == null || code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
 
-    if (defaultPattern == null) {
+    if (pattern == null) {
       throw ArgumentError.value(
           minorDigits, 'defaultPattern', 'Must not be null.');
     }
+
+
   }
 
   @override

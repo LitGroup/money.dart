@@ -97,7 +97,7 @@ class Money implements Comparable<Money> {
   }
 
   String toString() {
-    return this.encodedBy(PatternEncoder(this, _currency.defaultPattern));
+    return this.encodedBy(PatternEncoder(this, _currency.pattern));
   }
 
   /* Encoding/Decoding ********************************************************/

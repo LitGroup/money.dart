@@ -25,30 +25,35 @@ class PatternEncoder implements MoneyEncoder<String> {
   ) {
     assert(money != null);
     assert(pattern != null);
-
-    if ('.'.allMatches(pattern).length > 1) {
-      throw IllegalPatternException(
-          "A format Pattern may contain, at most, a single period '.'");
-    }
   }
 
   @override
   String encode(MoneyData data) {
     String formatted;
-    int period = pattern.indexOf('.');
+
+    int decimalSeperatorCount =
+        data.currency.decimalSeparator.allMatches(pattern).length;
+
+    if (decimalSeperatorCount > 1) {
+      throw IllegalPatternException(
+          "A format Pattern may contain, at most, a single decimal separator '${data.currency.decimalSeparator}'");
+    }
+
+    int decimalSeparatorIndex = pattern.indexOf(data.currency.decimalSeparator);
 
     bool hasMinor = true;
-    if (period == -1) {
-      period = pattern.length;
+    if (decimalSeparatorIndex == -1) {
+      decimalSeparatorIndex = pattern.length;
       hasMinor = false;
     }
 
-    String majorPattern = pattern.substring(0, period);
+    String majorPattern = pattern.substring(0, decimalSeparatorIndex);
 
     formatted = formatMajorPart(data, majorPattern);
     if (hasMinor) {
-      String minorPattern = pattern.substring(period + 1);
-      formatted += "." + formatMinorPart(data, minorPattern);
+      String minorPattern = pattern.substring(decimalSeparatorIndex + 1);
+      formatted +=
+          data.currency.decimalSeparator + formatMinorPart(data, minorPattern);
     }
 
     return formatted;
@@ -59,12 +64,11 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     // extract the contiguous money components made up of 0 # , and .
     String moneyPattern = getMoneyPattern(majorPattern);
-    checkZeros(moneyPattern, minor: false);
+    checkZeros(moneyPattern, data.currency.thousandSeparator, minor: false);
 
     BigInt majorUnits = data.getMajorUnits();
-    // format the no. into that pattern.
-    String formattedMajorUnits =
-        NumberFormat(moneyPattern).format(majorUnits.toInt());
+
+    String formattedMajorUnits = getFormattedMajorUnits(data, moneyPattern, majorUnits);
 
     // replace the the money components with a single #
     majorPattern = compressMoney(majorPattern);
@@ -76,7 +80,8 @@ class PatternEncoder implements MoneyEncoder<String> {
     // checks we have only one S.
     validateS(majorPattern);
 
-    // We work right to left.
+    // Replace the compressed patterns with actual values.
+    // The periods and commas have already been removed from the pattern.
     for (int i = 0; i < majorPattern.length; i++) {
       var char = majorPattern[i];
       switch (char) {
@@ -103,6 +108,23 @@ class PatternEncoder implements MoneyEncoder<String> {
     }
 
     return formatted;
+  }
+
+  String getFormattedMajorUnits(MoneyData data, String moneyPattern, BigInt majorUnits) {
+    if (data.currency.invertSeparators) {
+      // the NumberFormat doesn't like the inverted characters
+      // so we normalise them for the conversion.
+      moneyPattern = moneyPattern.replaceAll(".", ",");
+    }
+    // format the no. into that pattern.
+    String formattedMajorUnits =
+        NumberFormat(moneyPattern).format(majorUnits.toInt());
+    
+    if (data.currency.invertSeparators) {
+      // Now convert them back
+      formattedMajorUnits = formattedMajorUnits.replaceAll(",", ".");
+    }
+    return formattedMajorUnits;
   }
 
   String getCode(MoneyData data, String pattern) {
@@ -178,7 +200,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     // extract the contiguous money components made up of 0 # , and .
     String moneyPattern = getMoneyPattern(minorPattern);
 
-    checkZeros(moneyPattern, minor: true);
+    checkZeros(moneyPattern, data.currency.thousandSeparator, minor: true);
 
     int paddedTo = 0;
     int firstZero = moneyPattern.indexOf('0');
@@ -239,12 +261,12 @@ class PatternEncoder implements MoneyEncoder<String> {
     return formatted;
   }
 
-  // counts the no. of # and 0s in the pattern before the '.'.
-  int countMajorPatternDigits(String pattern) {
+  // counts the no. of # and 0s in the pattern before the decimal seperator.
+  int countMajorPatternDigits(String pattern, String decimalSeparator) {
     int count = 0;
     for (int i = 0; i < pattern.length; i++) {
       var char = pattern[i];
-      if (char == '.') {
+      if (char == decimalSeparator) {
         break;
       }
 
@@ -255,18 +277,18 @@ class PatternEncoder implements MoneyEncoder<String> {
     return count;
   }
 
-  // counts the no. of # and 0s in the pattern before the '.'.
-  int countMinorPatternDigits(String pattern) {
+  // counts the no. of # and 0s in the pattern before the decimal separator.
+  int countMinorPatternDigits(String pattern, String decimalSeparator) {
     int count = 0;
-    bool foundPeriod = false;
+    bool foundDecimalSeparator = false;
 
     for (int i = 0; i < pattern.length; i++) {
       var char = pattern[i];
-      if (char == '.') {
-        foundPeriod = true;
+      if (char == decimalSeparator) {
+        foundDecimalSeparator = true;
       }
 
-      if (!foundPeriod) {
+      if (!foundDecimalSeparator) {
         continue;
       }
 
@@ -307,20 +329,20 @@ class PatternEncoder implements MoneyEncoder<String> {
     return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), "#");
   }
 
-  void checkZeros(String moneyPattern, {bool minor}) {
+  void checkZeros(String moneyPattern, String thousandSeparator, {bool minor}) {
     if (!moneyPattern.contains("0")) return;
 
     // compress zeros so we have only one which should be at the end,
-    // unless we have commas then we can have several 0s e.g. 0,0,0
+    // unless we have thousand separators then we can have several 0s e.g. 0,0,0
     moneyPattern = moneyPattern.replaceAll(RegExp(r'0+'), "0");
 
     // check that zeros are the trailing character.
-    // if the pattern has commas (,) then there can be more than one 0.
+    // if the pattern has thousand separators then there can be more than one 0.
     bool expectingZero = true;
     int len = moneyPattern.length - 1;
     for (int i = len; i > 0; i--) {
       String char = moneyPattern[i];
-      bool isValid = (char == '0' || char == ',');
+      bool isValid = (char == '0' || char == thousandSeparator);
       if (isValid && !expectingZero) {
         throw IllegalPatternException(
             "The '0' pattern characters must only be at the end of the pattern for " +

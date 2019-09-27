@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.0.0
+First release version
+
+### Updated
+Readme to document invertedSeparators and general improvments corrections.
+
+### Added
+Added a couple additional examples.
+InvertedSeparator argument to Currency.create
+Additional unit test for the InvertedSeparator option.
+
 ## version: 1.0.0-beta.6
 Minor cleanups of the readme.md
 

@@ -26,16 +26,13 @@ import 'package:money2/money2.dart';
 import 'package:test/test.dart';
 
 void main() {
-  //final jpy = Currency.withCodeAndPrecision('JPY', 0);
   final usd = Currency.create('USD', 2);
-  // final bhd = Currency.withCodeAndPrecision('BHD', 3);
+  final euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0,00");
+
 
   final Money usd10d25 = Money.fromInt(1025, usd);
   final Money usd10 = Money.fromInt(1000, usd);
-/*  final Money usd212d25 = Money.fromInt(21225, usd);
-  final Money jpy101 = Money.fromInt(101, jpy);
-  final Money bhd99d111 = Money.fromInt(99111, bhd);
-  */
+
 
   group('format', () {
     test('Simple USD', () {
@@ -48,6 +45,18 @@ void main() {
       expect(usd10d25.format("##"), equals("10"));
     });
 
+ test('Inverted Decimal Separator', () {
+      final Money eurolarge = Money.fromInt(10000000, euro);
+      final Money euroSmall = Money.fromInt(1099, euro);
+      expect(eurolarge.toString(), equals("€100000,00"));
+      expect(euroSmall.format("S#"), equals("€10"));
+      expect(euroSmall.format("#,#"), equals("10,9"));
+      expect(euroSmall.format("CCC#,#0"), equals("EUR10,99"));
+      expect(euroSmall.format("###.000,##"), equals("010,99"));
+      expect(eurolarge.format("###.000,00"), equals("100.000,00"));
+      expect(euroSmall.format("##,##"), equals("10,99"));
+      expect(euroSmall.format("##"), equals("10"));
+    });
     test('Lead zero USD', () {
       expect(usd10d25.format("000.##"), equals("010.25"));
       expect(usd10d25.format("000"), equals("010"));
