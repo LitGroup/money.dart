@@ -23,6 +23,8 @@
  */
 
 // import 'package:meta/meta.dart' show sealed, immutable;
+import 'package:money2/src/pattern_encoder.dart';
+
 import 'currency.dart';
 import 'encoders.dart';
 import 'minor_units.dart';
@@ -105,7 +107,7 @@ class Money implements Comparable<Money> {
   ///   * C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
   ///       * C - U
   ///       * CC - US
-  ///       * CCC - USD
+  ///       * CCC - USD - outputs the full currency code regardless of length.
   ///   * &#35; denotes a digit.
   ///   * 0 denotes a digit and with the addition of defining leading and trailing zeros.
   ///   * , (comma) a placeholder for the grouping separtor
@@ -329,10 +331,3 @@ class Money implements Comparable<Money> {
   }
 }
 
-/// Thrown when you pass an invalid pattern to [Money.format].
-class IllegalPatternException implements Exception {
-  String message;
-  IllegalPatternException(this.message);
-
-  String toString() => message;
-}
