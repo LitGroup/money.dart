@@ -59,7 +59,8 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     BigInt majorUnits = data.getMajorUnits();
 
-    String formattedMajorUnits = getFormattedMajorUnits(data, moneyPattern, majorUnits);
+    String formattedMajorUnits =
+        getFormattedMajorUnits(data, moneyPattern, majorUnits);
 
     // replace the the money components with a single #
     majorPattern = compressMoney(majorPattern);
@@ -101,7 +102,8 @@ class PatternEncoder implements MoneyEncoder<String> {
     return formatted;
   }
 
-  String getFormattedMajorUnits(MoneyData data, String moneyPattern, BigInt majorUnits) {
+  String getFormattedMajorUnits(
+      MoneyData data, String moneyPattern, BigInt majorUnits) {
     if (data.currency.invertSeparators) {
       // the NumberFormat doesn't like the inverted characters
       // so we normalise them for the conversion.
@@ -110,7 +112,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     // format the no. into that pattern.
     String formattedMajorUnits =
         NumberFormat(moneyPattern).format(majorUnits.toInt());
-    
+
     if (data.currency.invertSeparators) {
       // Now convert them back
       formattedMajorUnits = formattedMajorUnits.replaceAll(",", ".");
@@ -360,8 +362,6 @@ class PatternEncoder implements MoneyEncoder<String> {
     return result + trailingZeros;
   }
 }
-
-
 
 /// Thrown when you pass an invalid pattern to [Money.format].
 class IllegalPatternException implements Exception {

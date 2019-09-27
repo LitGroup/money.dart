@@ -23,16 +23,16 @@
  */
 
 /// Money2 is a fork of LitGroup's Money package.
-/// 
+///
 /// The aim of this fork is to improve the documentation and introduce a number of convenience methods to make it easier to work with Money.
 /// This package also changes some of the naming convention to provide a (hopefully) more intuiative api.
-/// 
+///
 /// The [Currency] class allows you to define the key attributes of a currency such as Symbol, Code, minorDigits and a default format.
-/// 
+///
 /// The [Money] class stores the underlying values using a BigInt. The value is stored using the currencies 'minor' units (e.g. cents).
-/// 
+///
 /// This allows for precise calculations as required when handling money.
-/// 
+///
 /// The package use the following terms:
 /// * Minor Units - the smallest unit of a currency e.g. cents.
 /// * Major Units - the integer component of a currency - e.g. dollars
@@ -41,23 +41,23 @@
 /// * pattern - a pattern used to control the display format.
 /// * minorDigits - the number of minor Units (e.g. cents) which should be used when storing the currency.
 /// * decimal separator - the character that separates the fraction part from the integer of a number e.g. '10.99'. This defaults to '.' but can be changed to ','
-/// * thousands separator - the character that is used to format thousands (e.g. 100,000). This can be changed to '.' 
-/// 
+/// * thousands separator - the character that is used to format thousands (e.g. 100,000). This can be changed to '.'
+///
 ///  Using the [Money] and [Currency] classes is easy.
-/// 
+///
 /// ```dart
 /// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
 /// Money costPrice = Money.fromInt(1000, aud);
 /// costPrice.toString();
 /// > $10.00
-/// 
+///
 /// Money taxInclusive = costPrice * 1.1;
 /// taxInclusive.toString();
 /// > $11.00
-/// 
+///
 /// taxInclusive.format("SCCC0.00");
 /// > $AUD11.00
-/// 
+///
 /// taxInclusive.format("SCCC0");
 /// > $AUD11
 /// ```

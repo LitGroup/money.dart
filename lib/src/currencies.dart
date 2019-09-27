@@ -25,9 +25,9 @@
 import 'currency.dart';
 
 /// A factory for registering and accessing [Currency] instances.
-/// 
+///
 /// The [Currencies] class is a convenience class that you aren't required to use.
-/// 
+///
 /// Money2 does not create a default set of currencies instead you need to explicitly
 /// create each currency.
 ///
@@ -63,7 +63,7 @@ class Currencies {
   /* Protocol *****************************************************************/
 
   /// Searches the list of registered [Currency]s.
-  /// 
+  ///
   /// Returns the [Currency] that matches [code] or `null` if no matching [code] is found.
   Currency find(String code) {
     return _directory[code];

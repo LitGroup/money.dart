@@ -113,7 +113,7 @@ class Money implements Comparable<Money> {
   ///   * , (comma) a placeholder for the grouping separtor
   ///   * . (period) a place holder fo rthe decimal separator
   ///
-  /// Example: 
+  /// Example:
   /// ```dart
   /// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
   /// Money costPrice = Money.fromInt(1000, aud);
@@ -130,7 +130,7 @@ class Money implements Comparable<Money> {
   /// taxInclusive.format("SCCC0");
   /// > $AUD11
   /// ```
-  /// 
+  ///
   String format(String pattern) {
     return this.encodedBy(PatternEncoder(this, pattern));
   }
@@ -330,4 +330,3 @@ class Money implements Comparable<Money> {
     }
   }
 }
-

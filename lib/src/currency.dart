@@ -26,7 +26,7 @@ import 'dart:math';
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
-/// Allows you to create a [Currency] which is then used to construct [Money] instances. 
+/// Allows you to create a [Currency] which is then used to construct [Money] instances.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
@@ -62,27 +62,26 @@ class Currency {
   final String thousandSeparator;
 
   /// Creates a currency with a given [code] and [minorDigits].
-  /// 
+  ///
   /// * [code] - the currency code e.g. USD
   /// * [minorDigits] - the number of digits after the decimal place the the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
   /// * [pattern] - the default output format used when you call toString on a Money instance created with this currency. See [Money.format] for details on the supported patterns.
-  /// * [inverSeparator] - normally the decimal separator is '.' and the thousands separator is ','. When this value is true (defaults to false) 
+  /// * [inverSeparator] - normally the decimal separator is '.' and the thousands separator is ','. When this value is true (defaults to false)
   /// then the separators are swapped. This is needed for most non English speaking [Currency]s.
   Currency.create(this.code, this.minorDigits,
-      {this.symbol = '\$', this.pattern = "S0.00", this.invertSeparators=false})
-      : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits)
-      , decimalSeparator = (invertSeparators ? ',' : '.') 
-       , thousandSeparator = (invertSeparators ? '.' : ',') {
+      {this.symbol = '\$',
+      this.pattern = "S0.00",
+      this.invertSeparators = false})
+      : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
+        decimalSeparator = (invertSeparators ? ',' : '.'),
+        thousandSeparator = (invertSeparators ? '.' : ',') {
     if (code == null || code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
 
     if (pattern == null) {
-      throw ArgumentError.value(
-          minorDigits, 'pattern', 'Must not be null.');
+      throw ArgumentError.value(minorDigits, 'pattern', 'Must not be null.');
     }
-
-
   }
 
   @override
