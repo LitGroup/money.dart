@@ -28,12 +28,32 @@ import 'encoders.dart';
 import 'minor_units.dart';
 import 'money_data.dart';
 
-/// A value-type representing some money.
+/// Allows you to store, print and perform mathematically operations on money whilst maintaining precision.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
-/// Current implementation uses [BigInt] internally to represent an amount
-/// in minorUnits (e.g. cents)
+/// The [Money] class works with the [Currency] class to provide a simple means to define monetary values.
+///
+/// e.g.
+///
+/// ```dart
+/// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+/// Money costPrice = Money.fromInt(1000, aud);
+/// costPrice.toString();
+/// > $10.00
+///
+/// Money taxInclusive = costPrice * 1.1;
+/// taxInclusive.toString();
+/// > $11.00
+///
+/// taxInclusive.format("SCCC0.00");
+/// > $AUD11.00
+///
+/// taxInclusive.format("SCCC0");
+/// > $AUD11
+/// ```
+///
+/// Money uses  [BigInt] internally to represent an amount in minorUnits (e.g. cents)
 ///
 
 // @sealed
@@ -80,18 +100,35 @@ class Money implements Comparable<Money> {
   ///
   /// Provides a simple means of formating a [Money] instance as a string.
   ///
-  /// pattern -
-  ///   The supported patterns are:
-  ///   S outputs the currencies symbol e.g. $.
-  ///   C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
-  ///      C - U
-  ///      CC - US
-  ///      CCC - USD
-  ///   # denotes a digit.
-  ///   0 denotes a digit and with the addition of defining leading and trailing zeros.
-  ///   , (comma) a placeholder for the grouping separtor
-  ///   . (period) a place holder fo rthe decimal separator
+  /// [pattern] supports the following characters
+  ///   * S outputs the currencies symbol e.g. $.
+  ///   * C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
+  ///       * C - U
+  ///       * CC - US
+  ///       * CCC - USD
+  ///   * &#35; denotes a digit.
+  ///   * 0 denotes a digit and with the addition of defining leading and trailing zeros.
+  ///   * , (comma) a placeholder for the grouping separtor
+  ///   * . (period) a place holder fo rthe decimal separator
   ///
+  /// Example: 
+  /// ```dart
+  /// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+  /// Money costPrice = Money.fromInt(1000, aud);
+  /// costPrice.toString();
+  /// > $10.00
+  ///
+  /// Money taxInclusive = costPrice * 1.1;
+  /// taxInclusive.toString();
+  /// > $11.00
+  ///
+  /// taxInclusive.format("SCCC0.00");
+  /// > $AUD11.00
+  ///
+  /// taxInclusive.format("SCCC0");
+  /// > $AUD11
+  /// ```
+  /// 
   String format(String pattern) {
     return this.encodedBy(PatternEncoder(this, pattern));
   }
@@ -292,6 +329,7 @@ class Money implements Comparable<Money> {
   }
 }
 
+/// Thrown when you pass an invalid pattern to [Money.format].
 class IllegalPatternException implements Exception {
   String message;
   IllegalPatternException(this.message);

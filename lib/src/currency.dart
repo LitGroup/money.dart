@@ -26,7 +26,7 @@ import 'dart:math';
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
-/// Value-type representing a currency.
+/// Allows you to create a [Currency] which is then used to construct [Money] instances. 
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
@@ -34,8 +34,8 @@ import 'dart:math';
 /// create each currency type you want to use.
 ///
 /// Normally you create one global currency instance for each currency type.
-/// If you wish you can register each Currency instance with the Currencies
-/// which then is able to provides a global directory of Currency instances.
+/// If you wish you can register each [Currency] instance with the [Currencies] class
+/// which then is able to provides a global directory of [Currency] instances.
 ///
 //@sealed
 // @immutable
@@ -62,9 +62,12 @@ class Currency {
   final String thousandSeparator;
 
   /// Creates a currency with a given [code] and [minorDigits].
-  /// [code - the currency code e.g. USD
-  /// [minorDigits] - the number of digits after the decimal place the the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
-  /// [pattern] - the default output format used when you call toString on a Money instance created with this currency.
+  /// 
+  /// * [code] - the currency code e.g. USD
+  /// * [minorDigits] - the number of digits after the decimal place the the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
+  /// * [pattern] - the default output format used when you call toString on a Money instance created with this currency. See [Money.format] for details on the supported patterns.
+  /// * [inverSeparator] - normally the decimal separator is '.' and the thousands separator is ','. When this value is true (defaults to false) 
+  /// then the separators are swapped. This is needed for most non English speaking [Currency]s.
   Currency.create(this.code, this.minorDigits,
       {this.symbol = '\$', this.pattern = "S0.00", this.invertSeparators=false})
       : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits)
@@ -76,7 +79,7 @@ class Currency {
 
     if (pattern == null) {
       throw ArgumentError.value(
-          minorDigits, 'defaultPattern', 'Must not be null.');
+          minorDigits, 'pattern', 'Must not be null.');
     }
 
 

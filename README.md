@@ -23,6 +23,17 @@ This package also changes some of the naming convention to provide a (hopefully)
 The Money class stores the underlying values using a BigInt. The value is stored using the currencies 'minor' units (e.g. cents).
 This allows for precise calculations as required when handling money.
 
+```dart
+Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+Money costPrice = Money.fromInt(1000, aud);
+costPrice.toString();
+> $10.00
+
+final taxInclusive = costPrice * 1.1;
+taxInclusive.toString();
+ > $11.00
+```
+
 The package use the following terms:
 
 * Minor Units - the smallest unit of a currency e.g. cents.
@@ -160,7 +171,7 @@ currency (e.g. cents):
 // Create a currency that normally displays 2 decimal places:
 final Currency usd = Currency.create('USD', 2);
 
-// Current a currency for Japan's yen with the correct symbol (we default to $)
+*// Current a currency for Japan's yen with the correct symbol (we default to $)
 final Currency usd = Currency.create('JPY', 0, symbol: '¥');
 
 // Create a money value of $5.10 usd from an int
@@ -187,27 +198,19 @@ Money.format(String pattern);
 
 ### Formatting Patterns
 The supported pattern characters are:
-
- ```
-     S outputs the currencies symbol e.g. $.
-
-     C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's. Specifying CCC will output the full code regardless of its length.
-
-        C - U
-
-        CC - US
-
-        CCC - USD
-
-     # denotes a digit.
-
-     0 denotes a digit and with the addition of defining leading and trailing zeros.
-
-     , (comma) a placeholder for the grouping separtor
-
-     . (period) a place holder fo rthe decimal separator 
+*
+ 
+     * S outputs the currencies symbol e.g. $.
+     * C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's. Specifying CCC will output the full code regardless of its length.
+         * C - U
+         * CC - US
+         * CCC - USD
+     * &#35; denotes a digit.
+     * 0 denotes a digit and with the addition of defining leading and trailing zeros.
+     * , (comma) a placeholder for the grouping separtor
+     * . (period) a place holder fo rthe decimal separator 
      
-```
+
 
 Examples:
 

@@ -24,13 +24,18 @@
 
 import 'currency.dart';
 
+/// A factory for registering and accessing [Currency] instances.
+/// 
+/// The [Currencies] class is a convenience class that you aren't required to use.
+/// 
 /// Money2 does not create a default set of currencies instead you need to explicitly
-/// create each currency type you want to use.
+/// create each currency.
 ///
-/// The Currency directory lets you register
+/// The [Currencies] class lets you register each [Currency] for easy reuse and access from this singleton.
 ///
-///
-/// An interface of currency directory.
+/// You don't need to register [Currency]s, you can just create [Currency]s and use
+/// them as needed.
+
 class Currencies {
   static Currencies _self = Currencies._internal();
 
@@ -43,11 +48,12 @@ class Currencies {
 
   Currencies._internal() : _directory = Map();
 
+  /// Register a Currency
   void register(Currency currency) {
     _directory[currency.code] = currency;
   }
 
-  /// Creates a directory of currencies initialized by [currencies].
+  /// Register a list of currencies.
   void registerList(Iterable<Currency> currencies) {
     currencies.forEach((currency) {
       _directory[currency.code] = currency;
@@ -56,7 +62,9 @@ class Currencies {
 
   /* Protocol *****************************************************************/
 
-  /// Returns a [Currency] if found or `null`.
+  /// Searches the list of registered [Currency]s.
+  /// 
+  /// Returns the [Currency] that matches [code] or `null` if no matching [code] is found.
   Currency find(String code) {
     return _directory[code];
   }
