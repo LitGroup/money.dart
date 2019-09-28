@@ -24,7 +24,7 @@ The Money class stores the underlying values using a BigInt. The value is stored
 This allows for precise calculations as required when handling money.
 
 ```dart
-Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+Currency aud = Currency.create('AUD', 2);
 Money costPrice = Money.fromInt(1000, aud);
 costPrice.toString();
 > $10.00
@@ -32,6 +32,9 @@ costPrice.toString();
 final taxInclusive = costPrice * 1.1;
 taxInclusive.toString();
  > $11.00
+
+ taxInclusive.format("SCC #.00");
+ > $AU 11.00
 ```
 
 The package use the following terms:

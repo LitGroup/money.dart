@@ -325,24 +325,33 @@ class PatternEncoder implements MoneyEncoder<String> {
   void checkZeros(String moneyPattern, String thousandSeparator, {bool minor}) {
     if (!moneyPattern.contains("0")) return;
 
+    IllegalPatternException illegalPattern = IllegalPatternException(
+        "The '0' pattern characters must only be at the end of the pattern for " +
+            (minor ? "Minor" : "Major") +
+            " Units");
+
     // compress zeros so we have only one which should be at the end,
     // unless we have thousand separators then we can have several 0s e.g. 0,0,0
     moneyPattern = moneyPattern.replaceAll(RegExp(r'0+'), "0");
 
+    // last char must be a zero (i.e. thousand separater not allowed here)
+    if (moneyPattern[moneyPattern.length - 1] != '0') throw illegalPattern;
+
     // check that zeros are the trailing character.
     // if the pattern has thousand separators then there can be more than one 0.
-    bool expectingZero = true;
+    bool zerosEnded = false;
     int len = moneyPattern.length - 1;
     for (int i = len; i > 0; i--) {
       String char = moneyPattern[i];
-      bool isValid = (char == '0' || char == thousandSeparator);
-      if (isValid && !expectingZero) {
-        throw IllegalPatternException(
-            "The '0' pattern characters must only be at the end of the pattern for " +
-                (minor ? "Minor" : "Major") +
-                " Units");
+      bool isValid = char == '0';
+
+      // when looking at the intial zeros a thousand separator is consider  valid.
+      if (!zerosEnded) isValid &= char == thousandSeparator;
+
+      if (isValid && zerosEnded) {
+        throw illegalPattern;
       }
-      if (!isValid) expectingZero = false;
+      if (!isValid) zerosEnded = true;
     }
   }
 

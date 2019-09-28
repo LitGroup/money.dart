@@ -23,23 +23,29 @@
  */
 
 import 'package:money2/money2.dart';
+import 'package:money2/src/pattern_encoder.dart';
 import 'package:test/test.dart';
 
 void main() {
   final usd = Currency.create('USD', 2);
   final euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0,00");
+    final long = Currency.create('LONG', 2);
 
 
   final Money usd10d25 = Money.fromInt(1025, usd);
   final Money usd10 = Money.fromInt(1000, usd);
+  final Money long1000d90 = Money.fromInt(100090, long);
 
 
   group('format', () {
-    test('Simple USD', () {
+    test('Simple Number', () {
       expect(usd10d25.toString(), equals("\$10.25"));
+      expect(usd10.format("#.#0"), equals("10.00"));
       expect(usd10d25.format("#"), equals("10"));
       expect(usd10d25.format("#.#"), equals("10.2"));
-      expect(usd10.format("#.#0"), equals("10.00"));
+      expect(usd10d25.format("0.00"), equals("10.25"));
+      expect(usd10d25.format("#,##0.##"), equals("10.25"));
+      expect(long1000d90.format("#,##0.00"), equals("1,000.90"));
       expect(usd10d25.format("###,000.##"), equals("010.25"));
       expect(usd10d25.format("##.##"), equals("10.25"));
       expect(usd10d25.format("##"), equals("10"));
@@ -67,25 +73,31 @@ void main() {
       expect(usd10d25.format("000"), equals("010"));
     });
 
-    test('Simple USD with symbol', () {
+    test('Symbol tests', () {
       expect(usd10d25.format("S##.##"), equals("\$10.25"));
       expect(usd10.format("S##.00"), equals("\$10.00"));
       expect(usd10d25.format("S##"), equals("\$10"));
       expect(usd10d25.format("S##"), equals("\$10"));
     });
 
-    test('Simple USD with currency', () {
+    test('Currency tests', () {
       expect(usd10d25.format("C##.##"), equals("U10.25"));
       expect(usd10d25.format("CC##.##"), equals("US10.25"));
       expect(usd10d25.format("CCC##.##"), equals("USD10.25"));
-    });
+      expect(long1000d90.format("CCC S#,###.00"), equals("LONG \$1,000.90"));
+      });
 
     test('USD combos', () {
       expect(usd10d25.format("SCCC 000,000.##"), equals("\$USD 000,010.25"));
+      expect(usd10d25.format("CCC S##.##"), equals("USD \$10.25"));
     });
 
-    // test('Invalid Patterns', () {
-    //   expect(usd10d25.format("##0"), throwsA(IllegalPatternException));
-    // });
+    test('Invalid Patterns', () {
+      expect(() => usd10d25.format("0##"), throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("000,"), throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("000#"), throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("0#"), throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("0.0#"), throwsA(TypeMatcher<IllegalPatternException>()));
+    });
   });
 }
