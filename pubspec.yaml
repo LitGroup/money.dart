@@ -1,7 +1,7 @@
 name: money2
 description: Simple to use Money and Currency classes.
   Provides Money and Currency classes with fixed precision maths operations and a nice Money formatter.
-version: 1.0.3
+version: 1.0.4
 homepage: https://github.com/noojee/money.dart
 authors: 
   - LitGroup LLC <opensource@litgroup.ru>

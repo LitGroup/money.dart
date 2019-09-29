@@ -1,64 +1,118 @@
 import 'package:money2/money2.dart';
 
 void main() {
+  ///
+  /// Create a currency
+  /// USD currency uses 2 decimal places.
+  ///
   final usd = Currency.create('USD', 2);
 
-  final Currency aud =
-      Currency.create('AUD', 2, symbol: '\$', pattern: 'S0.00');
-  Money audMoney = Money.fromInt(500, aud);
-  audMoney.toString();
-  // > $5.00
+  ///
+  /// Create a money which stores $USD 10.00
+  ///
+  /// Note: we use the minor unit (e.g. cents) when passing in the monetary value.
+  /// So $10.00 is 1000 cents.
+  ///
+  Money costPrice = Money.fromInt(1000, usd);
+  print(costPrice.toString());
+  // > $10.00
 
+  ///
+  /// Do some maths
+  ///
+  final taxInclusive = costPrice * 1.1;
+
+  ///
+  /// Output the result using the default format.
+  ///
+  print(taxInclusive.toString());
+  // > $11.00
+
+  ///
+  /// Do some custom formatting of the ouput
+  /// S - the symbol e.g. $
+  /// CC - fist two digits of the currency code provided when creating the currency.
+  /// # - a digit if required
+  /// 0 - a digit or the zero character as padding.
+  print(taxInclusive.format("SCC #.00"));
+  // > $US 11.00
+
+  ///
+  /// Explicitly define symbol and the default pattern to be used when calling [Money.toString()]
+  ///
+  /// JPY - code for japenese yen.
+  /// 0 - the number of minor units (e.g cents) used by the currency. The yen has no minor units.
+  /// ¥ - currency symbol for the yen
+  /// S0 - the default pattern for [Money.toString()]. S output the symbol. 0 - force at least a single digit in the output.
+  ///
   final Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
   Money jpyMoney = Money.fromInt(500, jpy);
-  jpyMoney.toString();
+  print(jpyMoney.toString());
   // > ¥500
 
+  ///
+  /// Define a currency that has inverted separators.
+  /// i.e. The USD uses '.' for the integer/fractional separator and ',' for the thousands separator.
+  /// The EURO use ',' for the integer/fractional separator and '.' for the thousands separator.
+  ///
   final Currency euro = Currency.create('EUR', 2,
-      symbol: '€', invertSeparators: true, pattern: "S0,00");
+      symbol: '€', invertSeparators: true, pattern: "0,00 S");
 
-  Money costPrice = Money.fromInt(10034530, usd); // 100,345.30 usd
+  Money bratwurstUnitPrice = Money.fromInt(590, euro);
+  print(bratwurstUnitPrice.toString());
+  // > 5,90 €
 
-  costPrice.format("###,###");
+  ///
+  /// Formatting examples
+  ///
+  ///
+
+  // 100,345.30 usd
+  Money teslaPrice = Money.fromInt(10034530, usd);
+
+  print(teslaPrice.format("###,###"));
   // > 100,345
 
-  costPrice.format("S###,###.##");
+  print(teslaPrice.format("S###,###.##"));
   // > $100,345.3
 
-  costPrice.format("CC###,###.#0");
+  print(teslaPrice.format("CC###,###.#0"));
   // > US100,345.30
 
-  Money euroCostPrice = Money.fromInt(10034530, euro); // 100,345.30 EUR
-
-  euroCostPrice.format("###.###");
+  // 100,345.30 EUR
+  Money euroCostPrice = Money.fromInt(10034530, euro);
+  print(euroCostPrice.format("###.###"));
   // > 100.345
 
-  euroCostPrice.format("S###.###,##");
+  print(euroCostPrice.format("S###.###,##"));
   // > €100.345,3
 
-  euroCostPrice.format("CC###.###,#0");
+  print(euroCostPrice.format("CC###.###,#0"));
   // > EU100,345,30
 
-  // Make the currencies available globally by registering them with the [Currencies] singleton factory.
+  /// 
+  /// Make the currencies available globally by registering them with the [Currencies] singleton factory.
+  /// 
   Currencies().register(usd);
-  Currencies().register(aud);
   Currencies().register(euro);
   Currencies().register(jpy);
 
-  // use a registered currency.
-  Currency aussieDollar = Currencies().find("AUD");
+   
+  // use a registered currency by finding it in the registry using
+  // the currency code that the currency was created with.
+  Currency usDollar = Currencies().find("USD");
 
-  Money invoicePrice = Money.fromInt(1000, aussieDollar);
-  invoicePrice.format("SCCC 0.00");
-  // $AUD 10.00
+  Money invoicePrice = Money.fromInt(1000, usDollar);
 
+  ///
+  print(invoicePrice.format("SCCC 0.00"));
+  // $USD 10.00
 
   // Do some maths
   Money taxInclusivePrice = invoicePrice * 1.1;
-  taxInclusivePrice.toString();
+  print(taxInclusivePrice.toString());
   // $11.00
 
-  taxInclusivePrice.format("SCCC 0.00");
-  // $AUD 11.00
-
+  print(taxInclusivePrice.format("SCC 0.00"));
+  // $US 11.00
 }
