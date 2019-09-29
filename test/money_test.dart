@@ -33,27 +33,44 @@ void main() {
 
   group('Money', () {
     group('instantiation', () {
-      test('with minorUnits', () {
+      test('fromBigInt', () {
         var _ = Money.fromBigInt(BigInt.from(0), usd);
         _ = Money.fromBigInt(BigInt.from(1), usd);
         _ = Money.fromBigInt(BigInt.from(-1), usd);
       });
 
-      test('with minorUnits throws an error for null amount', () {
-        expect(() => Money.fromBigInt(null, usd), throwsArgumentError);
+
+       test('fromInt', () {
+        var _ = Money.fromInt(0, usd);
+        _ = Money.fromInt(1, usd);
+        _ = Money.fromInt(-1, usd);
       });
 
-      test('with minorUnits throws an error for null currency', () {
+      test('Throws an error for null amount', () {
+        expect(() => Money.fromBigInt(null, usd), throwsArgumentError);
+        expect(() => Money.fromInt(null, usd), throwsArgumentError);
+      });
+
+      test('Throws an error for null currency', () {
         expect(() => Money.fromBigInt(BigInt.from(100), null),
+            throwsArgumentError);
+        expect(() => Money.fromInt(100, null),
             throwsArgumentError);
       });
     });
 
-    test('hash value', () {
+    test('bigint hash value', () {
       final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
 
       expect(fiveDollars.hashCode,
           equals(Money.fromBigInt(BigInt.from(500), usd).hashCode));
+    });
+
+    test('int hash value', () {
+      final fiveDollars = Money.fromInt(500, usd);
+
+      expect(fiveDollars.hashCode,
+          equals(Money.fromInt(500, usd).hashCode));
     });
 
     test('predicate of currency', () {
@@ -72,30 +89,21 @@ void main() {
       expect(oneDollar.isInSameCurrencyAs(oneEuro), isFalse);
     });
 
-    group('amount predicates:', () {
+    group('big int amount predicates:', () {
       final zeroCents = Money.fromBigInt(BigInt.zero, usd);
       final oneCent = Money.fromBigInt(BigInt.one, usd);
       final minusOneCent = Money.fromBigInt(-BigInt.one, usd);
 
-      test('isZero', () {
-        expect(zeroCents.isZero, isTrue);
-        expect(oneCent.isZero, isFalse);
-        expect(minusOneCent.isZero, isFalse);
-      });
+      moneyAmountPredicates(zeroCents, oneCent, minusOneCent);
+    }); // big int amount predicates
 
-      test('isPositive', () {
-        expect(oneCent.isPositive, isTrue);
-        expect(zeroCents.isPositive, isFalse);
-        expect(minusOneCent.isPositive, isFalse);
-      });
+ group('int amount predicates:', () {
+      final zeroCents = Money.fromInt(0, usd);
+      final oneCent = Money.fromInt(1, usd);
+      final minusOneCent = Money.fromInt(-1, usd);
 
-      test('isNegative', () {
-        expect(minusOneCent.isNegative, isTrue);
-        expect(zeroCents.isNegative, isFalse);
-        expect(oneCent.isNegative, isFalse);
-      });
-    }); // amount predicates
-
+      moneyAmountPredicates(zeroCents, oneCent, minusOneCent);
+    }); // 
     group('comparison', () {
       final fourDollars = Money.fromBigInt(BigInt.from(400), usd);
       final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
@@ -361,5 +369,25 @@ void main() {
         testAllocation(-101, 2, [-51, -50]);
       });
     });
+  });
+}
+
+void moneyAmountPredicates(Money zeroCents, Money oneCent, Money minusOneCent) {
+  test('isZero', () {
+    expect(zeroCents.isZero, isTrue);
+    expect(oneCent.isZero, isFalse);
+    expect(minusOneCent.isZero, isFalse);
+  });
+  
+  test('isPositive', () {
+    expect(oneCent.isPositive, isTrue);
+    expect(zeroCents.isPositive, isFalse);
+    expect(minusOneCent.isPositive, isFalse);
+  });
+  
+  test('isNegative', () {
+    expect(minusOneCent.isNegative, isTrue);
+    expect(zeroCents.isNegative, isFalse);
+    expect(oneCent.isNegative, isFalse);
   });
 }

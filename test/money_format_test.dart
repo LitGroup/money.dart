@@ -78,6 +78,7 @@ void main() {
       expect(usd10.format("S##.00"), equals("\$10.00"));
       expect(usd10d25.format("S##"), equals("\$10"));
       expect(usd10d25.format("S##"), equals("\$10"));
+      expect(usd10d25.format("S ##"), equals("\$ 10"));
     });
 
     test('Currency tests', () {
