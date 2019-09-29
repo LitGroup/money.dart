@@ -10,7 +10,8 @@ void main() {
   ///
   /// Create a money which stores $USD 10.00
   ///
-  /// Note: we use the minor unit (e.g. cents) when passing in the monetary value.
+  /// Note: we use the minor unit (e.g. cents) when passing in the 
+  ///   monetary value.
   /// So $10.00 is 1000 cents.
   ///
   Money costPrice = Money.fromInt(1000, usd);
@@ -31,19 +32,24 @@ void main() {
   ///
   /// Do some custom formatting of the ouput
   /// S - the symbol e.g. $
-  /// CC - fist two digits of the currency code provided when creating the currency.
+  /// CC - first two digits of the currency code provided when creating 
+  ///     the currency.
   /// # - a digit if required
   /// 0 - a digit or the zero character as padding.
   print(taxInclusive.format("SCC #.00"));
   // > $US 11.00
 
   ///
-  /// Explicitly define symbol and the default pattern to be used when calling [Money.toString()]
+  /// Explicitly define the symbol and the default pattern to be used
+  ///    when calling [Money.toString()]
   ///
   /// JPY - code for japenese yen.
-  /// 0 - the number of minor units (e.g cents) used by the currency. The yen has no minor units.
+  /// 0 - the number of minor units (e.g cents) used by the currency. 
+  ///     The yen has no minor units.
   /// ¥ - currency symbol for the yen
-  /// S0 - the default pattern for [Money.toString()]. S output the symbol. 0 - force at least a single digit in the output.
+  /// S0 - the default pattern for [Money.toString()]. 
+  ///      S output the symbol. 
+  ///      0 - force at least a single digit in the output.
   ///
   final Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
   Money jpyMoney = Money.fromInt(500, jpy);
@@ -52,15 +58,19 @@ void main() {
 
   ///
   /// Define a currency that has inverted separators.
-  /// i.e. The USD uses '.' for the integer/fractional separator and ',' for the thousands separator.
-  /// The EURO use ',' for the integer/fractional separator and '.' for the thousands separator.
+  /// i.e. The USD uses '.' for the integer/fractional separator 
+  ///      and ',' for the thousands separator.
+  ///      -> 1,000.00
+  /// The EURO use ',' for the integer/fractional separator 
+  ///      and '.' for the thousands separator.
+  ///      -> 1.000,00
   ///
   final Currency euro = Currency.create('EUR', 2,
-      symbol: '€', invertSeparators: true, pattern: "0,00 S");
+      symbol: '€', invertSeparators: true, pattern: "#.##0,00 S");
 
-  Money bratwurstUnitPrice = Money.fromInt(590, euro);
-  print(bratwurstUnitPrice.toString());
-  // > 5,90 €
+  Money bmwPrice = Money.fromInt(10025090, euro);
+  print(bmwPrice.toString());
+  // > 100.250,90 €
 
   ///
   /// Formatting examples
@@ -84,14 +94,15 @@ void main() {
   print(euroCostPrice.format("###.###"));
   // > 100.345
 
-  print(euroCostPrice.format("S###.###,##"));
-  // > €100.345,3
+  print(euroCostPrice.format("###.###,## S"));
+  // > 100.345,3 €
 
-  print(euroCostPrice.format("CC###.###,#0"));
-  // > EU100,345,30
+  print(euroCostPrice.format("###.###,#0 CC"));
+  // > 100.345,30 EU
 
   /// 
-  /// Make the currencies available globally by registering them with the [Currencies] singleton factory.
+  /// Make the currencies available globally by registering them 
+  ///     with the [Currencies] singleton factory.
   /// 
   Currencies().register(usd);
   Currencies().register(euro);
