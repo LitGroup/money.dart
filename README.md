@@ -6,6 +6,7 @@ This is a Dart implementation of Money and Currency classes
 * [Creating Currencies](#registering-a-currency)
 * [Creating Money](#creating-money)
 * [Formatting](#formatting)
+* [Exchange Rates](#exchange-rates)
 * [Comparison](#comparison)
 * [Arithmetic Operations](#arithmetic-operations)
 * [Allocation](#allocation)
@@ -24,17 +25,24 @@ The Money class stores the underlying values using a BigInt. The value is stored
 This allows for precise calculations as required when handling money.
 
 ```dart
-Currency usd = Currency.create('USD', 2);
-Money costPrice = Money.fromInt(1000, usd);
-costPrice.toString();
+Currency usdCurrency = Currency.create('USD', 2);
+
+// Create money from an int.
+Money costPrice = Money.fromInt(1000, usdCurrency);
+print(costPrice.toString());
 > $10.00
 
 final taxInclusive = costPrice * 1.1;
-taxInclusive.toString();
+print(taxInclusive.toString())
  > $11.00
 
- taxInclusive.format("SCC #.00");
+ print(taxInclusive.format("SCC #.00"));
  > $US 11.00
+
+// Create money from an String using the `Currency` instance.
+ Money fromString = usdCurrency.fromString("\$10.00");
+ print(fromString);
+ > $10.00
 ```
 
 The package use the following terms:
@@ -43,7 +51,7 @@ The package use the following terms:
 * Major Units - the integer component of a currency - e.g. dollars
 * code - the currency code. e.g. USD
 * symbol - the currency symbol. e.g. '$'. It should be noted that not every currency has a symbol.
-* pattern - a pattern used to control the display format.
+* pattern - a pattern used to control parsing and the display format.
 * minorDigits - the number of minor Units (e.g. cents) which should be used when storing the currency.
 * decimal separator - the character that separates the fraction part from the integer of a number e.g. '10.99'. This defaults to '.' but can be changed to ','
 * thousands separator - the character that is used to format thousands (e.g. 100,000). This can be changed to '.' 
@@ -91,7 +99,7 @@ cost.toString();
 
 ### Default format
 
-The Currency class also allows you to specify a default format which is used when converting a Money using Money.toString
+The Currency class also allows you to specify a default format which is used when parsing or formating a `Money` instance.
 
 Note: if you don't specify a pattern it defaults to  "\$0.00"
 
@@ -111,9 +119,17 @@ Money euroCostPrice = Money.fromInt(899, euro);
 euroCostPrice.toString();
 > €8,99
 
+Money usdValue = usd.fromString("€7,10");
+print(euroCostPrice.toString());
+> €7,10
+
+Money euroValue = euro.fromString("\$2.99");
+print(euroValue.toString());
+> $2.99
+
 ```
 
-You can also use the `Money.format` method to use a specific format where required. [See details below](#formatting)
+You can also use the `Money.format` method to define a specific format where required. [See details below](#formatting)
 
 
 ### Symbols
@@ -122,7 +138,7 @@ A number of currency have different symbols, you can specify the symbol when cre
 
 ```dart
 
-// Current a currency for Japan's yen with the correct symbol
+// Create a currency for Japan's yen with the correct symbol
 final jpy = Currency.create('JPY', 0, symbol: '¥');
 ```
 
@@ -139,7 +155,7 @@ e.g.
 
 * €EUR1.000,99 (one thousand euro and 99 cents)
 
-Money2 use the English convetion. To switch to the Euro style convention set the invertSeparators argument to true when creating a currency.
+Money2 use the English convention. To switch to the Euro style convention set the invertSeparators argument to true when creating a currency.
 
 You will also need to provide an appropriate pattern.
 
@@ -156,7 +172,7 @@ $100,000.00
 
 In the english speaking world the comma (,) is used as the thousands separator however in large parts of the world the period (.) is used as the thousands separator.
 
-Money2 use the English convetion. To switch to the Euro style convention set the invertSeparators argument to true when creating a currency.
+Money2 use the English convention. To switch to the Euro style convention set the invertSeparators argument to true when creating a currency.
 
 You will also need to provide an appropriate pattern.
 
@@ -168,7 +184,66 @@ Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true,
 
 ## Creating Money
 
-`Money` can be instantiated providing the amount in the minor units of the
+For you convience we provide a number of methods to create a `Money` instance.
+
+* Money.fromString - parse a monetary string containing a formatted amount.
+* Money.fromInt - from a minorUnit (e.g. cents)
+* Money.fromBigInt - from a minorUnit
+* Currency.fromString - parse a monetary string assuming the currency
+* Currencies.fromString - parse a monetary amount and determine the currency from the 
+     embedded currency code.
+
+The `Money` variants all require you to pass in the `Currency`.
+The `Currency` variant requires on the monetary value.
+The `Currencies` varient is able to determine the `Currency` if the
+  passed string amount contains a currency code.
+
+The two most common methods are: 
+* Money.fromInt
+* Currency.fromString
+
+### Money.fromString
+
+Parses a string containing a monetary value.
+
+`Money.fromInt` is faster if you already have the value represented as an integer.
+
+The simplest variant of `Money.fromString` relies on the default pattern of
+the passed currency.
+
+```dart
+final Currency usd = Currency.create('USD', 2);
+final Money amount = Money.fromString("\$10.25", usd);
+```
+
+You can also pass an explicty pattern.
+
+```dart
+final Currency usd = Currency.create('USD', 2);
+final Money amount = Money.fromString("\$10.25", usd, 'S0.0');
+```
+
+### Currency.fromString
+
+The simplest variant of `Currency.fromString` relies on the default pattern of
+the currency.
+
+```dart
+final Currency usd = Currency.create('USD', 2);
+Money value = usd.fromString("\$10.25");
+```
+
+You can also pass an explicty pattern.
+
+```dart
+final Currency usd = Currency.create('USD', 2);
+Money value = usd.fromString("\$10.25", 'S0.0');
+```
+
+
+### Money.fromInt
+
+`Money` can be instantiated by providing the amount in the minor units of the
 currency (e.g. cents):
 
 ```dart
@@ -176,14 +251,45 @@ currency (e.g. cents):
 final Currency usd = Currency.create('USD', 2);
 
 *// Current a currency for Japan's yen with the correct symbol (we default to $)
-final Currency usd = Currency.create('JPY', 0, symbol: '¥');
+final Currency jpy = Currency.create('JPY', 0, symbol: '¥');
+
 
 // Create a money value of $5.10 usd from an int
 Money fiveDollars = Money.fromInt(510, usd);
 
-// Create a money value of $250.10 from a big int.
-Money bigDollars = Money.fromBigInt(BigInt.from(25010), usd);
+// Create a money value of ¥25010 from a big int.
+Money bigDollars = Money.fromBigInt(BigInt.from(25010), jpy);
 ```
+
+
+### Currencies.fromString
+
+This method is extremely useful if you have a database/list of monetary amounts
+that contain their currency code.
+'Currencies.fromString' will create a `Money` instance of the correct 
+currency based on the currency code embedded in the monetary amount.
+
+An exception will be thrown if the monetary amount does not include a currency
+code.
+
+Before you can use `Currencies.fromString` you must first register the list
+of `Currency`s that you need to support.
+
+If you try to create a `Money` instance for an unregistered `Currency` an 
+`UknownCurrencyException` will be thrown.
+
+
+```dart
+final Currency usd = Currency.create('USD', 2);
+final Currency jpy = Currency.create('JPY', 0, symbol: '¥');
+
+Currencies.register(usd);
+Currencies.register(jpy);
+
+Money usdAmount = Currencies.fromString("\$USD10.25", "SCCC0.0");
+Money jpyAmount = Currencies.fromString("JPY100", "CCC0");
+```
+
 
 ## Formatting
 
@@ -201,8 +307,10 @@ Money.format(String pattern);
 ```
 
 ### Formatting Patterns
+
+Note: these are the same patterns used when parsing a monetary value using one of the `fromString` methods.
+
 The supported pattern characters are:
-*
  
      * S outputs the currencies symbol e.g. $.
      * C outputs part of the currency code e.g. USD. You can specify 1,2 or 3 C's. Specifying CCC will output the full code regardless of its length.
@@ -258,6 +366,58 @@ costPrice.format("SCCC0000,###");
 > BDBHD0100,345
 ```  
 
+## Exchange Rates
+
+When manipulating monetary amounts you often need to convert between
+two currencies.
+
+Money2 provide a simple method to convert a `Money` instance to another
+currency using an exchange rate.
+
+To converts a `Money` instance into a target `Currency` use the 
+`Money.exchangeTo` method.
+
+To do this you need to define an exchange rate which is simply 
+another `Money` instance. That 'exchange rate' `Money` instance is 
+created with the target `Currency` and having a monetary value which 
+represents the exchange rate.
+
+### Example
+
+Lets say you have an invoice in Australian Dollars (AUD) which
+you need to convert to US Dollars (USD).
+
+Start by google the exchange rate for AUD to USD.
+You are likely to find some similar to:
+
+1 AUD = 0.68c USD
+
+Which means that for each Australian Dollar you will recieve
+0.68 US cents. (AKA I'm not traveling to the USA this year).
+
+
+To do the above conversion:
+```dart
+// Create the source and the target Currencies
+Currency aud = Currency.create("AUD", 2, pattern="SCCC 0.00");
+Currency usd = Currency.create("USD", 2, pattern="SCCC 0.00");
+
+// Create the AUD invoice amount ($10.00)
+Money invoiceAmount = Money.fromInt(1000, aud);
+print(invoiceAmount);
+> $AUD 10.00
+
+// Define the exchange rate in USD (0.68c)
+Money auToUsExchangeRate = Money.fromInt(68, usd);
+print(auToUsExchangeRate);
+> $USD 0.68
+
+// Now do the conversion.
+Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
+print(usdAmount);
+> $USD 6.80
+```
+
 ## Comparison
 
 Equality operator (`==`) returns `true` when both operands are in the same
@@ -281,6 +441,7 @@ fiveDollars < sevenDollars; // => true
 fiveDollars > sevenDollars; // => false
 fiveEuros < fiveDollars;    // throws ArgumentError!
 ```
+
 
 ### Currency Predicates
 
@@ -385,37 +546,36 @@ as a string in the format like "USD 5.00".
 ### Encoding
 
 ```dart
-class MyMoneyEncoder implements MoneyEncoder<String> {
+class MoneyToStringEncoder implements MoneyEncoder<String> {
   String encode(MoneyData data) {
     // Receives MoneyData DTO and produce
     // a string representation of money value...
-    String major = data.getMinorUnits().toString();
-    String minor = (data.getMajorUnits().toString();
+    String major = data.getMajorUnits().toString();
+    String mainor = data.getMinorUnits().toString();
 
     return data.currency.code + " " + major + "." + minor;
   }
 }
-```
 
-```dart
-final encoded = fiveDollars.encodedBy(MyMoneyEncoder());
+
+final encoded = fiveDollars.encodedBy(MoneyToStringEncoder());
 // Now we can save `encoded` to database...
 ```
 
 ### Decoding
 
 ```dart
-class MyMoneyDecoder implements MoneyDecoder<String> {
+class StringToMoneyDecoder implements MoneyDecoder<String> {
 
   Currencies _currencies;
 
-  MyMoneyDecoder(this._currencies) {
+  StringToMoneyDecoder(this._currencies) {
     if (_currencies == null) {
       throw ArgumentError.notNull('currencies');
     }
   }
 
-  /// Returns decoded [MoneyData] or throws a [FormatException].
+  /// Returns decoded `MoneyData` or throws a `FormatException`.
   MoneyData decode(String encoded) {
     // If `encoded` has an invalid format throws FormatException;
     

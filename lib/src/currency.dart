@@ -24,6 +24,10 @@
 
 import 'dart:math';
 
+import 'money.dart';
+import 'money_data.dart';
+import 'pattern_decoder.dart';
+
 // import 'package:meta/meta.dart' show sealed, immutable;
 
 /// Allows you to create a [Currency] which is then used to construct [Money] instances.
@@ -84,6 +88,28 @@ class Currency {
     }
   }
 
+  ///
+  /// Takes a monetary amount encoded as a string
+  /// and converts it to a [Money] instance.
+  /// You can pass in a [pattern] to define the
+  /// format of the [monetaryAmount].
+  /// If you don't pass in a [pattern] then the [Currency]s
+  /// default pattern is used.
+  ///
+  /// Currency aud = Currency.create("AUD", 2);
+  /// Money audAmount = aud.from("10.50");
+  ///
+  /// A [MoneyParseException] is thrown if the [monetarAmount]
+  /// doesn't match the [pattern].
+  ///
+  Money fromString(String monetaryAmount, {String pattern}) {
+    if (pattern == null) pattern = this.pattern;
+    PatternDecoder decoder = PatternDecoder(this, pattern);
+    MoneyData moneyData = decoder.decode(monetaryAmount);
+
+    return Money.fromBigInt(moneyData.minorUnits, this);
+  }
+
   @override
   int get hashCode => code.hashCode;
 
@@ -99,5 +125,9 @@ class Currency {
           minorDigits, 'minorDigits', 'Must be a non-negative value.');
     }
     return BigInt.from(pow(10, minorDigits));
+  }
+
+  BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) {
+    return majorUnits * minorDigitsFactor + minorUnits;
   }
 }

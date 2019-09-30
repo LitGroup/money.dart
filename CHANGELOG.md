@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.1.0
+Change the API of Currencies. Its now a singleton so usage changes from:
+Currencies().register() to Currencies.register().
+
+### Added
+New methods to parse a monetary value from a String including:
+Money.frommString
+Currency.fromString
+Currencies.fromString
+
+New method to convert a [Money] of one currency to another currency
+via the [Money.exchangeTo] method.
+
+New examples and unit tests for the above methods.
+
+
+## version: 1.0.7
+2nd Attempt to improve the description displayed on pub.dev.
+
+## version: 1.0.6
+Attempt to improve the description displayed on pub.dev.
+
 ## version: 1.0.5
 Formatting of examples as the pub.dev site clips wide lines.
 

@@ -28,14 +28,13 @@ import 'package:test/test.dart';
 
 void main() {
   final usd = Currency.create('USD', 2);
-  final euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0,00");
-    final long = Currency.create('LONG', 2);
-
+  final euro = Currency.create('EUR', 2,
+      symbol: '€', invertSeparators: true, pattern: "S0,00");
+  final long = Currency.create('LONG', 2);
 
   final Money usd10d25 = Money.fromInt(1025, usd);
   final Money usd10 = Money.fromInt(1000, usd);
   final Money long1000d90 = Money.fromInt(100090, long);
-
 
   group('format', () {
     test('Simple Number', () {
@@ -51,7 +50,7 @@ void main() {
       expect(usd10d25.format("##"), equals("10"));
     });
 
- test('Inverted Decimal Separator', () {
+    test('Inverted Decimal Separator', () {
       final Money eurolarge = Money.fromInt(10000000, euro);
       final Money euroSmall = Money.fromInt(1099, euro);
       expect(eurolarge.toString(), equals("€100000,00"));
@@ -86,7 +85,7 @@ void main() {
       expect(usd10d25.format("CC##.##"), equals("US10.25"));
       expect(usd10d25.format("CCC##.##"), equals("USD10.25"));
       expect(long1000d90.format("CCC S#,###.00"), equals("LONG \$1,000.90"));
-      });
+    });
 
     test('USD combos', () {
       expect(usd10d25.format("SCCC 000,000.##"), equals("\$USD 000,010.25"));
@@ -94,11 +93,16 @@ void main() {
     });
 
     test('Invalid Patterns', () {
-      expect(() => usd10d25.format("0##"), throwsA(TypeMatcher<IllegalPatternException>()));
-      expect(() => usd10d25.format("000,"), throwsA(TypeMatcher<IllegalPatternException>()));
-      expect(() => usd10d25.format("000#"), throwsA(TypeMatcher<IllegalPatternException>()));
-      expect(() => usd10d25.format("0#"), throwsA(TypeMatcher<IllegalPatternException>()));
-      expect(() => usd10d25.format("0.0#"), throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("0##"),
+          throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("000,"),
+          throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("000#"),
+          throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("0#"),
+          throwsA(TypeMatcher<IllegalPatternException>()));
+      expect(() => usd10d25.format("0.0#"),
+          throwsA(TypeMatcher<IllegalPatternException>()));
     });
   });
 }

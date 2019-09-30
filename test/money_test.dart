@@ -22,10 +22,8 @@
  * THE SOFTWARE.
  */
 
-
 import 'package:money2/money2.dart';
 import 'package:test/test.dart';
-
 
 void main() {
   final usd = Currency.create('USD', 2);
@@ -39,8 +37,7 @@ void main() {
         _ = Money.fromBigInt(BigInt.from(-1), usd);
       });
 
-
-       test('fromInt', () {
+      test('fromInt', () {
         var _ = Money.fromInt(0, usd);
         _ = Money.fromInt(1, usd);
         _ = Money.fromInt(-1, usd);
@@ -54,8 +51,7 @@ void main() {
       test('Throws an error for null currency', () {
         expect(() => Money.fromBigInt(BigInt.from(100), null),
             throwsArgumentError);
-        expect(() => Money.fromInt(100, null),
-            throwsArgumentError);
+        expect(() => Money.fromInt(100, null), throwsArgumentError);
       });
     });
 
@@ -69,8 +65,7 @@ void main() {
     test('int hash value', () {
       final fiveDollars = Money.fromInt(500, usd);
 
-      expect(fiveDollars.hashCode,
-          equals(Money.fromInt(500, usd).hashCode));
+      expect(fiveDollars.hashCode, equals(Money.fromInt(500, usd).hashCode));
     });
 
     test('predicate of currency', () {
@@ -97,13 +92,13 @@ void main() {
       moneyAmountPredicates(zeroCents, oneCent, minusOneCent);
     }); // big int amount predicates
 
- group('int amount predicates:', () {
+    group('int amount predicates:', () {
       final zeroCents = Money.fromInt(0, usd);
       final oneCent = Money.fromInt(1, usd);
       final minusOneCent = Money.fromInt(-1, usd);
 
       moneyAmountPredicates(zeroCents, oneCent, minusOneCent);
-    }); // 
+    }); //
     group('comparison', () {
       final fourDollars = Money.fromBigInt(BigInt.from(400), usd);
       final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
@@ -219,21 +214,20 @@ void main() {
         expect(oneDollar * 1.0, equals(oneDollar));
         expect(oneDollar * -1.0, equals(-oneDollar));
 
+        expect(oneDollar * 0.5, equals(Money.fromBigInt(BigInt.from(50), usd)));
         expect(
-            oneDollar * 0.5, equals(Money.fromBigInt(BigInt.from(50), usd)));
-        expect(oneDollar * 2.01,
-            equals(Money.fromBigInt(BigInt.from(201), usd)));
+            oneDollar * 2.01, equals(Money.fromBigInt(BigInt.from(201), usd)));
         expect(
             oneDollar * 0.99, equals(Money.fromBigInt(BigInt.from(99), usd)));
 
         // Test schoolbook rounding:
         expect(
             oneDollar * 0.094, equals(Money.fromBigInt(BigInt.from(9), usd)));
-        expect(oneDollar * -0.094,
-            equals(Money.fromBigInt(BigInt.from(-9), usd)));
+        expect(
+            oneDollar * -0.094, equals(Money.fromBigInt(BigInt.from(-9), usd)));
 
-        expect(oneDollar * 0.095,
-            equals(Money.fromBigInt(BigInt.from(10), usd)));
+        expect(
+            oneDollar * 0.095, equals(Money.fromBigInt(BigInt.from(10), usd)));
         expect(oneDollar * -0.095,
             equals(Money.fromBigInt(BigInt.from(-10), usd)));
       });
@@ -258,13 +252,13 @@ void main() {
         expect(oneDollar / 0.5, equals(twoDollars));
         expect(oneDollar / 0.5, equals(twoDollars));
 
-        expect(oneDollar / 1.094,
-            equals(Money.fromBigInt(BigInt.from(91), usd)));
+        expect(
+            oneDollar / 1.094, equals(Money.fromBigInt(BigInt.from(91), usd)));
         expect(oneDollar / -1.094,
             equals(Money.fromBigInt(BigInt.from(-91), usd)));
 
-        expect(oneDollar / 1.092,
-            equals(Money.fromBigInt(BigInt.from(92), usd)));
+        expect(
+            oneDollar / 1.092, equals(Money.fromBigInt(BigInt.from(92), usd)));
         expect(oneDollar / -1.092,
             equals(Money.fromBigInt(BigInt.from(-92), usd)));
       });
@@ -292,7 +286,8 @@ void main() {
       });
 
       test('provides list with allocated money values', () {
-        void testAllocation(int minorUnits, List<int> ratios, List<int> result) {
+        void testAllocation(
+            int minorUnits, List<int> ratios, List<int> result) {
           final money = Money.fromBigInt(BigInt.from(minorUnits), usd);
 
           expect(
@@ -378,13 +373,13 @@ void moneyAmountPredicates(Money zeroCents, Money oneCent, Money minusOneCent) {
     expect(oneCent.isZero, isFalse);
     expect(minusOneCent.isZero, isFalse);
   });
-  
+
   test('isPositive', () {
     expect(oneCent.isPositive, isTrue);
     expect(zeroCents.isPositive, isFalse);
     expect(minusOneCent.isPositive, isFalse);
   });
-  
+
   test('isNegative', () {
     expect(minusOneCent.isNegative, isTrue);
     expect(zeroCents.isNegative, isFalse);

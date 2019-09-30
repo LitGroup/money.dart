@@ -23,6 +23,7 @@
  */
 
 // import 'package:meta/meta.dart' show sealed, immutable;
+import 'package:money2/src/pattern_decoder.dart';
 import 'package:money2/src/pattern_encoder.dart';
 
 import 'currency.dart';
@@ -92,7 +93,55 @@ class Money implements Comparable<Money> {
   ///
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
   factory Money.fromInt(int minorUnits, Currency currency) {
+    if (minorUnits == null) {
+      throw ArgumentError.notNull('minorUnits');
+    }
     return Money.fromBigInt(BigInt.from(minorUnits), currency);
+  }
+
+  ///
+  /// Parses the passed [monetaryAmount] and returns a [Money] instance.
+  ///
+  /// The passed [monetaryAmount] must match the given [pattern] or
+  /// if no pattern is supplied then the default pattern of the passed [currency].
+  ///
+  /// Throws an MoneyParseException if the [monetaryAmount] doesn't match the pattern.
+  ///
+  factory Money.fromString(String monetaryAmount, Currency currency,
+      {String pattern}) {
+    ArgumentError.checkNotNull(monetaryAmount, "monetaryValue");
+    ArgumentError.checkNotNull(currency, "currency");
+
+    if (pattern == null) pattern = currency.pattern;
+
+    PatternDecoder decoder = PatternDecoder(currency, pattern);
+
+    MoneyData data = decoder.decode(monetaryAmount);
+
+    return Money.fromBigInt(data.minorUnits, currency);
+  }
+
+  ///
+  /// Converts a [Money] instance into a new [Currency] using
+  /// the provided [exchangeRate] which defines the target
+  /// [Currency] and the exchange rate.
+  /// e.g. 1 AUD = 0.68c USD
+  /// Which means that for each Australian Dollar you will recieve
+  /// 0.68 US cents. (AKA I'm not traveling to the USA this year).
+  /// To do the above conversion:
+  /// ```dart
+  /// Currency aud = Currency.create("AUD", 2);
+  /// Currency usd = Currency.create("USD", 2);
+  /// Money invoiceAmount = Money.fromInt(1000, aud);
+  /// Money auToUsExchangeRate = Money.fromInt(68, usd);
+  /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
+  /// ```
+  Money exchangeTo(Money exchangeRate) {
+    BigInt convertedUnits =
+        (_minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt()) ~/
+            BigInt.from(100);
+
+    return Money.fromBigInt(convertedUnits, exchangeRate._currency);
   }
 
   /* Internal constructor *****************************************************/
@@ -328,5 +377,19 @@ class Money implements Comparable<Money> {
     if (!isInSameCurrencyAs(other)) {
       throw ArgumentError((message ?? defaultMessage)());
     }
+  }
+}
+
+class MoneyParseException implements Exception {
+  String message;
+
+  MoneyParseException(this.message);
+
+  factory MoneyParseException.fromValue(
+      String pattern, int i, String monetaryValue, int monetaryIndex) {
+    String message =
+        """monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
+        when a match for pattern character ${pattern[i]} at pos $i was expected.""";
+    return MoneyParseException(message);
   }
 }

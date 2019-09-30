@@ -1,4 +1,3 @@
-
 import 'money_data.dart';
 
 abstract class MoneyEncoder<T> {
