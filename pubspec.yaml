@@ -1,7 +1,7 @@
 name: money2
-description: Money and Currency classes with fixed precision maths operations and Formating.
-    Money.fromtInt(1000).format("SCC#,##0.00") -> $US10.00
-version: 1.1.0
+description: Money and Currency classes with fixed precision maths, Parsing and Formating.\n
+    Money.fromString("$2010.00").format("SCC \#,##0.00") -> $US 2,010.00
+version: 1.1.1
 homepage: https://github.com/noojee/money.dart
 authors: 
   - LitGroup LLC <opensource@litgroup.ru>

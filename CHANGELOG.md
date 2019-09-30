@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.1.1
+Minor documenation cleanups.
+
 ## version: 1.1.0
 Change the API of Currencies. Its now a singleton so usage changes from:
 Currencies().register() to Currencies.register().

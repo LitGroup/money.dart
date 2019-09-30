@@ -41,8 +41,8 @@ print(taxInclusive.toString())
 
 // Create money from an String using the `Currency` instance.
  Money fromString = usdCurrency.fromString("\$10.00");
- print(fromString);
- > $10.00
+ print(fromString.format("SCCC 0.0"));
+ > $USD 10.00
 ```
 
 The package use the following terms:
