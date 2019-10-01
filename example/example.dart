@@ -6,7 +6,7 @@ void main() {
   /// USD currency uses 2 decimal places.
   ///
   final usd = Currency.create('USD', 2);
-  final aud = Currency.create('USD', 2);
+  final aud = Currency.create('AUD', 2);
 
   ///
   /// Create a money which stores $USD 10.00
