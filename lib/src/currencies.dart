@@ -70,7 +70,7 @@ class Currencies {
   /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
   /// does not contain a known currency.
   ///
-  static Money fromString(String monetaryAmount, String pattern) {
+  static Money parse(String monetaryAmount, String pattern) {
     int codeLength = _getCodeLength(pattern);
 
     if (codeLength < 2) {
@@ -90,6 +90,13 @@ class Currencies {
     MoneyData moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, currency);
+  }
+
+  //
+  /// @deprecated - use [Currencies.parse())]
+  ///
+  static Money fromString(String monetaryAmount, String pattern) {
+    return Currencies.parse(monetaryAmount, pattern);
   }
 
   /* Protocol *****************************************************************/

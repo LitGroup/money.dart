@@ -97,10 +97,21 @@ class Currency {
   /// default pattern is used.
   ///
   /// Currency aud = Currency.create("AUD", 2);
-  /// Money audAmount = aud.from("10.50");
+  /// Money audAmount = aud.parse("10.50");
   ///
   /// A [MoneyParseException] is thrown if the [monetarAmount]
   /// doesn't match the [pattern].
+  ///
+  Money parse(String monetaryAmount, {String pattern}) {
+    if (pattern == null) pattern = this.pattern;
+    PatternDecoder decoder = PatternDecoder(this, pattern);
+    MoneyData moneyData = decoder.decode(monetaryAmount);
+
+    return Money.fromBigInt(moneyData.minorUnits, this);
+  }
+
+  ///
+  /// @deprecated - use [Money.parse]
   ///
   Money fromString(String monetaryAmount, {String pattern}) {
     if (pattern == null) pattern = this.pattern;

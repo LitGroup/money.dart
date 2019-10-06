@@ -35,96 +35,111 @@ void main() {
   // final Money usd10 = Money.fromInt(1000, usd);
   // final Money long1000d90 = Money.fromInt(100090, long);
 
-  group('Money.fromString', () {
+  group('Money.parse', () {
     test('Default Currency Pattern', () {
+      expect(Money.parse("\$10.25", usd), equals(Money.fromInt(1025, usd)));
+      expect(Money.parse("10.25", usd, pattern: "#.#"),
+          equals(Money.fromInt(1025, usd)));
+      expect(Money.parse("USD10.25", usd, pattern: "CCC#.#"),
+          equals(Money.fromInt(1025, usd)));
+      expect(Money.parse("\$USD10.25", usd, pattern: "SCCC#.#"),
+          equals(Money.fromInt(1025, usd)));
+      expect(Money.parse("1,000.25", usd, pattern: "#.#"),
+          equals(Money.fromInt(100025, usd)));
+    });
+
+    test('Inverted Decimal Separator with pattern', () {
+      expect(Money.parse("10,25", euro, pattern: "#,#"),
+          equals(Money.fromInt(1025, euro)));
+      expect(Money.parse("€10,25", euro, pattern: "S0,0"),
+          equals(Money.fromInt(1025, euro)));
+      expect(Money.parse("EUR10,25", euro, pattern: "CCC0,0"),
+          equals(Money.fromInt(1025, euro)));
+      expect(Money.parse("€EUR10,25", euro, pattern: "SCCC0,0"),
+          equals(Money.fromInt(1025, euro)));
+      expect(Money.parse("1.000,25", euro, pattern: "#.###,00"),
+          equals(Money.fromInt(100025, euro)));
+      expect(Money.parse("1.000,25", euro, pattern: "#.###,00"),
+          equals(Money.fromInt(100025, euro)));
+    });
+  });
+
+  group('Currency.parse', () {
+    test('Default Currency Pattern', () {
+      expect(usd.parse("\$10.25"), equals(Money.fromInt(1025, usd)));
       expect(
-          Money.fromString("\$10.25", usd), equals(Money.fromInt(1025, usd)));
-      expect(Money.fromString("10.25", usd, pattern: "#.#"),
+          usd.parse("10.25", pattern: "#.#"), equals(Money.fromInt(1025, usd)));
+      expect(usd.parse("USD10.25", pattern: "CCC#.#"),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.fromString("USD10.25", usd, pattern: "CCC#.#"),
+      expect(usd.parse("\$USD10.25", pattern: "SCCC#.#"),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.fromString("\$USD10.25", usd, pattern: "SCCC#.#"),
-          equals(Money.fromInt(1025, usd)));
-      expect(Money.fromString("1,000.25", usd, pattern: "#.#"),
+      expect(usd.parse("1,000.25", pattern: "#.#"),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {
-      expect(Money.fromString("10,25", euro, pattern: "#,#"),
+      expect(euro.parse("10,25", pattern: "#,#"),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.fromString("€10,25", euro, pattern: "S0,0"),
+      expect(euro.parse("€10,25", pattern: "S0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.fromString("EUR10,25", euro, pattern: "CCC0,0"),
+      expect(euro.parse("EUR10,25", pattern: "CCC0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.fromString("€EUR10,25", euro, pattern: "SCCC0,0"),
+      expect(euro.parse("€EUR10,25", pattern: "SCCC0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.fromString("1.000,25", euro, pattern: "#.###,00"),
+      expect(euro.parse("1.000,25", pattern: "#.###,00"),
           equals(Money.fromInt(100025, euro)));
-      expect(Money.fromString("1.000,25", euro, pattern: "#.###,00"),
-          equals(Money.fromInt(100025, euro)));
-    });
-  });
-
-  group('Currency.fromString', () {
-    test('Default Currency Pattern', () {
-      expect(usd.fromString("\$10.25"), equals(Money.fromInt(1025, usd)));
-      expect(usd.fromString("10.25", pattern: "#.#"),
-          equals(Money.fromInt(1025, usd)));
-      expect(usd.fromString("USD10.25", pattern: "CCC#.#"),
-          equals(Money.fromInt(1025, usd)));
-      expect(usd.fromString("\$USD10.25", pattern: "SCCC#.#"),
-          equals(Money.fromInt(1025, usd)));
-      expect(usd.fromString("1,000.25", pattern: "#.#"),
-          equals(Money.fromInt(100025, usd)));
-    });
-
-    test('Inverted Decimal Separator with pattern', () {
-      expect(euro.fromString("10,25", pattern: "#,#"),
-          equals(Money.fromInt(1025, euro)));
-      expect(euro.fromString("€10,25", pattern: "S0,0"),
-          equals(Money.fromInt(1025, euro)));
-      expect(euro.fromString("EUR10,25", pattern: "CCC0,0"),
-          equals(Money.fromInt(1025, euro)));
-      expect(euro.fromString("€EUR10,25", pattern: "SCCC0,0"),
-          equals(Money.fromInt(1025, euro)));
-      expect(euro.fromString("1.000,25", pattern: "#.###,00"),
-          equals(Money.fromInt(100025, euro)));
-      expect(euro.fromString("1.000,25", pattern: "#.###,00"),
+      expect(euro.parse("1.000,25", pattern: "#.###,00"),
           equals(Money.fromInt(100025, euro)));
     });
   });
 
-  group('Currencies().fromString', () {
+  group('Currencies().parse', () {
     Currencies.register(usd);
     Currencies.register(euro);
 
     test('Default Currency Pattern', () {
-      expect(Currencies.fromString("\$USD10.25", "SCCC0.0"),
+      expect(Currencies.parse("\$USD10.25", "SCCC0.0"),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.fromString("USD10.25", "CCC#.#"),
+      expect(Currencies.parse("USD10.25", "CCC#.#"),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.fromString("USD10.25", "CCC#.#"),
+      expect(Currencies.parse("USD10.25", "CCC#.#"),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.fromString("\$USD10.25", "SCCC#.#"),
+      expect(Currencies.parse("\$USD10.25", "SCCC#.#"),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.fromString("USD1,000.25", "CCC#.#"),
+      expect(Currencies.parse("USD1,000.25", "CCC#.#"),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {
       Currency euro = Currency.create("EUR", 2);
-      expect(Currencies.fromString("EUR10,25", "CCC#,#"),
+      expect(Currencies.parse("EUR10,25", "CCC#,#"),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.fromString("€EUR10,25", "SCCC0,0"),
+      expect(Currencies.parse("€EUR10,25", "SCCC0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.fromString("EUR10,25", "CCC0,0"),
+      expect(Currencies.parse("EUR10,25", "CCC0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.fromString("€EUR10,25", "SCCC0,0"),
+      expect(Currencies.parse("€EUR10,25", "SCCC0,0"),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.fromString("EUR1.000,25", "CCC#.###,00"),
+      expect(Currencies.parse("EUR1.000,25", "CCC#.###,00"),
           equals(Money.fromInt(100025, euro)));
-      expect(Currencies.fromString("EUR1.000,25", "CCC#.###,00"),
+      expect(Currencies.parse("EUR1.000,25", "CCC#.###,00"),
           equals(Money.fromInt(100025, euro)));
+    });
+  });
+
+  group("deprecated fromString methods", () {
+    test("Money", () {
+      expect(
+          Money.fromString("\$10.25", usd), equals(Money.fromInt(1025, usd)));
+    });
+
+    test("Currency", () {
+      expect(usd.parse("\$10.25"), equals(Money.fromInt(1025, usd)));
+    });
+
+    test("Currencies", () {
+      expect(Currencies.parse("\$USD10.25", "SCCC0.0"),
+          equals(Money.fromInt(1025, usd)));
     });
   });
 }

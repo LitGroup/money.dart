@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.2.0
+Deprecated 'fromString' methods in favour of 'parse' method name. This was done to bring the library 
+in line with the likes of BigInt.parse.
+
+### Added
+New 'Money.from(num)' method to support creating money from int's and doubles.
+New Unit tests for Money.from and the new parse methods.
+
+### Deprecated
+Money.fromString - use Money.parse
+Currency.fromString - use Currency.parse
+Currencies.fromString - use Currencies.parse
+
 ## version: 1.1.1
 Minor documenation cleanups.
 

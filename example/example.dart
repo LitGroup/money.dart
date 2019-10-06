@@ -21,33 +21,33 @@ void main() {
 
   ///
   /// Create a [Money] instance from a String
-  /// using [Currency.fromString]
+  /// using [Currency.parse]
   /// The [Currency] of salePrice is USD.
   ///
-  Money salePrice = usd.fromString("\$10.50");
+  Money salePrice = usd.parse("\$10.50");
   print(salePrice.format("SCC 0.0"));
   // > $US 10.50
 
   ///
   /// Create a [Money] instance from a String
-  /// using [Money.fromString]
+  /// using [Money.parse]
   ///
-  Money taxPrice = Money.fromString("\$1.50", usd);
+  Money taxPrice = Money.parse("\$1.50", usd);
   print(taxPrice.format("CC 0.0 S"));
   // > US 1.50 $
 
   ///
   /// Create a [Money] instance from a String
   /// with an embedded Currency Code
-  /// using [Currencies.fromString]
+  /// using [Currencies.parse]
   ///
   Currencies.register(usd);
   Currencies.register(aud);
-  Money cheapIPhone = Currencies.fromString("\$USD1500.0", "SCCC0.0");
+  Money cheapIPhone = Currencies.parse("\$USD1500.0", "SCCC0.0");
   print(cheapIPhone.format("SCC0.0"));
   // > $US1500.00
 
-  Money expensiveIPhone = Currencies.fromString("\$AUD2000.0", "SCCC0.0");
+  Money expensiveIPhone = Currencies.parse("\$AUD2000.0", "SCCC0.0");
   print(expensiveIPhone.format("SCC0.0"));
   // > $AUD2000.00
 

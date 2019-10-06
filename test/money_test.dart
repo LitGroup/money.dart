@@ -43,6 +43,14 @@ void main() {
         _ = Money.fromInt(-1, usd);
       });
 
+      test('from', () {
+        expect(Money.from(0, usd), equals(Money.fromInt(0, usd)));
+        expect(Money.from(1, usd), equals(Money.fromInt(100, usd)));
+        expect(Money.from(-1, usd), equals(Money.fromInt(-100, usd)));
+        expect(Money.from(1.99, usd), equals(Money.fromInt(199, usd)));
+        expect(Money.from(-1.99, usd), equals(Money.fromInt(-199, usd)));
+      });
+
       test('Throws an error for null amount', () {
         expect(() => Money.fromBigInt(null, usd), throwsArgumentError);
         expect(() => Money.fromInt(null, usd), throwsArgumentError);

@@ -23,6 +23,7 @@
  */
 
 // import 'package:meta/meta.dart' show sealed, immutable;
+
 import 'package:money2/src/pattern_decoder.dart';
 import 'package:money2/src/pattern_encoder.dart';
 
@@ -67,6 +68,36 @@ class Money implements Comparable<Money> {
 
   /* Instantiation ************************************************************/
 
+  /// Creates an instance of [Money] from a num holding the monetary value.
+  /// Unlike [fromBigInt] the amount is in dollars and cents (not just cents).
+  /// This means that you can intiate a Money value from a double or int as follows:
+  /// ```dart
+  /// Money buyPrice = Money.from(10);
+  /// print(buyPrice.toString());
+  ///  > $10.00
+  /// Money sellPrice = Money.from(10.50);
+  /// print(sellPrice.toString());
+  ///  > $10.50
+  /// ```
+  /// NOTE: be very careful using doubles to transport money as you are guarenteed
+  /// to get rounding errors!!!  You should use a [String] with [Money.parse()].
+  ///
+  /// [amounts] - the value of the  [currency]. Unlike fromBigInt this method
+  ///
+  factory Money.from(num amount, Currency currency) {
+    if (amount == null) {
+      throw ArgumentError.notNull('amount');
+    }
+    if (currency == null) {
+      throw ArgumentError.notNull('currency');
+    }
+
+    BigInt minorUnits =
+        BigInt.from(amount * currency.minorDigitsFactor.toInt());
+
+    return Money._from(MinorUnits.from(minorUnits), currency);
+  }
+
   /// Creates an instance of [Money].
   /// [minorUnits] - the minimal minorUnits of the [currency], e.g (cents).
   ///
@@ -78,6 +109,7 @@ class Money implements Comparable<Money> {
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
+  /// @deprecated - use [Money.from(minorUnits, currency)]
   factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
     if (minorUnits == null) {
       throw ArgumentError.notNull('minorUnits');
@@ -107,7 +139,7 @@ class Money implements Comparable<Money> {
   ///
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't match the pattern.
   ///
-  factory Money.fromString(String monetaryAmount, Currency currency,
+  factory Money.parse(String monetaryAmount, Currency currency,
       {String pattern}) {
     ArgumentError.checkNotNull(monetaryAmount, "monetaryValue");
     ArgumentError.checkNotNull(currency, "currency");
@@ -120,6 +152,13 @@ class Money implements Comparable<Money> {
 
     return Money.fromBigInt(data.minorUnits, currency);
   }
+
+  ///
+  /// @deprecated - use Money.parse
+  ///
+  factory Money.fromString(String monetaryAmount, Currency currency,
+          {String pattern}) =>
+      Money.parse(monetaryAmount, currency, pattern: pattern);
 
   ///
   /// Converts a [Money] instance into a new [Currency] using

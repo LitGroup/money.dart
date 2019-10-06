@@ -40,9 +40,20 @@ print(taxInclusive.toString())
  > $US 11.00
 
 // Create money from an String using the `Currency` instance.
- Money fromString = usdCurrency.fromString("\$10.00");
- print(fromString.format("SCCC 0.0"));
+ Money parsed = usdCurrency.parse("\$10.00");
+ print(parsed.format("SCCC 0.0"));
  > $USD 10.00
+
+ // Create money from an int which contains the MajorUnit (e.g dollars)
+ Money buyPrice = Money.from(10);
+ print(buyPrice.toString());
+  > $10.00
+
+ // Create money from a double which contains Major and Minor units (e.g. dollars and cents)
+ // We don't recommend transporting money as a double as you will get rounding errors.
+ Money sellPrice = Money.from(10.50);
+ print(sellPrice.toString());
+  > $10.50
 ```
 
 The package use the following terms:
@@ -119,11 +130,11 @@ Money euroCostPrice = Money.fromInt(899, euro);
 euroCostPrice.toString();
 > €8,99
 
-Money usdValue = usd.fromString("€7,10");
+Money usdValue = usd.parse("€7,10");
 print(euroCostPrice.toString());
 > €7,10
 
-Money euroValue = euro.fromString("\$2.99");
+Money euroValue = euro.parse("\$2.99");
 print(euroValue.toString());
 > $2.99
 
@@ -186,11 +197,12 @@ Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true,
 
 For you convience we provide a number of methods to create a `Money` instance.
 
-* Money.fromString - parse a monetary string containing a formatted amount.
+* Money.parse - parse a monetary string containing a formatted amount.
 * Money.fromInt - from a minorUnit (e.g. cents)
 * Money.fromBigInt - from a minorUnit
-* Currency.fromString - parse a monetary string assuming the currency
-* Currencies.fromString - parse a monetary amount and determine the currency from the 
+* Money.from - from a num (int or double)
+* Currency.parse - parse a monetary string assuming the currency
+* Currencies.parse - parse a monetary amount and determine the currency from the 
      embedded currency code.
 
 The `Money` variants all require you to pass in the `Currency`.
@@ -200,44 +212,44 @@ The `Currencies` varient is able to determine the `Currency` if the
 
 The two most common methods are: 
 * Money.fromInt
-* Currency.fromString
+* Currency.parse
 
-### Money.fromString
+### Money.parse
 
 Parses a string containing a monetary value.
 
 `Money.fromInt` is faster if you already have the value represented as an integer.
 
-The simplest variant of `Money.fromString` relies on the default pattern of
+The simplest variant of `Money.parse` relies on the default `pattern` of
 the passed currency.
 
 ```dart
 final Currency usd = Currency.create('USD', 2);
-final Money amount = Money.fromString("\$10.25", usd);
+final Money amount = Money.parse("\$10.25", usd);
 ```
 
-You can also pass an explicty pattern.
+You can also pass an explict pattern.
 
 ```dart
 final Currency usd = Currency.create('USD', 2);
-final Money amount = Money.fromString("\$10.25", usd, 'S0.0');
+final Money amount = Money.parse("\$10.25", usd, 'S0.0');
 ```
 
-### Currency.fromString
+### Currency.parse
 
-The simplest variant of `Currency.fromString` relies on the default pattern of
+The simplest variant of `Currency.parse` relies on the default pattern of
 the currency.
 
 ```dart
 final Currency usd = Currency.create('USD', 2);
-Money value = usd.fromString("\$10.25");
+Money value = usd.parse("\$10.25");
 ```
 
-You can also pass an explicty pattern.
+You can also pass an explict pattern.
 
 ```dart
 final Currency usd = Currency.create('USD', 2);
-Money value = usd.fromString("\$10.25", 'S0.0');
+Money value = usd.parse("\$10.25", 'S0.0');
 ```
 
 
@@ -262,17 +274,17 @@ Money bigDollars = Money.fromBigInt(BigInt.from(25010), jpy);
 ```
 
 
-### Currencies.fromString
+### Currencies.parse
 
 This method is extremely useful if you have a database/list of monetary amounts
 that contain their currency code.
-'Currencies.fromString' will create a `Money` instance of the correct 
+'Currencies.parse' will create a `Money` instance of the correct 
 currency based on the currency code embedded in the monetary amount.
 
 An exception will be thrown if the monetary amount does not include a currency
 code.
 
-Before you can use `Currencies.fromString` you must first register the list
+Before you can use `Currencies.parse` you must first register the list
 of `Currency`s that you need to support.
 
 If you try to create a `Money` instance for an unregistered `Currency` an 
@@ -286,8 +298,8 @@ final Currency jpy = Currency.create('JPY', 0, symbol: '¥');
 Currencies.register(usd);
 Currencies.register(jpy);
 
-Money usdAmount = Currencies.fromString("\$USD10.25", "SCCC0.0");
-Money jpyAmount = Currencies.fromString("JPY100", "CCC0");
+Money usdAmount = Currencies.parse("\$USD10.25", "SCCC0.0");
+Money jpyAmount = Currencies.parse("JPY100", "CCC0");
 ```
 
 
@@ -308,7 +320,7 @@ Money.format(String pattern);
 
 ### Formatting Patterns
 
-Note: these are the same patterns used when parsing a monetary value using one of the `fromString` methods.
+Note: these are the same patterns used when parsing a monetary value using one of the `parse` methods.
 
 The supported pattern characters are:
  
@@ -317,7 +329,7 @@ The supported pattern characters are:
          * C - U
          * CC - US
          * CCC - USD - outputs the full currency code regardless of length.
-     * &#35; denotes a digit.
+     * # denotes a digit.
      * 0 denotes a digit and with the addition of defining leading and trailing zeros.
      * , (comma) a placeholder for the grouping separtor
      * . (period) a place holder fo rthe decimal separator 
