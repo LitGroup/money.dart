@@ -169,18 +169,6 @@ Currency zar = Currency.create('ZAR', 2, symbol: 'R');
 
 ```
 
-
-
-
-```dart
-import 'money2.dart';
-Currency usd = Currency.create('USD', 2, symbol: '¥', invertSeparators: true, pattern: "S0.000");
-
-Currency jpy = Currency.create('JPY', 0, symbol: '¥', invertSeparators: true, pattern: "S0.000");
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
-
-```
-
 ### Default format
 
 The Currency class also allows you to specify a default format which is used when parsing or formating a `Money` instance.
