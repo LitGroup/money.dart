@@ -33,6 +33,17 @@
 ///
 /// This allows for precise calculations as required when handling money.
 ///
+/// Key features of Money2:
+/// * simple and expressive formating.
+/// * simple parsing of monetary amounts.
+/// * multi-currency support.
+/// * intuitive maths operations.
+/// * fixed precision storage to ensure precise calcuation.
+/// * detailed documentation and extensive examples to get you up and running.
+/// * pure dart implementation.
+/// * Open Source MIT license.
+/// * Using Money2 will make you taller.
+///
 /// The package use the following terms:
 /// * Minor Units - the smallest unit of a currency e.g. cents.
 /// * Major Units - the integer component of a currency - e.g. dollars
@@ -46,20 +57,25 @@
 ///  Using the [Money] and [Currency] classes is easy.
 ///
 /// ```dart
+/// import 'money2.dart';
 /// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
 /// Money costPrice = Money.fromInt(1000, aud);
-/// costPrice.toString();
-/// > $10.00
+/// print(costPrice.toString());
+///   > $10.00
+///
+/// Money spareChange = Money.parse("$10.50", aud);
+///
+/// Money lunchMoney = aud.parse("$11.50");
 ///
 /// Money taxInclusive = costPrice * 1.1;
-/// taxInclusive.toString();
-/// > $11.00
+/// print(taxInclusive.toString());
+///   > $11.00
 ///
-/// taxInclusive.format("SCCC0.00");
-/// > $AUD11.00
+/// print(taxInclusive.format("SCCC0.00"));
+///   > $AUD11.00
 ///
-/// taxInclusive.format("SCCC0");
-/// > $AUD11
+/// print(taxInclusive.format("SCCC0"));
+///   > $AUD11
 /// ```
 
 library money2;

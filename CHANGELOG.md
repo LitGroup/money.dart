@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.2.1
+Corrections and improvements to the documentation.
+
 ## version: 1.2.0
 Deprecated 'fromString' methods in favour of 'parse' method name. This was done to bring the library 
 in line with the likes of BigInt.parse.
