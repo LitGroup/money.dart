@@ -128,7 +128,7 @@ cost.toString();
 ```
 
 # Common Currencies
-For your convenience here is a list of some of the more common currencies and their correct definitiona;
+For your convenience here is a list of some of the more common currencies and their correct definitions;
 
 ```dart
 import 'money2.dart';
