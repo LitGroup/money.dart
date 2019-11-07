@@ -4,6 +4,7 @@ This is a Dart implementation of Money and Currency classes
 
 * [Overview](#overview)
 * [Creating Currencies](#registering-a-currency)
+  * [Common Currencies](#common-currencies)
 * [Creating Money](#creating-money)
 * [Formatting](#formatting)
 * [Exchange Rates](#exchange-rates)
@@ -126,6 +127,60 @@ cost.toString();
 
 ```
 
+# Common Currencies
+For your convenience here is a list of some of the more common currencies and their correct definitiona;
+
+```dart
+import 'money2.dart';
+// USA 
+Currency usd = Currency.create('USD', 2);
+// Australia
+Currency aud = Currency.create('AUD', 2);
+// New Zealand
+Currency aud = Currency.create('NZD', 2);
+// Canada
+Currency cad = Currency.create('CAD', 2);
+// Swiss Franc
+Currency chf = Currency.create('CHF', 2, symbol: 'fr');
+// British Pound Sterling
+Currency gbp = Currency.create('GBP', 2, symbol: '£');
+// Chinese renminbi
+Currency cny = Currency.create('CNY', 2, symbol: '¥');
+// euro
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+// Japanese Yen
+Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
+// Mexican Peso
+Currency mxn = Currency.create('MXN', 2);
+// Norwegian krone
+Currency nok = Currency.create('NOK', 2, symbol: 'kr');
+// South Korean Won
+Currency krw = Currency.create('KRW', 0, symbol: '₩', pattern: "S0");
+// Turkish Lira
+Currency ltry = Currency.create('TRY', 2, symbol: '₺');
+// Indian Rupee
+Currency INR = Currency.create('INR', 2, symbol: '₹', invertSeparators: true, pattern: "S000.00,00");
+// Russian Ruble
+Currency rub = Currency.create('RUB', 2, symbol: '₽');
+// Brazilian Real
+Currency brl = Currency.create('BRL', 2, symbol: 'R$');
+// South African Rand
+Currency zar = Currency.create('ZAR', 2, symbol: 'R');
+
+```
+
+
+
+
+```dart
+import 'money2.dart';
+Currency usd = Currency.create('USD', 2, symbol: '¥', invertSeparators: true, pattern: "S0.000");
+
+Currency jpy = Currency.create('JPY', 0, symbol: '¥', invertSeparators: true, pattern: "S0.000");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+
+```
+
 ### Default format
 
 The Currency class also allows you to specify a default format which is used when parsing or formating a `Money` instance.
@@ -169,7 +224,8 @@ A number of currency have different symbols, you can specify the symbol when cre
 ```dart
 import 'money2.dart';
 // Create a currency for Japan's yen with the correct symbol
-final jpy = Currency.create('JPY', 0, symbol: '¥');
+Currency jpy = Currency.create('JPY', 0, symbol: '¥');
+Currency euro = Currency.create('EUR', 2, symbol: '€');
 ```
 
 ### Separators
