@@ -92,8 +92,7 @@ class Money implements Comparable<Money> {
       throw ArgumentError.notNull('currency');
     }
 
-    BigInt minorUnits =
-        BigInt.from(amount * currency.minorDigitsFactor.toInt());
+    var minorUnits = BigInt.from(amount * currency.minorDigitsFactor.toInt());
 
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
@@ -141,14 +140,14 @@ class Money implements Comparable<Money> {
   ///
   factory Money.parse(String monetaryAmount, Currency currency,
       {String pattern}) {
-    ArgumentError.checkNotNull(monetaryAmount, "monetaryValue");
-    ArgumentError.checkNotNull(currency, "currency");
+    ArgumentError.checkNotNull(monetaryAmount, 'monetaryValue');
+    ArgumentError.checkNotNull(currency, 'currency');
 
-    if (pattern == null) pattern = currency.pattern;
+    pattern ??= currency.pattern;
 
-    PatternDecoder decoder = PatternDecoder(currency, pattern);
+    var decoder = PatternDecoder(currency, pattern);
 
-    MoneyData data = decoder.decode(monetaryAmount);
+    var data = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(data.minorUnits, currency);
   }
@@ -176,7 +175,7 @@ class Money implements Comparable<Money> {
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
   /// ```
   Money exchangeTo(Money exchangeRate) {
-    BigInt convertedUnits =
+    var convertedUnits =
         (_minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt()) ~/
             BigInt.from(100);
 
@@ -220,11 +219,12 @@ class Money implements Comparable<Money> {
   /// ```
   ///
   String format(String pattern) {
-    return this.encodedBy(PatternEncoder(this, pattern));
+    return encodedBy(PatternEncoder(this, pattern));
   }
 
+  @override
   String toString() {
-    return this.encodedBy(PatternEncoder(this, _currency.pattern));
+    return encodedBy(PatternEncoder(this, _currency.pattern));
   }
 
   /* Encoding/Decoding ********************************************************/
@@ -292,6 +292,7 @@ class Money implements Comparable<Money> {
   ///
   /// [other] has to be in same currency, [ArgumentError] will be thrown
   /// otherwise.
+  @override
   int compareTo(Money other) {
     _preconditionThatCurrencyTheSameFor(other);
 
@@ -409,7 +410,8 @@ class Money implements Comparable<Money> {
   /// Creates new instance with the same currency and given [amount].
   Money _withAmount(MinorUnits amount) => Money._from(amount, _currency);
 
-  void _preconditionThatCurrencyTheSameFor(Money other, [String message()]) {
+  void _preconditionThatCurrencyTheSameFor(Money other,
+      [String Function() message]) {
     String defaultMessage() =>
         'Cannot operate with money values in different currencies.';
 
@@ -426,7 +428,7 @@ class MoneyParseException implements Exception {
 
   factory MoneyParseException.fromValue(
       String pattern, int i, String monetaryValue, int monetaryIndex) {
-    String message =
+    var message =
         """monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
         when a match for pattern character ${pattern[i]} at pos $i was expected.""";
     return MoneyParseException(message);

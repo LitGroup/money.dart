@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.2.3
+Updated code style to meet latest requirements of dartanalyzer.
+
 ## version: 1.2.2
 Documented creation of top 20 currencies.
 

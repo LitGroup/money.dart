@@ -4,7 +4,7 @@
  * Copyright (c) 2016 - 2019 LitGroup LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the 'Software'), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -13,7 +13,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -28,7 +28,7 @@ import 'package:test/test.dart';
 void main() {
   final usd = Currency.create('USD', 2);
   final euro = Currency.create('EUR', 2,
-      symbol: '€', invertSeparators: true, pattern: "0,00 S");
+      symbol: '€', invertSeparators: true, pattern: '0,00 S');
   // final long = Currency.create('LONG', 2);
 
   // final Money usd10d25 = Money.fromInt(1025, usd);
@@ -37,58 +37,58 @@ void main() {
 
   group('Money.parse', () {
     test('Default Currency Pattern', () {
-      expect(Money.parse("\$10.25", usd), equals(Money.fromInt(1025, usd)));
-      expect(Money.parse("10.25", usd, pattern: "#.#"),
+      expect(Money.parse('\$10.25', usd), equals(Money.fromInt(1025, usd)));
+      expect(Money.parse('10.25', usd, pattern: '#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.parse("USD10.25", usd, pattern: "CCC#.#"),
+      expect(Money.parse('USD10.25', usd, pattern: 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.parse("\$USD10.25", usd, pattern: "SCCC#.#"),
+      expect(Money.parse('\$USD10.25', usd, pattern: 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.parse("1,000.25", usd, pattern: "#.#"),
+      expect(Money.parse('1,000.25', usd, pattern: '#.#'),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {
-      expect(Money.parse("10,25", euro, pattern: "#,#"),
+      expect(Money.parse('10,25', euro, pattern: '#,#'),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.parse("€10,25", euro, pattern: "S0,0"),
+      expect(Money.parse('€10,25', euro, pattern: 'S0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.parse("EUR10,25", euro, pattern: "CCC0,0"),
+      expect(Money.parse('EUR10,25', euro, pattern: 'CCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.parse("€EUR10,25", euro, pattern: "SCCC0,0"),
+      expect(Money.parse('€EUR10,25', euro, pattern: 'SCCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Money.parse("1.000,25", euro, pattern: "#.###,00"),
+      expect(Money.parse('1.000,25', euro, pattern: '#.###,00'),
           equals(Money.fromInt(100025, euro)));
-      expect(Money.parse("1.000,25", euro, pattern: "#.###,00"),
+      expect(Money.parse('1.000,25', euro, pattern: '#.###,00'),
           equals(Money.fromInt(100025, euro)));
     });
   });
 
   group('Currency.parse', () {
     test('Default Currency Pattern', () {
-      expect(usd.parse("\$10.25"), equals(Money.fromInt(1025, usd)));
+      expect(usd.parse('\$10.25'), equals(Money.fromInt(1025, usd)));
       expect(
-          usd.parse("10.25", pattern: "#.#"), equals(Money.fromInt(1025, usd)));
-      expect(usd.parse("USD10.25", pattern: "CCC#.#"),
+          usd.parse('10.25', pattern: '#.#'), equals(Money.fromInt(1025, usd)));
+      expect(usd.parse('USD10.25', pattern: 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(usd.parse("\$USD10.25", pattern: "SCCC#.#"),
+      expect(usd.parse('\$USD10.25', pattern: 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(usd.parse("1,000.25", pattern: "#.#"),
+      expect(usd.parse('1,000.25', pattern: '#.#'),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {
-      expect(euro.parse("10,25", pattern: "#,#"),
+      expect(euro.parse('10,25', pattern: '#,#'),
           equals(Money.fromInt(1025, euro)));
-      expect(euro.parse("€10,25", pattern: "S0,0"),
+      expect(euro.parse('€10,25', pattern: 'S0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(euro.parse("EUR10,25", pattern: "CCC0,0"),
+      expect(euro.parse('EUR10,25', pattern: 'CCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(euro.parse("€EUR10,25", pattern: "SCCC0,0"),
+      expect(euro.parse('€EUR10,25', pattern: 'SCCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(euro.parse("1.000,25", pattern: "#.###,00"),
+      expect(euro.parse('1.000,25', pattern: '#.###,00'),
           equals(Money.fromInt(100025, euro)));
-      expect(euro.parse("1.000,25", pattern: "#.###,00"),
+      expect(euro.parse('1.000,25', pattern: '#.###,00'),
           equals(Money.fromInt(100025, euro)));
     });
   });
@@ -98,47 +98,47 @@ void main() {
     Currencies.register(euro);
 
     test('Default Currency Pattern', () {
-      expect(Currencies.parse("\$USD10.25", "SCCC0.0"),
+      expect(Currencies.parse('\$USD10.25', 'SCCC0.0'),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.parse("USD10.25", "CCC#.#"),
+      expect(Currencies.parse('USD10.25', 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.parse("USD10.25", "CCC#.#"),
+      expect(Currencies.parse('USD10.25', 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.parse("\$USD10.25", "SCCC#.#"),
+      expect(Currencies.parse('\$USD10.25', 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.parse("USD1,000.25", "CCC#.#"),
+      expect(Currencies.parse('USD1,000.25', 'CCC#.#'),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {
-      Currency euro = Currency.create("EUR", 2);
-      expect(Currencies.parse("EUR10,25", "CCC#,#"),
+      var euro = Currency.create('EUR', 2);
+      expect(Currencies.parse('EUR10,25', 'CCC#,#'),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.parse("€EUR10,25", "SCCC0,0"),
+      expect(Currencies.parse('€EUR10,25', 'SCCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.parse("EUR10,25", "CCC0,0"),
+      expect(Currencies.parse('EUR10,25', 'CCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.parse("€EUR10,25", "SCCC0,0"),
+      expect(Currencies.parse('€EUR10,25', 'SCCC0,0'),
           equals(Money.fromInt(1025, euro)));
-      expect(Currencies.parse("EUR1.000,25", "CCC#.###,00"),
+      expect(Currencies.parse('EUR1.000,25', 'CCC#.###,00'),
           equals(Money.fromInt(100025, euro)));
-      expect(Currencies.parse("EUR1.000,25", "CCC#.###,00"),
+      expect(Currencies.parse('EUR1.000,25', 'CCC#.###,00'),
           equals(Money.fromInt(100025, euro)));
     });
   });
 
-  group("deprecated fromString methods", () {
-    test("Money", () {
+  group('deprecated fromString methods', () {
+    test('Money', () {
       expect(
-          Money.fromString("\$10.25", usd), equals(Money.fromInt(1025, usd)));
+          Money.fromString('\$10.25', usd), equals(Money.fromInt(1025, usd)));
     });
 
-    test("Currency", () {
-      expect(usd.parse("\$10.25"), equals(Money.fromInt(1025, usd)));
+    test('Currency', () {
+      expect(usd.parse('\$10.25'), equals(Money.fromInt(1025, usd)));
     });
 
-    test("Currencies", () {
-      expect(Currencies.parse("\$USD10.25", "SCCC0.0"),
+    test('Currencies', () {
+      expect(Currencies.parse('\$USD10.25', 'SCCC0.0'),
           equals(Money.fromInt(1025, usd)));
     });
   });

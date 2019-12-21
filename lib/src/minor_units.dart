@@ -11,6 +11,7 @@ class MinorUnits implements Comparable<MinorUnits> {
 
   bool get isPositive => _value > BigInt.zero;
 
+  @override
   int compareTo(MinorUnits other) => _value.compareTo(other._value);
 
   @override

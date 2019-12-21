@@ -28,18 +28,21 @@ import 'package:money2/src/money_data.dart';
 import 'package:test/test.dart';
 
 class _TestEncoder implements MoneyEncoder<String> {
+  @override
   String encode(MoneyData data) {
     return '${data.currency.code} ${data.minorUnits}';
   }
 }
 
 class _TestDecoder implements MoneyDecoder<MoneyData> {
+  @override
   MoneyData decode(MoneyData encoded) {
     return encoded;
   }
 }
 
 class _FailingDecoder implements MoneyDecoder<String> {
+  @override
   MoneyData decode(String encoded) {
     throw FormatException();
   }
