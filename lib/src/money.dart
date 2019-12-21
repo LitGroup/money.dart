@@ -66,6 +66,10 @@ class Money implements Comparable<Money> {
   final MinorUnits _minorUnits;
   final Currency _currency;
 
+  Currency get currency => _currency;
+
+  BigInt get minorUnits => _minorUnits.toBigInt();
+
   /* Instantiation ************************************************************/
 
   /// Creates an instance of [Money] from a num holding the monetary value.
