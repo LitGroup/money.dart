@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.3.0
+Fixes from oysterpack dealing with:
+https://github.com/noojee/money.dart/issues/4
+money values with single digit cents do not format correctly
+
+and
+
+https://github.com/noojee/money.dart/issues/2
+
+Currently minor units and currency are used to construct Money, but they are not exposed as properties.
+
+
+
 ## version: 1.2.3
 Updated code style to meet latest requirements of dartanalyzer.
 
