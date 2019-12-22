@@ -26,7 +26,6 @@ import 'package:money2/src/pattern_decoder.dart';
 
 import 'currency.dart';
 import 'money.dart';
-import 'money_data.dart';
 
 /// A factory for registering and accessing [Currency] instances.
 ///
@@ -43,7 +42,7 @@ import 'money_data.dart';
 class Currencies {
   // static Currencies _self = Currencies._internal();
 
-  static final Map<String, Currency> _directory = Map();
+  static final Map<String, Currency> _directory = {};
 
   /// Register a Currency
   static void register(Currency currency) {
@@ -71,23 +70,23 @@ class Currencies {
   /// does not contain a known currency.
   ///
   static Money parse(String monetaryAmount, String pattern) {
-    int codeLength = _getCodeLength(pattern);
+    var codeLength = _getCodeLength(pattern);
 
     if (codeLength < 2) {
       throw MoneyParseException(
-          "The Country Code length (e.g. CC) must be at least 2 characters long");
+          'The Country Code length (e.g. CC) must be at least 2 characters long');
     }
 
-    String code = _extractCode(monetaryAmount, codeLength);
+    var code = _extractCode(monetaryAmount, codeLength);
 
-    Currency currency = find(code);
+    var currency = find(code);
 
     if (currency == null) {
       throw UnknownCurrencyException(code);
     }
 
-    PatternDecoder decoder = PatternDecoder(currency, pattern);
-    MoneyData moneyData = decoder.decode(monetaryAmount);
+    var decoder = PatternDecoder(currency, pattern);
+    var moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, currency);
   }
@@ -110,25 +109,25 @@ class Currencies {
 
   /// Counts the number of 'C' in a pattern
   static int _getCodeLength(String pattern) {
-    int count = 0;
-    for (int i = 0; i < pattern.length; i++) {
+    var count = 0;
+    for (var i = 0; i < pattern.length; i++) {
       if (pattern[i] == 'C') count++;
     }
     return count;
   }
 
   static String _extractCode(String monetaryValue, int codeLength) {
-    RegExp regEx = RegExp("[A-Za-z]" * codeLength);
+    var regEx = RegExp('[A-Za-z]' * codeLength);
 
     var matches = regEx.allMatches(monetaryValue);
     if (matches.isEmpty) {
       throw MoneyParseException(
-          "No currency code found in the pattern: $monetaryValue");
+          'No currency code found in the pattern: $monetaryValue');
     }
 
     if (matches.length > 1) {
       throw MoneyParseException(
-          "More than one currency code found in the pattern: $monetaryValue");
+          'More than one currency code found in the pattern: $monetaryValue');
     }
 
     return monetaryValue.substring(matches.first.start, matches.first.end);
@@ -139,6 +138,7 @@ class UnknownCurrencyException implements Exception {
   String code;
   UnknownCurrencyException(this.code);
 
+  @override
   String toString() {
     return "An unknown currency '$code' was passed. Register the currency via [Currencies.register()] and try again.";
   }

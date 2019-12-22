@@ -25,7 +25,6 @@
 import 'dart:math';
 
 import 'money.dart';
-import 'money_data.dart';
 import 'pattern_decoder.dart';
 
 // import 'package:meta/meta.dart' show sealed, immutable;
@@ -74,7 +73,7 @@ class Currency {
   /// then the separators are swapped. This is needed for most non English speaking [Currency]s.
   Currency.create(this.code, this.minorDigits,
       {this.symbol = '\$',
-      this.pattern = "S0.00",
+      this.pattern = 'S0.00',
       this.invertSeparators = false})
       : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
         decimalSeparator = (invertSeparators ? ',' : '.'),
@@ -103,9 +102,9 @@ class Currency {
   /// doesn't match the [pattern].
   ///
   Money parse(String monetaryAmount, {String pattern}) {
-    if (pattern == null) pattern = this.pattern;
-    PatternDecoder decoder = PatternDecoder(this, pattern);
-    MoneyData moneyData = decoder.decode(monetaryAmount);
+    pattern ??= this.pattern;
+    var decoder = PatternDecoder(this, pattern);
+    var moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, this);
   }
@@ -114,9 +113,9 @@ class Currency {
   /// @deprecated - use [Money.parse]
   ///
   Money fromString(String monetaryAmount, {String pattern}) {
-    if (pattern == null) pattern = this.pattern;
-    PatternDecoder decoder = PatternDecoder(this, pattern);
-    MoneyData moneyData = decoder.decode(monetaryAmount);
+    pattern ??= this.pattern;
+    var decoder = PatternDecoder(this, pattern);
+    var moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, this);
   }

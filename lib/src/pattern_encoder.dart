@@ -22,7 +22,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   String encode(MoneyData data) {
     String formatted;
 
-    int decimalSeperatorCount =
+    var decimalSeperatorCount =
         data.currency.decimalSeparator.allMatches(pattern).length;
 
     if (decimalSeperatorCount > 1) {
@@ -30,19 +30,19 @@ class PatternEncoder implements MoneyEncoder<String> {
           "A format Pattern may contain, at most, a single decimal separator '${data.currency.decimalSeparator}'");
     }
 
-    int decimalSeparatorIndex = pattern.indexOf(data.currency.decimalSeparator);
+    var decimalSeparatorIndex = pattern.indexOf(data.currency.decimalSeparator);
 
-    bool hasMinor = true;
+    var hasMinor = true;
     if (decimalSeparatorIndex == -1) {
       decimalSeparatorIndex = pattern.length;
       hasMinor = false;
     }
 
-    String majorPattern = pattern.substring(0, decimalSeparatorIndex);
+    var majorPattern = pattern.substring(0, decimalSeparatorIndex);
 
     formatted = formatMajorPart(data, majorPattern);
     if (hasMinor) {
-      String minorPattern = pattern.substring(decimalSeparatorIndex + 1);
+      var minorPattern = pattern.substring(decimalSeparatorIndex + 1);
       formatted +=
           data.currency.decimalSeparator + formatMinorPart(data, minorPattern);
     }
@@ -51,21 +51,21 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   String formatMajorPart(MoneyData data, String majorPattern) {
-    String formatted = "";
+    var formatted = '';
 
     // extract the contiguous money components made up of 0 # , and .
-    String moneyPattern = getMoneyPattern(majorPattern);
+    var moneyPattern = getMoneyPattern(majorPattern);
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: false);
 
-    BigInt majorUnits = data.getMajorUnits();
+    var majorUnits = data.getMajorUnits();
 
-    String formattedMajorUnits =
+    var formattedMajorUnits =
         getFormattedMajorUnits(data, moneyPattern, majorUnits);
 
     // replace the the money components with a single #
     majorPattern = compressMoney(majorPattern);
 
-    String code = getCode(data, majorPattern);
+    var code = getCode(data, majorPattern);
     // replaces multiple C's with a single S
     majorPattern = compressC(majorPattern);
 
@@ -74,7 +74,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     // Replace the compressed patterns with actual values.
     // The periods and commas have already been removed from the pattern.
-    for (int i = 0; i < majorPattern.length; i++) {
+    for (var i = 0; i < majorPattern.length; i++) {
       var char = majorPattern[i];
       switch (char) {
         case 'S':
@@ -107,22 +107,22 @@ class PatternEncoder implements MoneyEncoder<String> {
     if (data.currency.invertSeparators) {
       // the NumberFormat doesn't like the inverted characters
       // so we normalise them for the conversion.
-      moneyPattern = moneyPattern.replaceAll(".", ",");
+      moneyPattern = moneyPattern.replaceAll('.', ',');
     }
     // format the no. into that pattern.
-    String formattedMajorUnits =
+    var formattedMajorUnits =
         NumberFormat(moneyPattern).format(majorUnits.toInt());
 
     if (data.currency.invertSeparators) {
       // Now convert them back
-      formattedMajorUnits = formattedMajorUnits.replaceAll(",", ".");
+      formattedMajorUnits = formattedMajorUnits.replaceAll(',', '.');
     }
     return formattedMajorUnits;
   }
 
   String getCode(MoneyData data, String pattern) {
     // find the contigous 'C'
-    int codeLength = 'C'.allMatches(pattern).length;
+    var codeLength = 'C'.allMatches(pattern).length;
 
     // get the code based on the no. of C's.
     String code;
@@ -138,11 +138,11 @@ class PatternEncoder implements MoneyEncoder<String> {
 
 // MinorUnits use trailing zeros, MajorUnits use leading zeros.
   String getMoneyPattern(String pattern) {
-    bool foundMoney = false;
-    bool inMoney = false;
-    String moneyPattern = "";
-    for (int i = 0; i < pattern.length; i++) {
-      String char = pattern[i];
+    var foundMoney = false;
+    var inMoney = false;
+    var moneyPattern = '';
+    for (var i = 0; i < pattern.length; i++) {
+      var char = pattern[i];
       switch (char) {
         case 'S':
           inMoney = false;
@@ -189,26 +189,26 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   String formatMinorPart(MoneyData data, String minorPattern) {
-    String formatted = "";
+    var formatted = '';
     // extract the contiguous money components made up of 0 # , and .
-    String moneyPattern = getMoneyPattern(minorPattern);
+    var moneyPattern = getMoneyPattern(minorPattern);
 
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: true);
 
-    int paddedTo = 0;
-    int firstZero = moneyPattern.indexOf('0');
+    var paddedTo = 0;
+    var firstZero = moneyPattern.indexOf('0');
     if (firstZero != -1) {
       paddedTo = moneyPattern.length;
     }
 
-    BigInt minorUnits = data.getMinorUnits();
+    var minorUnits = data.getMinorUnits();
     // format the no. into that pattern.
     // in order for Number format to format single digit minor unit properly with
     // proper 0s, we first add 100 and then strip the 1 after being formatted.
     //
     // e.g., using ## to format 1 would result in 1, but we want it formatted as 01
     // because it is really the decimal part of the number.
-    String formattedMinorUnits = NumberFormat(moneyPattern)
+    var formattedMinorUnits = NumberFormat(moneyPattern)
         .format(minorUnits.toInt() + 100)
         .substring(1);
     if (moneyPattern.length < formattedMinorUnits.length) {
@@ -221,7 +221,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     // replace the the money components with a single #
     minorPattern = compressMoney(minorPattern);
 
-    String code = getCode(data, minorPattern);
+    var code = getCode(data, minorPattern);
     // replaces multiple C's with a single S
     minorPattern = compressC(minorPattern);
 
@@ -229,7 +229,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     validateS(minorPattern);
 
     // expand the pattern
-    for (int i = 0; i < minorPattern.length; i++) {
+    for (var i = 0; i < minorPattern.length; i++) {
       var char = minorPattern[i];
       switch (char) {
         case 'S':
@@ -265,8 +265,8 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   // counts the no. of # and 0s in the pattern before the decimal seperator.
   int countMajorPatternDigits(String pattern, String decimalSeparator) {
-    int count = 0;
-    for (int i = 0; i < pattern.length; i++) {
+    var count = 0;
+    for (var i = 0; i < pattern.length; i++) {
       var char = pattern[i];
       if (char == decimalSeparator) {
         break;
@@ -281,10 +281,10 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   // counts the no. of # and 0s in the pattern before the decimal separator.
   int countMinorPatternDigits(String pattern, String decimalSeparator) {
-    int count = 0;
-    bool foundDecimalSeparator = false;
+    var count = 0;
+    var foundDecimalSeparator = false;
 
-    for (int i = 0; i < pattern.length; i++) {
+    for (var i = 0; i < pattern.length; i++) {
       var char = pattern[i];
       if (char == decimalSeparator) {
         foundDecimalSeparator = true;
@@ -304,7 +304,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   void isMoneyAllowed(bool inMoney, bool foundMoney, int pos) {
     if (!inMoney && foundMoney) {
       throw IllegalPatternException(
-          "Found a 0 at location $pos. All money characters (0#,.)must be contiguous");
+          'Found a 0 at location $pos. All money characters (0#,.)must be contiguous');
     }
   }
 
@@ -328,31 +328,31 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   String compressMoney(String majorPattern) {
-    return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), "#");
+    return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), '#');
   }
 
   void checkZeros(String moneyPattern, String thousandSeparator, {bool minor}) {
-    if (!moneyPattern.contains("0")) return;
+    if (!moneyPattern.contains('0')) return;
 
-    IllegalPatternException illegalPattern = IllegalPatternException(
-        "The '0' pattern characters must only be at the end of the pattern for " +
-            (minor ? "Minor" : "Major") +
-            " Units");
+    var illegalPattern = IllegalPatternException('''
+The '0' pattern characters must only be at the end of the pattern for ''' +
+        (minor ? 'Minor' : 'Major') +
+        ' Units');
 
     // compress zeros so we have only one which should be at the end,
     // unless we have thousand separators then we can have several 0s e.g. 0,0,0
-    moneyPattern = moneyPattern.replaceAll(RegExp(r'0+'), "0");
+    moneyPattern = moneyPattern.replaceAll(RegExp(r'0+'), '0');
 
     // last char must be a zero (i.e. thousand separater not allowed here)
     if (moneyPattern[moneyPattern.length - 1] != '0') throw illegalPattern;
 
     // check that zeros are the trailing character.
     // if the pattern has thousand separators then there can be more than one 0.
-    bool zerosEnded = false;
-    int len = moneyPattern.length - 1;
-    for (int i = len; i > 0; i--) {
-      String char = moneyPattern[i];
-      bool isValid = char == '0';
+    var zerosEnded = false;
+    var len = moneyPattern.length - 1;
+    for (var i = len; i > 0; i--) {
+      var char = moneyPattern[i];
+      var isValid = char == '0';
 
       // when looking at the intial zeros a thousand separator is consider  valid.
       if (!zerosEnded) isValid &= char == thousandSeparator;
@@ -366,10 +366,10 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   // move leading zeros to the end of the string.
   String invertZeros(String formatted) {
-    String trailingZeros = "";
-    String result = "";
-    for (int i = 0; i < formatted.length; i++) {
-      String char = formatted[i];
+    var trailingZeros = '';
+    var result = '';
+    for (var i = 0; i < formatted.length; i++) {
+      var char = formatted[i];
 
       if (char == '0' && result.isEmpty) {
         trailingZeros += '0';
@@ -384,8 +384,8 @@ class PatternEncoder implements MoneyEncoder<String> {
 /// Thrown when you pass an invalid pattern to [Money.format].
 class IllegalPatternException implements Exception {
   String message;
-
   IllegalPatternException(this.message);
 
+  @override
   String toString() => message;
 }

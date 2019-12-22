@@ -15,7 +15,7 @@ void main() {
   ///   monetary value.
   /// So $10.00 is 1000 cents.
   ///
-  Money costPrice = Money.fromInt(1000, usd);
+  var costPrice = Money.fromInt(1000, usd);
   print(costPrice.toString());
   // > $10.00
 
@@ -24,16 +24,16 @@ void main() {
   /// using [Currency.parse]
   /// The [Currency] of salePrice is USD.
   ///
-  Money salePrice = usd.parse("\$10.50");
-  print(salePrice.format("SCC 0.0"));
+  var salePrice = usd.parse('\$10.50');
+  print(salePrice.format('SCC 0.0'));
   // > $US 10.50
 
   ///
   /// Create a [Money] instance from a String
   /// using [Money.parse]
   ///
-  Money taxPrice = Money.parse("\$1.50", usd);
-  print(taxPrice.format("CC 0.0 S"));
+  var taxPrice = Money.parse('\$1.50', usd);
+  print(taxPrice.format('CC 0.0 S'));
   // > US 1.50 $
 
   ///
@@ -43,12 +43,12 @@ void main() {
   ///
   Currencies.register(usd);
   Currencies.register(aud);
-  Money cheapIPhone = Currencies.parse("\$USD1500.0", "SCCC0.0");
-  print(cheapIPhone.format("SCC0.0"));
+  var cheapIPhone = Currencies.parse('\$USD1500.0', 'SCCC0.0');
+  print(cheapIPhone.format('SCC0.0'));
   // > $US1500.00
 
-  Money expensiveIPhone = Currencies.parse("\$AUD2000.0", "SCCC0.0");
-  print(expensiveIPhone.format("SCC0.0"));
+  var expensiveIPhone = Currencies.parse('\$AUD2000.0', 'SCCC0.0');
+  print(expensiveIPhone.format('SCC0.0'));
   // > $AUD2000.00
 
   ///
@@ -69,7 +69,7 @@ void main() {
   ///     the currency.
   /// # - a digit if required
   /// 0 - a digit or the zero character as padding.
-  print(taxInclusive.format("SCC #.00"));
+  print(taxInclusive.format('SCC #.00'));
   // > $US 11.00
 
   ///
@@ -84,8 +84,8 @@ void main() {
   ///      S output the symbol.
   ///      0 - force at least a single digit in the output.
   ///
-  final Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
-  Money jpyMoney = Money.fromInt(500, jpy);
+  final jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
+  var jpyMoney = Money.fromInt(500, jpy);
   print(jpyMoney.toString());
   // > ¥500
 
@@ -98,10 +98,10 @@ void main() {
   ///      and '.' for the thousands separator.
   ///      -> 1.000,00
   ///
-  final Currency euro = Currency.create('EUR', 2,
-      symbol: '€', invertSeparators: true, pattern: "#.##0,00 S");
+  final euro = Currency.create('EUR', 2,
+      symbol: '€', invertSeparators: true, pattern: '#.##0,00 S');
 
-  Money bmwPrice = Money.fromInt(10025090, euro);
+  var bmwPrice = Money.fromInt(10025090, euro);
   print(bmwPrice.toString());
   // > 100.250,90 €
 
@@ -111,26 +111,26 @@ void main() {
   ///
 
   // 100,345.30 usd
-  Money teslaPrice = Money.fromInt(10034530, usd);
+  var teslaPrice = Money.fromInt(10034530, usd);
 
-  print(teslaPrice.format("###,###"));
+  print(teslaPrice.format('###,###'));
   // > 100,345
 
-  print(teslaPrice.format("S###,###.##"));
+  print(teslaPrice.format('S###,###.##'));
   // > $100,345.3
 
-  print(teslaPrice.format("CC###,###.#0"));
+  print(teslaPrice.format('CC###,###.#0'));
   // > US100,345.30
 
   // 100,345.30 EUR
-  Money euroCostPrice = Money.fromInt(10034530, euro);
-  print(euroCostPrice.format("###.###"));
+  var euroCostPrice = Money.fromInt(10034530, euro);
+  print(euroCostPrice.format('###.###'));
   // > 100.345
 
-  print(euroCostPrice.format("###.###,## S"));
+  print(euroCostPrice.format('###.###,## S'));
   // > 100.345,3 €
 
-  print(euroCostPrice.format("###.###,#0 CC"));
+  print(euroCostPrice.format('###.###,#0 CC'));
   // > 100.345,30 EU
 
   ///
@@ -143,19 +143,19 @@ void main() {
 
   // use a registered currency by finding it in the registry using
   // the currency code that the currency was created with.
-  Currency usDollar = Currencies.find("USD");
+  var usDollar = Currencies.find('USD');
 
-  Money invoicePrice = Money.fromInt(1000, usDollar);
+  var invoicePrice = Money.fromInt(1000, usDollar);
 
   ///
-  print(invoicePrice.format("SCCC 0.00"));
+  print(invoicePrice.format('SCCC 0.00'));
   // $USD 10.00
 
   // Do some maths
-  Money taxInclusivePrice = invoicePrice * 1.1;
+  var taxInclusivePrice = invoicePrice * 1.1;
   print(taxInclusivePrice.toString());
   // $11.00
 
-  print(taxInclusivePrice.format("SCC 0.00"));
+  print(taxInclusivePrice.format('SCC 0.00'));
   // $US 11.00
 }
