@@ -203,8 +203,14 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     var minorUnits = data.getMinorUnits();
     // format the no. into that pattern.
-    var formattedMinorUnits =
-        NumberFormat(moneyPattern).format(minorUnits.toInt());
+    // in order for Number format to format single digit minor unit properly with
+    // proper 0s, we first add 100 and then strip the 1 after being formatted.
+    //
+    // e.g., using ## to format 1 would result in 1, but we want it formatted as 01
+    // because it is really the decimal part of the number.
+    var formattedMinorUnits = NumberFormat(moneyPattern)
+        .format(minorUnits.toInt() + 100)
+        .substring(1);
     if (moneyPattern.length < formattedMinorUnits.length) {
       // money pattern is short, so we need to force a truncation as NumberFormat doesn't
       // know we are dealing with minor units.
@@ -245,8 +251,11 @@ class PatternEncoder implements MoneyEncoder<String> {
     }
 
     // Fixed problems caused by passing a int to the NumberFormat when we are trying to format a decimal.
-    // Move leading zeros to the end.
-    formatted = invertZeros(formatted);
+    // Move leading zeros to the end when minor units >= 10 - i.e., we want to keep
+    // the leading zeros for single digit cents.
+    if (minorUnits.toInt() >= 10) {
+      formatted = invertZeros(formatted);
+    }
     // Add trailing zeros.
 
     if (paddedTo != 0) formatted = formatted.padRight(paddedTo, '0');
