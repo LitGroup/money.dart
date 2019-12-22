@@ -66,7 +66,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     majorPattern = compressMoney(majorPattern);
 
     var code = getCode(data, majorPattern);
-    // replaces multiple C's with a single S
+    // replaces multiple C's with a single C
     majorPattern = compressC(majorPattern);
 
     // checks we have only one S.
