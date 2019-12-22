@@ -63,6 +63,8 @@ void main() {
       expect(euroSmall.format("##"), equals("10"));
     });
     test('Lead zero USD', () {
+      expect(Money.fromInt(310, usd).format("000.##"), equals("003.10"));
+      expect(Money.fromInt(301, usd).format("000.##"), equals("003.01"));
       expect(usd10d25.format("000.##"), equals("010.25"));
       expect(usd10d25.format("000"), equals("010"));
     });
@@ -70,6 +72,14 @@ void main() {
     test('trailing zero USD', () {
       expect(usd10d25.format("##.000"), equals("10.250"));
       expect(usd10d25.format("000"), equals("010"));
+      expect(Money.fromInt(301, usd).format("000.000"), equals("003.010"));
+    });
+
+    test('less than 10 cents USD in minor units', () {
+      expect(Money.fromInt(01, usd).toString(), '\$0.01');
+      expect(Money.fromInt(301, usd).toString(), '\$3.01');
+      expect(Money.fromBigInt(BigInt.from(301), usd).toString(), '\$3.01');
+      expect(Money.from(3.01, usd).toString(), '\$3.01');
     });
 
     test('Symbol tests', () {
