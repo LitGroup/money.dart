@@ -66,8 +66,12 @@ class Money implements Comparable<Money> {
   final MinorUnits _minorUnits;
   final Currency _currency;
 
+  /// Returns the currency for this monetary amount.
   Currency get currency => _currency;
 
+  /// Returns the underlying minorUnits
+  /// for this monetary amount.
+  /// e.g. $10.10 is returned as 1010
   BigInt get minorUnits => _minorUnits.toBigInt();
 
   /* Instantiation ************************************************************/
