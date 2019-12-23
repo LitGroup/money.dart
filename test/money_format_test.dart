@@ -70,9 +70,9 @@ void main() {
     });
 
     test('trailing zero USD', () {
-      expect(usd10d25.format("##.000"), equals("10.250"));
-      expect(usd10d25.format("000"), equals("010"));
-      expect(Money.fromInt(301, usd).format("000.000"), equals("003.010"));
+      expect(usd10d25.format('##.000'), equals('10.250'));
+      expect(usd10d25.format('000'), equals('010'));
+      expect(Money.fromInt(301, usd).format('000.000'), equals('003.010'));
     });
 
     test('less than 10 cents USD in minor units', () {
