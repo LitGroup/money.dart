@@ -37,7 +37,7 @@ Key features of Money2:
 The Money class stores the underlying values using a BigInt. The value is stored using the currencies' "minor units" (e.g. cents).
 This allows for precise calculations as required when handling money.
 
-Lets start with some examples:
+Let's start with some examples:
 
 ```dart
 import 'money2.dart';
