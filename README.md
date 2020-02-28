@@ -506,7 +506,7 @@ print(usdAmount);
 ## Comparison
 
 Equality operator (`==`) returns `true` when both operands are in the same
-currency and have equal amount.
+currency and have an equal amount.
 
 ```dart
 import 'money2.dart';
@@ -515,12 +515,12 @@ fiveDollars == sevenDollars; // => false
 fiveDollars == fiveEuros;    // => false (different currencies)
 ```
 
-Money values can be compared with operators `<`, `<=`, `>`, `>=`, or method
+Money values can be compared with the `<`, `<=`, `>`, `>=` operators, or the method
 `compareTo()` from the interface `Comparable<Money>`.
 
-**This operators and method `compareTo()` can be used
+**These operators and method `compareTo()` can be used
 only between money values in the same currency. Runtime error will be thrown
-on attempt to compare values in different currencies.**
+on any attempt to compare values in different currencies.**
 
 ```dart
 import 'money2.dart';
@@ -532,7 +532,7 @@ fiveEuros < fiveDollars;    // throws ArgumentError!
 
 ### Currency Predicates
 
-To check that money value has an expected currency use methods
+To check that money value has an expected currency use the methods
 `isInCurrency(Currency)` and `isInSameCurrencyAs(Money)`:
 
 ```dart
@@ -549,7 +549,7 @@ fiveDollars.isInSameCurrencyAs(fiveEuros);    // => false
 
 ### Value Sign Predicates
 
-To check if some money amount is a credit, a debit or zero, use predicates:
+To check if a money amount is a credit, a debit or zero, use predicates:
 
 * `Money.isNegative` — returns `true` only if amount is less than `0`.
 * `Money.isPositive` — returns `true` only if amount is greater than `0`.
@@ -559,7 +559,7 @@ To check if some money amount is a credit, a debit or zero, use predicates:
 
 The Money class is immutable, so each operation returns a new Money instance.
 
-`Money` provides next arithmetic operators:
+`Money` provides the following arithmetic operators:
 
 * unary `-()`
 * `+(Money)`
@@ -567,8 +567,8 @@ The Money class is immutable, so each operation returns a new Money instance.
 * `*(num)`
 * `/(num)`
 
-**Operators `+` and `-` must be used with operands in same currency,
-`ArgumentError` will be thrown otherwise.**
+**Operators `+` and `-` must be used with operands in same currency, otherwise
+`ArgumentError` will be thrown.**
 
 ```dart
 import 'money2.dart';
@@ -591,8 +591,8 @@ final eightCents = fifteenCents * 0.5; // $0.08 (rounded from 0.075)
 
 ### Allocation According to Ratios
 
-Let our company have made a profit of 5 cents, which has ro be divided amongst
-a company (70%) and an investor (30%). Cents cant' be divided, so We can't
+Let our company have made a profit of 5 cents, which has to be divided amongst
+a company (70%) and an investor (30%). Cents can't be divided, so We can't
 give 3.5 and 1.5 cents. If we round up, the company gets 4 cents, the investor
 gets 2, which means we need to conjure up an additional cent.
 
@@ -631,7 +631,7 @@ assert(allocation[2] == Money.fromBigInt(BigInt.from(266), usd)); // $2.66
 ## Money encoding/decoding
 
 API for encoding/decoding a money value enables an application to store
-value in a database or send over the network.
+values in a database or send over a network.
 
 A money value can be encoded to any type. For example it can be coded
 as a string in the format like "USD 5.00".
