@@ -57,7 +57,7 @@ fiveDollars == fiveEuros;    // => false (different currencies)
 Money values can be compared with operators `<`, `<=`, `>`, `>=`, or method
 `compareTo()` from the interface `Comparable<Money>`.
 
-**This operators and method `compareTo()` can be used
+**These operators and method `compareTo()` can be used
 only between money values in the same currency. Runtime error will be thrown
 on attempt to compare values in different currencies.**
 
