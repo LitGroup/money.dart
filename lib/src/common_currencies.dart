@@ -16,6 +16,8 @@ import '../money2.dart';
 ///
 class CommonCurrencies {
   static final CommonCurrencies _self = CommonCurrencies._internal();
+
+  /// Factory constructor.
   factory CommonCurrencies() {
     return _self;
   }
@@ -75,6 +77,7 @@ class CommonCurrencies {
   /// South African Rand
   final Currency zar = Currency.create('ZAR', 2, symbol: 'R');
 
+  /// Registers all of the common currency.
   void registerAll() {
     Currencies.registerList([
       usd,

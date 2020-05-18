@@ -22,15 +22,14 @@
  * THE SOFTWARE.
  */
 
-// import 'package:meta/meta.dart' show sealed, immutable;
-
-import 'money.dart';
+import 'package:meta/meta.dart' show sealed, immutable;
 import 'currency.dart';
+import 'money.dart';
 
 /// DTO for exchange of data between an instance of [Money] and [MoneyEncoder]
 /// or [MoneyDecoder].
-//@sealed
-// @immutable
+@sealed
+@immutable
 class MoneyData {
   /// Amount of money in the smallest units (e.g. cent for USD).
   final BigInt minorUnits;
@@ -38,6 +37,7 @@ class MoneyData {
   /// The currency
   final Currency currency;
 
+  /// Creates a MoneyData from [MinorUnits] and a [Currency]
   MoneyData.from(this.minorUnits, this.currency) {
     if (minorUnits == null) {
       throw ArgumentError.notNull('minorUnits');
@@ -47,7 +47,8 @@ class MoneyData {
     }
   }
 
-  /// returns the major currency value of this MoneyData (e.g. the dollar amount)
+  /// returns the major currency value of this
+  /// MoneyData (e.g. the dollar amount)
   BigInt getMajorUnits() {
     return (minorUnits ~/ currency.minorDigitsFactor);
   }

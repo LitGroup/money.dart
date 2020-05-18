@@ -1,14 +1,26 @@
+import 'package:meta/meta.dart';
+
+/// [MinorUnits] represent the smallest unit in a given currency
+/// e.g. cents.
+/// The [Money] classes uses the [MinorUnits] to store all monetary
+/// values.
+@immutable
 class MinorUnits implements Comparable<MinorUnits> {
   final BigInt _value;
 
+  /// Create a MinorUnit from a [BigInt] which contains
+  /// a value in minor units.
   MinorUnits.from(BigInt value) : _value = value {
     assert(value != null);
   }
 
+  /// returns true of the value of this [MinorUnit] is zero.
   bool get isZero => _value == BigInt.zero;
 
+  /// returns true of the value of this [MinorUnit] is negative.
   bool get isNegative => _value < BigInt.zero;
 
+  /// returns true of the value of this [MinorUnit] is positive.
   bool get isPositive => _value > BigInt.zero;
 
   @override
@@ -21,16 +33,20 @@ class MinorUnits implements Comparable<MinorUnits> {
   bool operator ==(dynamic other) =>
       other is MinorUnits && _value == other._value;
 
+  /// less than operator
   bool operator <(MinorUnits other) => _value < other._value;
 
+  /// less than or equal operator
   bool operator <=(MinorUnits other) => _value <= other._value;
 
+  /// greater than operator
   bool operator >(MinorUnits other) => _value > other._value;
 
+  /// greater than or equal operator
   bool operator >=(MinorUnits other) => _value >= other._value;
 
-  /* Allocation ***************************************************************/
-
+  ///
+  ///  Allocation
   List<MinorUnits> allocationAccordingTo(List<int> ratios) {
     if (ratios.isEmpty) {
       throw ArgumentError.value(ratios, 'ratios',
@@ -51,8 +67,8 @@ class MinorUnits implements Comparable<MinorUnits> {
     final totalVolume = ratios.reduce((a, b) => a + b);
 
     if (totalVolume == BigInt.zero) {
-      throw ArgumentError(
-          'Sum of ratios must be greater than zero, cannot allocate to nothing.');
+      throw ArgumentError('Sum of ratios must be greater than zero, '
+          'cannot allocate to nothing.');
     }
 
     final absoluteValue = _value.abs();
@@ -77,16 +93,20 @@ class MinorUnits implements Comparable<MinorUnits> {
         .toList();
   }
 
-  /* Arithmetic ***************************************************************/
+  /// Arithmetic
 
+  /// add operator
   MinorUnits operator +(MinorUnits operand) =>
       MinorUnits.from(_value + operand._value);
 
+  /// unary minus operator.
   MinorUnits operator -() => MinorUnits.from(-_value);
 
+  /// subtract operator
   MinorUnits operator -(MinorUnits operand) =>
       MinorUnits.from(_value - operand._value);
 
+  /// multiplication operator.
   MinorUnits operator *(num operand) {
     if (operand is int) {
       return MinorUnits.from(_value * BigInt.from(operand));
@@ -116,11 +136,15 @@ class MinorUnits implements Comparable<MinorUnits> {
         '(int or double are expected)');
   }
 
+  /// Division operator.
   MinorUnits operator /(num divisor) {
     return this * (1.0 / divisor.toDouble());
   }
 
-  /* Type Conversion **********************************************************/
+  ///
+  /// Type Conversion **********************************************************
+  ///
 
+  /// returns the minor units as a big int value.
   BigInt toBigInt() => _value;
 }

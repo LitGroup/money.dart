@@ -24,55 +24,70 @@
 
 import 'dart:math';
 
+import 'package:meta/meta.dart';
+
 import 'money.dart';
 import 'pattern_decoder.dart';
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
-/// Allows you to create a [Currency] which is then used to construct [Money] instances.
+/// Allows you to create a [Currency] which is then used to construct
+/// [Money] instances.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
-/// Money2 does not create a default set of currencies instead you need to explicitly
-/// create each currency type you want to use.
+/// Money2 does not create a default set of currencies instead you need
+/// to explicitly create each currency type you want to use.
 ///
 /// Normally you create one global currency instance for each currency type.
-/// If you wish you can register each [Currency] instance with the [Currencies] class
-/// which then is able to provides a global directory of [Currency] instances.
+/// If you wish you can register each [Currency] instance with the
+/// [Currencies] class which then is able to provides a global directory of
+/// [Currency] instances.
 ///
 //@sealed
-// @immutable
+@immutable
 class Currency {
   /// The code of the currency (e.g. 'USD').
   final String code;
 
+  /// The currency symbol (e.g. $)
   final String symbol;
 
   /// The number of decimals for the currency (zero or more).
   final int minorDigits;
 
-  // The factor of 10 to divide a minor value by to get the intended currency value.
-  // e.g. if minorDigits is 1 then this value will be 100.
+  /// The factor of 10 to divide a minor value by to get the intended
+  /// currency value.
+  ///  e.g. if minorDigits is 1 then this value will be 100.
   final BigInt minorDigitsFactor;
 
   /// the default pattern used to format and parse monetary amounts for this
   /// currency.
   final String pattern;
 
-  // Most western currencies use the period as the decimal separator and comma for formating.
-  // Some other currencies invert the use of periods and commas. If this value is true the invert version is used.
+  /// Most western currencies use the period as the decimal separator
+  /// and comma for formating.
+  // Some other currencies invert the use of periods and commas.
+  /// If this value is true the invert version is used.
   final bool invertSeparators;
 
+  /// The character used for the decimal place
   final String decimalSeparator;
+
+  /// The character used for the thousands separator.
   final String thousandSeparator;
 
   /// Creates a currency with a given [code] and [minorDigits].
-  ///
   /// * [code] - the currency code e.g. USD
-  /// * [minorDigits] - the number of digits after the decimal place the the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
-  /// * [pattern] - the default output format used when you call toString on a Money instance created with this currency. See [Money.format] for details on the supported patterns.
-  /// * [inverSeparator] - normally the decimal separator is '.' and the thousands separator is ','. When this value is true (defaults to false)
-  /// then the separators are swapped. This is needed for most non English speaking [Currency]s.
+  /// * [minorDigits] - the number of digits after the decimal place the
+  /// the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
+  /// * [pattern] - the default output format used when you call toString
+  /// on a Money instance created with this currency. See [Money.format]
+  /// for details on the supported patterns.
+  /// * [inverSeparator] - normally the decimal separator is '.' and the
+  /// thousands separator is ','. When this value is true (defaults to false)
+  /// then the separators are swapped. This is needed for most non English
+  /// speaking [Currency]s.
   Currency.create(this.code, this.minorDigits,
       {this.symbol = '\$',
       this.pattern = 'S0.00',
@@ -139,6 +154,9 @@ class Currency {
     return BigInt.from(pow(10, minorDigits));
   }
 
+  /// Takes a [majorUnits] and a [minorUnits] and returns
+  /// a BigInt which represents the two combined values in
+  /// [minorUnits].
   BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) {
     return majorUnits * minorDigitsFactor + minorUnits;
   }

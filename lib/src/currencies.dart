@@ -22,28 +22,33 @@
  * THE SOFTWARE.
  */
 
-import 'package:money2/src/pattern_decoder.dart';
-
 import 'currency.dart';
 import 'money.dart';
+import 'pattern_decoder.dart';
 
+// TODO: consider converting to a factory.
+// ignore: avoid_classes_with_only_static_members
 /// A factory for registering and accessing [Currency] instances.
 ///
-/// The [Currencies] class is a convenience class that you aren't required to use.
+/// The [Currencies] class is a convenience class that you aren't required to
+/// use.
 ///
-/// Money2 does not register a default set of currencies instead you need to explicitly
-/// create each currency or register one or more of the [Currency]s from the
-/// list of [CommonCurrencies]s.
+/// Money2 does not register a default set of currencies instead you need to
+/// explicitly create each currency or register one or more of the [Currency]s
+/// from the list of [CommonCurrencies]s.
 ///
-/// The [Currencies] class lets you register each [Currency] for easy reuse and access from this singleton.
+/// The [Currencies] class lets you register each [Currency] for easy
+/// reuse and access from this singleton.
 ///
-/// You don't need to register [Currency]s, you can just create [Currency]s and use
-/// them as needed.
+/// You don't need to register [Currency]s, you can just create [Currency]s
+/// and use them as needed.
 ///
 /// see:
 ///   [Currency]
 ///   [CommonCurrencies]
 
+// TODO: consider converting to a factory.
+// ignore: avoid_classes_with_only_static_members
 class Currencies {
   // static Currencies _self = Currencies._internal();
 
@@ -57,9 +62,9 @@ class Currencies {
 
   /// Register a list of currencies.
   static void registerList(Iterable<Currency> currencies) {
-    currencies.forEach((currency) {
+    for (var currency in currencies) {
       _directory[currency.code] = currency;
-    });
+    }
   }
 
   ///
@@ -99,7 +104,8 @@ class Currencies {
 
       if (codeLength < 2) {
         throw MoneyParseException(
-            'The Country Code length (e.g. CC) must be at least 2 characters long');
+            'The Country Code length (e.g. CC) must be at '
+            'least 2 characters long');
       }
 
       var code = _extractCode(monetaryAmount, codeLength);
@@ -143,7 +149,8 @@ class Currencies {
 
   /// Searches the list of registered [Currency]s.
   ///
-  /// Returns the [Currency] that matches [code] or `null` if no matching [code] is found.
+  /// Returns the [Currency] that matches [code] or `null` if
+  /// no matching [code] is found.
   static Currency find(String code) {
     return _directory[code];
   }
@@ -200,12 +207,17 @@ class Currencies {
   }
 }
 
+/// Throw if the currency is not registered.
 class UnknownCurrencyException implements Exception {
+  /// The code or monetary amount that contained the unknow currency
   String code;
+
+  ///
   UnknownCurrencyException(this.code);
 
   @override
   String toString() {
-    return "An unknown currency '$code' was passed. Register the currency via [Currencies.register()] and try again.";
+    return "An unknown currency '$code' was passed. Register the currency"
+        " via [Currencies.register()] and try again.";
   }
 }

@@ -24,19 +24,22 @@
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
-import 'package:money2/src/pattern_decoder.dart';
-import 'package:money2/src/pattern_encoder.dart';
+import 'package:meta/meta.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
 import 'minor_units.dart';
 import 'money_data.dart';
+import 'pattern_decoder.dart';
+import 'pattern_encoder.dart';
 
-/// Allows you to store, print and perform mathematically operations on money whilst maintaining precision.
+/// Allows you to store, print and perform mathematically operations on money
+/// whilst maintaining precision.
 ///
 /// **NOTE: This is a value type, do not extend or re-implement it.**
 ///
-/// The [Money] class works with the [Currency] class to provide a simple means to define monetary values.
+/// The [Money] class works with the [Currency] class to provide a simple
+///  means to define monetary values.
 ///
 /// e.g.
 ///
@@ -57,11 +60,12 @@ import 'money_data.dart';
 /// > $AUD11
 /// ```
 ///
-/// Money uses  [BigInt] internally to represent an amount in minorUnits (e.g. cents)
+/// Money uses  [BigInt] internally to represent an amount in minorUnits
+///  (e.g. cents)
 ///
 
 // @sealed
-// @immutable
+@immutable
 class Money implements Comparable<Money> {
   final MinorUnits _minorUnits;
   final Currency _currency;
@@ -78,7 +82,8 @@ class Money implements Comparable<Money> {
 
   /// Creates an instance of [Money] from a num holding the monetary value.
   /// Unlike [fromBigInt] the amount is in dollars and cents (not just cents).
-  /// This means that you can intiate a Money value from a double or int as follows:
+  /// This means that you can intiate a Money value from a double or int
+  /// as follows:
   /// ```dart
   /// Money buyPrice = Money.from(10);
   /// print(buyPrice.toString());
@@ -87,8 +92,9 @@ class Money implements Comparable<Money> {
   /// print(sellPrice.toString());
   ///  > $10.50
   /// ```
-  /// NOTE: be very careful using doubles to transport money as you are guarenteed
-  /// to get rounding errors!!!  You should use a [String] with [Money.parse()].
+  /// NOTE: be very careful using doubles to transport money as you are
+  /// guarenteed to get rounding errors!!!  You should use a [String]
+  /// with [Money.parse()].
   ///
   /// [amounts] - the value of the  [currency]. Unlike fromBigInt this method
   ///
@@ -142,9 +148,11 @@ class Money implements Comparable<Money> {
   /// Parses the passed [monetaryAmount] and returns a [Money] instance.
   ///
   /// The passed [monetaryAmount] must match the given [pattern] or
-  /// if no pattern is supplied then the default pattern of the passed [currency].
+  /// if no pattern is supplied then the default pattern of the
+  /// passed [currency].
   ///
-  /// Throws an MoneyParseException if the [monetaryAmount] doesn't match the pattern.
+  /// Throws an MoneyParseException if the [monetaryAmount] doesn't
+  /// match the pattern.
   ///
   factory Money.parse(String monetaryAmount, Currency currency,
       {String pattern}) {
@@ -199,12 +207,14 @@ class Money implements Comparable<Money> {
   ///
   /// [pattern] supports the following characters
   ///   * S outputs the currencies symbol e.g. $.
-  ///   * C outputs part of the currency symbol e.g. USD. You can specify 1,2 or 3 C's
+  ///   * C outputs part of the currency symbol e.g. USD.
+  /// You can specify 1,2 or 3 C's
   ///       * C - U
   ///       * CC - US
   ///       * CCC - USD - outputs the full currency code regardless of length.
   ///   * &#35; denotes a digit.
-  ///   * 0 denotes a digit and with the addition of defining leading and trailing zeros.
+  ///   * 0 denotes a digit and with the addition of defining leading
+  /// and trailing zeros.
   ///   * , (comma) a placeholder for the grouping separtor
   ///   * . (period) a place holder fo rthe decimal separator
   ///
@@ -307,7 +317,8 @@ class Money implements Comparable<Money> {
     return _minorUnits.compareTo(other._minorUnits);
   }
 
-  /// Returns `true` if [other] is the same amount of money in the same currency.
+  /// Returns `true` if [other] is the same amount of money in
+  /// the same currency.
   @override
   bool operator ==(dynamic other) =>
       other is Money &&
@@ -372,8 +383,11 @@ class Money implements Comparable<Money> {
   /// A value of the parameter [targets] must be greater than zero.
   List<Money> allocationTo(int targets) {
     if (targets < 1) {
-      throw ArgumentError.value(targets, 'targets',
-          'Number of targets must not be less than one, cannot allocate to nothing.');
+      throw ArgumentError.value(
+          targets,
+          'targets',
+          'Number of targets must not be less than one, '
+              'cannot allocate to nothing.');
     }
 
     return allocationAccordingTo(List<int>.filled(targets, 1));
@@ -391,6 +405,7 @@ class Money implements Comparable<Money> {
     return _withAmount(_minorUnits + summand._minorUnits);
   }
 
+  /// unary minus operator.
   Money operator -() => _withAmount(-_minorUnits);
 
   /// Subtracts right operand from the left one.
@@ -429,11 +444,15 @@ class Money implements Comparable<Money> {
   }
 }
 
+/// Exception thrown we a parse fails.
 class MoneyParseException implements Exception {
+  /// The error message
   String message;
 
+  ///
   MoneyParseException(this.message);
 
+  ///
   factory MoneyParseException.fromValue(
       String pattern, int i, String monetaryValue, int monetaryIndex) {
     var message =

@@ -53,12 +53,12 @@ final taxInclusive = costPrice * 1.1;
 print(taxInclusive.toString())
   > $11.00
 
-print(taxInclusive.format("SCC #.00"));
+print(taxInclusive.format('SCC #.00'));
   > $US 11.00
 
 // Create money from an String using the `Currency` instance.
-Money parsed = usdCurrency.parse("\$10.00");
-print(parsed.format("SCCC 0.0"));
+Money parsed = usdCurrency.parse(r'$10.00');
+print(parsed.format('SCCC 0.0'));
   > $USD 10.00
 
 // Create money from an int which contains the MajorUnit (e.g dollars)
@@ -115,7 +115,7 @@ Currency usd = Currency.create('USD', 2);
 Currencies.register(usd);
 Currency aud = Currency.create('AUD', 2);
 Currencies.register(aud);
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
 Currencies.register(euro);
 final Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
 Currencies.register(jpy);
@@ -131,10 +131,10 @@ cost.toString();
 From version 1.4.0 we ship with a list of common currencies.
 
 You can access the list of common currencies in the `CommonCurrencies` class.
-You can eithr register individual `Currency`s or register all of them at once:
+You can either register individual `Currency`s or register all of them at once:
 
 ```dart
-  // register just one currency
+  // register just one common currency
   Currencies.register(CommonCurrencies().usd);
 
   // register all common currencies.
@@ -142,7 +142,7 @@ You can eithr register individual `Currency`s or register all of them at once:
 ```
 
 
-Here is the list of currencies available in 'CommonCurrencies'
+Here is the list of currencies available in `CommonCurrencies`
 
 
 ```dart
@@ -162,7 +162,7 @@ Currency gbp = Currency.create('GBP', 2, symbol: '£');
 // Chinese renminbi
 Currency cny = Currency.create('CNY', 2, symbol: '¥');
 // euro
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
 // Japanese Yen
 Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
 // Mexican Peso
@@ -170,11 +170,11 @@ Currency mxn = Currency.create('MXN', 2);
 // Norwegian krone
 Currency nok = Currency.create('NOK', 2, symbol: 'kr');
 // South Korean Won
-Currency krw = Currency.create('KRW', 0, symbol: '₩', pattern: "S0");
+Currency krw = Currency.create('KRW', 0, symbol: '₩', pattern: 'S0');
 // Turkish Lira
 Currency ltry = Currency.create('TRY', 2, symbol: '₺');
 // Indian Rupee
-Currency INR = Currency.create('INR', 2, symbol: '₹', invertSeparators: true, pattern: "S000.00,00");
+Currency INR = Currency.create('INR', 2, symbol: '₹', invertSeparators: true, pattern: 'S000.00,00');
 // Russian Ruble
 Currency rub = Currency.create('RUB', 2, symbol: '₽');
 // Brazilian Real
@@ -188,11 +188,11 @@ Currency zar = Currency.create('ZAR', 2, symbol: 'R');
 
 The Currency class also allows you to specify a default format which is used when parsing or formating a `Money` instance.
 
-Note: if you don't specify a pattern it defaults to  "S0.00"
+Note: if you don't specify a pattern it defaults to  'S0.00'
 
 ```dart
 import 'money2.dart';
-Currency aud = Currency.create('AUD', 2, pattern:"S0.00");
+Currency aud = Currency.create('AUD', 2, pattern:'S0.00');
 Money costPrice = Money.fromInt(1099, aud);
 print(costPrice.toString());
   > $10.99
@@ -202,16 +202,16 @@ Money yenCostPrice = Money.fromInt(1099, jpy);
 print(yenCostPrice.toString());
   > ¥1099
 
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
 Money euroCostPrice = Money.fromInt(899, euro);
 print(euroCostPrice.toString());
   > €8,99
 
-Money usdValue = usd.parse("€7,10");
+Money usdValue = usd.parse('€7,10');
 print(euroCostPrice.toString());
   > €7,10
 
-Money euroValue = euro.parse("\$2.99");
+Money euroValue = euro.parse(r'$2.99');
 print(euroValue.toString());
   > $2.99
 
@@ -250,7 +250,7 @@ You will also need to provide an appropriate pattern.
 
 ```dart
 import 'money2.dart';
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
 
 ```
 
@@ -267,7 +267,7 @@ You will also need to provide an appropriate pattern.
 
 ```dart
 import 'money2.dart';
-Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: "S0.000,00");
+Currency euro = Currency.create('EUR', 2, symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
 ```
 
 ## Creating Money
@@ -303,7 +303,7 @@ the passed currency.
 ```dart
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
-final Money amount = Money.parse("\$10.25", usd);
+final Money amount = Money.parse(r'$10.25', usd);
 ```
 
 You can also pass an explict pattern.
@@ -311,7 +311,7 @@ You can also pass an explict pattern.
 ```dart
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
-final Money amount = Money.parse("\$10.25", usd, 'S0.0');
+final Money amount = Money.parse(r'$10.25', usd, 'S0.0');
 ```
 
 ### Currency.parse
@@ -322,7 +322,7 @@ the currency.
 ```dart
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
-Money value = usd.parse("\$10.25");
+Money value = usd.parse(r'$10.25');
 ```
 
 You can also pass an explict pattern.
@@ -330,7 +330,7 @@ You can also pass an explict pattern.
 ```dart
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
-Money value = usd.parse("\$10.25", 'S0.0');
+Money value = usd.parse(r'$10.25', 'S0.0');
 ```
 
 
@@ -380,8 +380,8 @@ final Currency jpy = Currency.create('JPY', 0, symbol: '¥');
 Currencies.register(usd);
 Currencies.register(jpy);
 
-Money usdAmount = Currencies.parse("\$USD10.25", "SCCC0.0");
-Money jpyAmount = Currencies.parse("JPY100", "CCC0");
+Money usdAmount = Currencies.parse(r'$USD10.25', 'SCCC0.0');
+Money jpyAmount = Currencies.parse('JPY100', 'CCC0');
 ```
 
 
@@ -400,7 +400,7 @@ In some cases you may however want to format a Money instances in a specific man
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
 Money one = Money.fromInt(100, usd);
-print(one.format("S0"));
+print(one.format('S0'));
   > $1
 
 ```
@@ -429,40 +429,40 @@ Examples:
 import 'money2.dart';
 final Currency usd = Currency.create('USD', 2);
 Money lowPrice = Money.fromInt(1099, usd);
-print(lowPrice.format("S000.000"));
+print(lowPrice.format('S000.000'));
   > $010.990
 
 Money costPrice = Money.fromInt(10034530, usd);  // 100,345.30 usd
 
-print(costPrice.format("###,###.##"));
+print(costPrice.format('###,###.##'));
   > 100,345.30
 
-print(costPrice.format("S###,###.##"));
+print(costPrice.format('S###,###.##'));
   > $100,345.3
 
-print(costPrice.format("CC###,###.#0"));
+print(costPrice.format('CC###,###.#0'));
   > US100,345.30
 
-print(costPrice.format("CCC###,###.##"));
+print(costPrice.format('CCC###,###.##'));
   > USD100,345.3
 
-print(costPrice.format("SCC###,###.#0"));
+print(costPrice.format('SCC###,###.#0'));
   > $US100,345.30
 
 final usd = Currency.create('USD', 2);
 Money costPrice = Money.fromInt(10034530, usd);  // 100,345.30 usd
-print(costPrice.format("SCC###,###.##"));
+print(costPrice.format('SCC###,###.##'));
   > $US100,345.3
 
 final jpy = Currency.create('JPY', 0, symbol: '¥');
 Money costPrice = Money.fromInt(345, jpy);  // 345 yen
-print(costPrice.format("SCCC#"));
+print(costPrice.format('SCCC#'));
   > ¥JPY345
 
 // Bahraini dinar
 final bhd = Currency.create('BHD', 3, symbol: 'BD', invertSeparators: true);
 Money costPrice = Money.withInt(100345, bhd);  // 100.345 bhd
-print(costPrice.format("SCCC0000,###")); 
+print(costPrice.format('SCCC0000,###')); 
   > BDBHD0100,345
 ```  
 
@@ -499,8 +499,8 @@ To do the above conversion:
 ```dart
 import 'money2.dart';
 // Create the source and the target Currencies
-Currency aud = Currency.create("AUD", 2, pattern="SCCC 0.00");
-Currency usd = Currency.create("USD", 2, pattern="SCCC 0.00");
+Currency aud = Currency.create('AUD', 2, pattern='SCCC 0.00');
+Currency usd = Currency.create('USD', 2, pattern='SCCC 0.00');
 
 // Create the AUD invoice amount ($10.00)
 Money invoiceAmount = Money.fromInt(1000, aud);
@@ -649,7 +649,7 @@ API for encoding/decoding a money value enables an application to store
 values in a database or send over a network.
 
 A money value can be encoded to any type. For example it can be coded
-as a string in the format like "USD 5.00".
+as a string in the format like 'USD 5.00'.
 
 Note: this is a trivial example and you would simply use the parse/format methods
 to encode/decode from/to a string.
@@ -665,7 +665,7 @@ class MoneyToStringEncoder implements MoneyEncoder<String> {
     String major = data.getMajorUnits().toString();
     String mainor = data.getMinorUnits().toString();
 
-    return data.currency.code + " " + major + "." + minor;
+    return data.currency.code + ' ' + major + '.' + minor;
   }
 }
 
