@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## version: 1.4.0-beta-3
+Merged in PR #7
+
+When formatting patterns now support spaces between code/symbol and the digits.
+
+Thanks to @comigor for the patch.
+
 ## version: 1.4.0-beta-2
 Forgot to export the new CommonCurrencies class.
 
