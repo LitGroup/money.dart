@@ -77,6 +77,15 @@ void main() {
           equals(Money.fromInt(100025, usd)));
     });
 
+    test('White space', () {
+      expect(usd.parse('\$ 10.25', pattern: 'S #.#'),
+          equals(Money.fromInt(1025, usd)));
+      expect(usd.parse('\$USD 10.25', pattern: 'SCCC #.#'),
+          equals(Money.fromInt(1025, usd)));
+      expect(usd.parse('\$ USD 10.25', pattern: 'S CCC #.#'),
+          equals(Money.fromInt(1025, usd)));
+    });
+
     test('Inverted Decimal Separator with pattern', () {
       expect(euro.parse('10,25', pattern: '#,#'),
           equals(Money.fromInt(1025, euro)));

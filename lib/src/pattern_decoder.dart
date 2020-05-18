@@ -23,6 +23,8 @@ class PatternDecoder implements MoneyDecoder<String> {
     var code = currency.code;
 
     pattern = compressDigits(pattern);
+    pattern = compressWhitespace(pattern);
+    monetaryValue = compressWhitespace(monetaryValue);
     var codeIndex = 0;
 
     var seenMajor = false;
@@ -65,6 +67,8 @@ class PatternDecoder implements MoneyDecoder<String> {
                 pattern, i, monetaryValue, valueQueue.index);
           }
           seenMajor = true;
+          break;
+        case ' ':
           break;
         default:
           throw MoneyParseException(
@@ -116,8 +120,18 @@ class PatternDecoder implements MoneyDecoder<String> {
     }
     return result;
   }
+
+  /// Removes all whitespace from a pattern or a value
+  /// as when we are parsing we ignore whitespace.
+  String compressWhitespace(String value) {
+    var regEx = RegExp(r'\s+');
+
+    return value.replaceAll(regEx, '');
+  }
 }
 
+/// Takes a monetary value and turns it into a queue
+/// of digits which can be taken one at a time.
 class ValueQueue {
   String monetaryValue;
   int index = 0;
