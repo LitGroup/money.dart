@@ -128,7 +128,22 @@ cost.toString();
 ```
 
 # Common Currencies
-For your convenience here is a list of some of the more common currencies and their correct definitions;
+From version 1.4.0 we ship with a list of common currencies.
+
+You can access the list of common currencies in the `CommonCurrencies` class.
+You can eithr register individual `Currency`s or register all of them at once:
+
+```dart
+  // register just one currency
+  Currencies.register(CommonCurrencies().usd);
+
+  // register all common currencies.
+  CommonCurrencies().registerAll();
+```
+
+
+Here is the list of currencies available in 'CommonCurrencies'
+
 
 ```dart
 import 'money2.dart';
@@ -137,7 +152,7 @@ Currency usd = Currency.create('USD', 2);
 // Australia
 Currency aud = Currency.create('AUD', 2);
 // New Zealand
-Currency aud = Currency.create('NZD', 2);
+Currency nzd = Currency.create('NZD', 2);
 // Canada
 Currency cad = Currency.create('CAD', 2);
 // Swiss Franc

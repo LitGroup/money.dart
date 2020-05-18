@@ -31,17 +31,23 @@ import 'money.dart';
 ///
 /// The [Currencies] class is a convenience class that you aren't required to use.
 ///
-/// Money2 does not create a default set of currencies instead you need to explicitly
-/// create each currency.
+/// Money2 does not register a default set of currencies instead you need to explicitly
+/// create each currency or register one or more of the [Currency]s from the
+/// list of [CommonCurrencies]s.
 ///
 /// The [Currencies] class lets you register each [Currency] for easy reuse and access from this singleton.
 ///
 /// You don't need to register [Currency]s, you can just create [Currency]s and use
 /// them as needed.
+///
+/// see:
+///   [Currency]
+///   [CommonCurrencies]
 
 class Currencies {
   // static Currencies _self = Currencies._internal();
 
+  /// Maps a currency 'code' to its associated currency.
   static final Map<String, Currency> _directory = {};
 
   /// Register a Currency
@@ -58,10 +64,18 @@ class Currencies {
 
   ///
   /// Parses a string containing a money amount including a currency code.
+  ///
   /// Provided the passed currency code belongs to a [Currency]
   /// that has been registered via [Currencies.register] or
-  /// [Currencies.registerList] thenthis method will return a
+  /// [Currencies.registerList] then this method will return a
   /// [Money] instance of that [Currency] type.
+  ///
+  /// [monetaryAmount] is the monetary value that you want parsed.
+  ///
+  /// The [pattern] is the pattern to use when parsing the [monetaryAmount].
+  /// The [pattern] is optional and if not passed then the default pattern
+  /// registered with the [Currency] will be used to parse the [monetaryAmount].
+  ///
   ///
   /// A [MoneyParseException] is thrown if the [monetaryAmount]
   /// doesn't match the [pattern].
@@ -69,26 +83,53 @@ class Currencies {
   /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
   /// does not contain a known currency.
   ///
-  static Money parse(String monetaryAmount, String pattern) {
-    var codeLength = _getCodeLength(pattern);
+  static Money parse(String monetaryAmount, [String pattern]) {
+    Currency currency;
+    if (pattern == null) {
+      /// No pattern? so find the currency based on the currency
+      /// code in the [monetaryAmount].
+      currency = findByCode(monetaryAmount);
 
-    if (codeLength < 2) {
-      throw MoneyParseException(
-          'The Country Code length (e.g. CC) must be at least 2 characters long');
+      /// The default patterns often don't contain a currency
+      /// code so as a conveience we strip the code out of the
+      /// [monetaryAmount]. I hope this is a good idea :)
+      monetaryAmount = _stripCode(currency, monetaryAmount);
+    } else {
+      var codeLength = _getCodeLength(pattern);
+
+      if (codeLength < 2) {
+        throw MoneyParseException(
+            'The Country Code length (e.g. CC) must be at least 2 characters long');
+      }
+
+      var code = _extractCode(monetaryAmount, codeLength);
+
+      currency = find(code);
     }
-
-    var code = _extractCode(monetaryAmount, codeLength);
-
-    var currency = find(code);
 
     if (currency == null) {
-      throw UnknownCurrencyException(code);
+      throw UnknownCurrencyException(monetaryAmount);
     }
+
+    pattern ??= currency.pattern;
 
     var decoder = PatternDecoder(currency, pattern);
     var moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, currency);
+  }
+
+  /// Strips the currency code out of a [monetaryAmount]
+  /// e.g.
+  /// $USD10.00 becomes $10.00
+  static String _stripCode(Currency currency, String monetaryAmount) {
+    if (currency != null && !containsCode(currency.pattern)) {
+      var code = _extractCode(monetaryAmount, currency.code.length);
+
+      /// Remove the currency code
+      monetaryAmount = monetaryAmount.replaceFirst(code, '');
+    }
+    return monetaryAmount;
   }
 
   //
@@ -116,6 +157,8 @@ class Currencies {
     return count;
   }
 
+  /// Extracts the currency code from a [monetaryValue] on that
+  /// assumption that it is [codeLength] long.
   static String _extractCode(String monetaryValue, int codeLength) {
     var regEx = RegExp('[A-Za-z]' * codeLength);
 
@@ -131,6 +174,29 @@ class Currencies {
     }
 
     return monetaryValue.substring(matches.first.start, matches.first.end);
+  }
+
+  /// Searches for the matching registered Currency by comparing
+  /// the currency codes in a monetaryAmount.
+  static Currency findByCode(String monetaryAmount) {
+    Currency match;
+    var longToShort = <Currency>[];
+
+    longToShort = _directory.values.toList();
+    longToShort.sort((lhs, rhs) => lhs.code.length - rhs.code.length);
+
+    for (var currency in longToShort) {
+      if (monetaryAmount.contains(currency.code)) {
+        match = currency;
+        break;
+      }
+    }
+    return match;
+  }
+
+  /// tests a pattern to see if it contains a currency code.
+  static bool containsCode(String pattern) {
+    return pattern.contains('C');
   }
 }
 

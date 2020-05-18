@@ -55,6 +55,8 @@ class Currency {
   // e.g. if minorDigits is 1 then this value will be 100.
   final BigInt minorDigitsFactor;
 
+  /// the default pattern used to format and parse monetary amounts for this
+  /// currency.
   final String pattern;
 
   // Most western currencies use the period as the decimal separator and comma for formating.
