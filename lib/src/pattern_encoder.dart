@@ -253,6 +253,9 @@ class PatternEncoder implements MoneyEncoder<String> {
         case '#':
           formatted += formattedMinorUnits;
           break;
+        case ' ':
+          formatted += ' ';
+          break;
         case '0':
         case ',':
         case '.':
