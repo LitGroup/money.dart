@@ -1,3 +1,6 @@
+# 2.0.0-nonnullable.1
+Migrated the library to use the dart 2.9 non-nulllable options.
+
 # Change Log
 All notable changes to this project will be documented in this file.
 

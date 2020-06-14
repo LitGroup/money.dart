@@ -18,10 +18,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   PatternEncoder(
     this.money,
     this.pattern,
-  ) {
-    assert(money != null);
-    assert(pattern != null);
-  }
+  );
 
   @override
   String encode(MoneyData data) {
@@ -318,7 +315,8 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  void isMoneyAllowed({bool inMoney, bool foundMoney, int pos}) {
+  void isMoneyAllowed(
+      {required bool inMoney, required bool foundMoney, required int pos}) {
     if (!inMoney && foundMoney) {
       throw IllegalPatternException('Found a 0 at location $pos. '
           'All money characters (0#,.)must be contiguous');
@@ -353,7 +351,8 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  void checkZeros(String moneyPattern, String thousandSeparator, {bool minor}) {
+  void checkZeros(String moneyPattern, String thousandSeparator,
+      {required bool minor}) {
     if (!moneyPattern.contains('0')) return;
 
     var illegalPattern = IllegalPatternException(
