@@ -38,18 +38,12 @@ void main() {
     });
 
     test('cannot be instantiated with null or empty code', () {
-      expect(() => Currency.create(null, 0), throwsArgumentError);
       expect(() => Currency.create('', 0), throwsArgumentError);
     });
 
     test('cannot be instantiated with null or negative precision', () {
-      expect(() => Currency.create('SOME', null),
-          throwsArgumentError);
-
-      expect(
-          () => Currency.create('SOME', -1), throwsArgumentError);
-      expect(
-          () => Currency.create('SOME', -2), throwsArgumentError);
+      expect(() => Currency.create('SOME', -1), throwsArgumentError);
+      expect(() => Currency.create('SOME', -2), throwsArgumentError);
     });
 
     test('is equatable', () {
@@ -64,8 +58,7 @@ void main() {
     test('is hashable', () {
       final usd = Currency.create('USD', 2);
 
-      expect(usd.hashCode,
-          equals(Currency.create('USD', 2).hashCode));
+      expect(usd.hashCode, equals(Currency.create('USD', 2).hashCode));
     });
   });
 }

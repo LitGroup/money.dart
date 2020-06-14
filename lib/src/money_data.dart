@@ -38,14 +38,7 @@ class MoneyData {
   final Currency currency;
 
   /// Creates a MoneyData from [MinorUnits] and a [Currency]
-  MoneyData.from(this.minorUnits, this.currency) {
-    if (minorUnits == null) {
-      throw ArgumentError.notNull('minorUnits');
-    }
-    if (currency == null) {
-      throw ArgumentError.notNull('currency');
-    }
-  }
+  MoneyData.from(this.minorUnits, this.currency);
 
   /// returns the major currency value of this
   /// MoneyData (e.g. the dollar amount)

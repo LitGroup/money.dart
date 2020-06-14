@@ -88,8 +88,8 @@ class Currencies {
   /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
   /// does not contain a known currency.
   ///
-  static Money parse(String monetaryAmount, [String pattern]) {
-    Currency currency;
+  static Money parse(String monetaryAmount, [String? pattern]) {
+    Currency? currency;
     if (pattern == null) {
       /// No pattern? so find the currency based on the currency
       /// code in the [monetaryAmount].
@@ -128,7 +128,7 @@ class Currencies {
   /// Strips the currency code out of a [monetaryAmount]
   /// e.g.
   /// $USD10.00 becomes $10.00
-  static String _stripCode(Currency currency, String monetaryAmount) {
+  static String _stripCode(Currency? currency, String monetaryAmount) {
     if (currency != null && !containsCode(currency.pattern)) {
       var code = _extractCode(monetaryAmount, currency.code.length);
 
@@ -151,7 +151,7 @@ class Currencies {
   ///
   /// Returns the [Currency] that matches [code] or `null` if
   /// no matching [code] is found.
-  static Currency find(String code) {
+  static Currency? find(String code) {
     return _directory[code];
   }
 
@@ -185,8 +185,8 @@ class Currencies {
 
   /// Searches for the matching registered Currency by comparing
   /// the currency codes in a monetaryAmount.
-  static Currency findByCode(String monetaryAmount) {
-    Currency match;
+  static Currency? findByCode(String monetaryAmount) {
+    Currency? match;
     var longToShort = <Currency>[];
 
     longToShort = _directory.values.toList();

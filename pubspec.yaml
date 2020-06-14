@@ -5,7 +5,7 @@ version: 1.4.0
 homepage: https://github.com/noojee/money.dart
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.9.0-15.0.dev <3.0.0'
 
 dependencies: 
   intl: ^0.16.0

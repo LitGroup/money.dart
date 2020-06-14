@@ -149,7 +149,7 @@ class ValueQueue {
   String thousandsSeparator;
 
   /// The last character we took from the queue.
-  String lastTake;
+  String? lastTake;
 
   ///
   ValueQueue(this.monetaryValue, this.thousandsSeparator);
@@ -158,7 +158,7 @@ class ValueQueue {
   String takeOne() {
     lastTake = monetaryValue[index++];
 
-    return lastTake;
+    return lastTake!;
   }
 
   /// return all of the digits from the current position
