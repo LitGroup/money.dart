@@ -26,7 +26,6 @@ import 'currency.dart';
 import 'money.dart';
 import 'pattern_decoder.dart';
 
-// TODO: consider converting to a factory.
 // ignore: avoid_classes_with_only_static_members
 /// A factory for registering and accessing [Currency] instances.
 ///
@@ -47,7 +46,6 @@ import 'pattern_decoder.dart';
 ///   [Currency]
 ///   [CommonCurrencies]
 
-// TODO: consider converting to a factory.
 // ignore: avoid_classes_with_only_static_members
 class Currencies {
   // static Currencies _self = Currencies._internal();
@@ -218,6 +216,6 @@ class UnknownCurrencyException implements Exception {
   @override
   String toString() {
     return "An unknown currency '$code' was passed. Register the currency"
-        " via [Currencies.register()] and try again.";
+        ' via [Currencies.register()] and try again.';
   }
 }

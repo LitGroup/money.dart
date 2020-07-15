@@ -32,7 +32,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     if (decimalSeperatorCount > 1) {
       throw IllegalPatternException(
-          "A format Pattern may contain, at most, a single decimal "
+          'A format Pattern may contain, at most, a single decimal '
           "separator '${data.currency.decimalSeparator}'");
     }
 
