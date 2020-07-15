@@ -1,16 +1,12 @@
 name: money2
-description: Money and Currency classes with fixed precision maths, parsing and formating.
-    (Money.parse("$2010.00") * 10).format("S CC#,##0") -> $ US20,100
-version: 1.4.0
+version: 1.4.1
 homepage: https://github.com/noojee/money.dart
-
-environment:
+description: Money and Currency classes with fixed precision maths, parsing and formating. (Money.parse(\"$2010.00\") * 10).format(\"S CC#,##0\") -> $ US20,100
+environment: 
   sdk: '>=2.1.0 <3.0.0'
-
 dependencies: 
   intl: ^0.16.0
   meta: ^1.1.8
-
-dev_dependencies:
+dev_dependencies: 
   pedantic: ^1.0.0
   test: ^1.6.1

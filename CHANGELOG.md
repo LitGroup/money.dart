@@ -1,8 +1,12 @@
-# Change Log
-All notable changes to this project will be documented in this file.
+# 1.4.1
+fixed lints to make pub.dev happy.
+ignored settings.json.
+When formatting patterns now support spaces between code/symbol and the digits.
+Added support for a built in list of common currencies.
+Added support for whitespace between pattern characters when parsing. We do this by removing any whitespace in the pattern or the value.
+Allow space on minorPattern
+Add test cases with spaces after digits
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
-and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## version: 1.4.0

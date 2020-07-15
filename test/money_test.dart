@@ -373,12 +373,12 @@ void main() {
       });
     });
 
-    test('currency property',() {
+    test('currency property', () {
       expect(usd, Money.fromInt(1000, usd).currency);
       expect(eur, Money.fromInt(1000, eur).currency);
     });
 
-    test('minorUnits property',() {
+    test('minorUnits property', () {
       expect(BigInt.from(2000), Money.fromInt(2000, usd).minorUnits);
       expect(BigInt.from(1001), Money.fromInt(1001, eur).minorUnits);
     });
