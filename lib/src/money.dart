@@ -4,7 +4,7 @@
  * Copyright (c) 2016 - 2019 LitGroup LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
+ * of this software and associated documentation files (the 'Software'), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
@@ -13,7 +13,7 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -44,7 +44,7 @@ import 'pattern_encoder.dart';
 /// e.g.
 ///
 /// ```dart
-/// Currency aud = Currency.create('AUD', 2, pattern:r"$0.00");
+/// Currency aud = Currency.create('AUD', 2, pattern:r'$0.00');
 /// Money costPrice = Money.fromInt(1000, aud);
 /// costPrice.toString();
 /// > $10.00
@@ -53,10 +53,10 @@ import 'pattern_encoder.dart';
 /// taxInclusive.toString();
 /// > $11.00
 ///
-/// taxInclusive.format("SCCC0.00");
+/// taxInclusive.format('SCCC0.00');
 /// > $AUD11.00
 ///
-/// taxInclusive.format("SCCC0");
+/// taxInclusive.format('SCCC0');
 /// > $AUD11
 /// ```
 ///
@@ -184,8 +184,8 @@ class Money implements Comparable<Money> {
   /// 0.68 US cents. (AKA I'm not traveling to the USA this year).
   /// To do the above conversion:
   /// ```dart
-  /// Currency aud = Currency.create("AUD", 2);
-  /// Currency usd = Currency.create("USD", 2);
+  /// Currency aud = Currency.create('AUD', 2);
+  /// Currency usd = Currency.create('USD', 2);
   /// Money invoiceAmount = Money.fromInt(1000, aud);
   /// Money auToUsExchangeRate = Money.fromInt(68, usd);
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
@@ -220,7 +220,7 @@ class Money implements Comparable<Money> {
   ///
   /// Example:
   /// ```dart
-  /// Currency aud = Currency.create('AUD', 2, pattern:r"$0.00");
+  /// Currency aud = Currency.create('AUD', 2, pattern:r'$0.00');
   /// Money costPrice = Money.fromInt(1000, aud);
   /// costPrice.toString();
   /// > $10.00
@@ -229,10 +229,10 @@ class Money implements Comparable<Money> {
   /// taxInclusive.toString();
   /// > $11.00
   ///
-  /// taxInclusive.format("SCCC0.00");
+  /// taxInclusive.format('SCCC0.00');
   /// > $AUD11.00
   ///
-  /// taxInclusive.format("SCCC0");
+  /// taxInclusive.format('SCCC0');
   /// > $AUD11
   /// ```
   ///
@@ -456,8 +456,8 @@ class MoneyParseException implements Exception {
   factory MoneyParseException.fromValue(
       String pattern, int i, String monetaryValue, int monetaryIndex) {
     var message =
-        """monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
-        when a match for pattern character ${pattern[i]} at pos $i was expected.""";
+        '''monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
+        when a match for pattern character ${pattern[i]} at pos $i was expected.''';
     return MoneyParseException(message);
   }
 }
