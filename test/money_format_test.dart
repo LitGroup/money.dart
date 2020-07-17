@@ -53,7 +53,7 @@ void main() {
     });
 
     test('Negative Number', () {
-      expect((-usd10d25).toString(), equals('\$-10.25'));
+      expect((-usd10d25).toString(), equals(r'$-10.25'));
       expect((-usd10).format('#.#0'), equals('-10.00'));
       expect((-usd10d25).format('#'), equals('-10'));
       expect((-usd10d25).format('#.#'), equals('-10.2'));
@@ -64,7 +64,7 @@ void main() {
       expect((-usd10d25).format('##.##'), equals('-10.25'));
       expect((-usd10d25).format('##'), equals('-10'));
       expect((-usd20cents).format('#,##0.00'), equals('-0.20'));
-      expect((-usd20cents).format('S#,##0.00'), equals('\$-0.20'));
+      expect((-usd20cents).format('S#,##0.00'), equals(r'$-0.20'));
     });
 
     test('Inverted Decimal Separator', () {
