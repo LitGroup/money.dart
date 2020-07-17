@@ -37,12 +37,12 @@ void main() {
 
   group('Money.parse', () {
     test('Default Currency Pattern', () {
-      expect(Money.parse('\$10.25', usd), equals(Money.fromInt(1025, usd)));
+      expect(Money.parse(r'$10.25', usd), equals(Money.fromInt(1025, usd)));
       expect(Money.parse('10.25', usd, pattern: '#.#'),
           equals(Money.fromInt(1025, usd)));
       expect(Money.parse('USD10.25', usd, pattern: 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Money.parse('\$USD10.25', usd, pattern: 'SCCC#.#'),
+      expect(Money.parse(r'$USD10.25', usd, pattern: 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
       expect(Money.parse('1,000.25', usd, pattern: '#.#'),
           equals(Money.fromInt(100025, usd)));
@@ -66,23 +66,23 @@ void main() {
 
   group('Currency.parse', () {
     test('Default Currency Pattern', () {
-      expect(usd.parse('\$10.25'), equals(Money.fromInt(1025, usd)));
+      expect(usd.parse(r'$10.25'), equals(Money.fromInt(1025, usd)));
       expect(
           usd.parse('10.25', pattern: '#.#'), equals(Money.fromInt(1025, usd)));
       expect(usd.parse('USD10.25', pattern: 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(usd.parse('\$USD10.25', pattern: 'SCCC#.#'),
+      expect(usd.parse(r'$USD10.25', pattern: 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
       expect(usd.parse('1,000.25', pattern: '#.#'),
           equals(Money.fromInt(100025, usd)));
     });
 
     test('White space', () {
-      expect(usd.parse('\$ 10.25', pattern: 'S #.#'),
+      expect(usd.parse(r'$ 10.25', pattern: 'S #.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(usd.parse('\$USD 10.25', pattern: 'SCCC #.#'),
+      expect(usd.parse(r'$USD 10.25', pattern: 'SCCC #.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(usd.parse('\$ USD 10.25', pattern: 'S CCC #.#'),
+      expect(usd.parse(r'$ USD 10.25', pattern: 'S CCC #.#'),
           equals(Money.fromInt(1025, usd)));
     });
 
@@ -107,13 +107,13 @@ void main() {
     Currencies.register(euro);
 
     test('Default Currency Pattern', () {
-      expect(Currencies.parse('\$USD10.25', 'SCCC0.0'),
+      expect(Currencies.parse(r'$USD10.25', 'SCCC0.0'),
           equals(Money.fromInt(1025, usd)));
       expect(Currencies.parse('USD10.25', 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
       expect(Currencies.parse('USD10.25', 'CCC#.#'),
           equals(Money.fromInt(1025, usd)));
-      expect(Currencies.parse('\$USD10.25', 'SCCC#.#'),
+      expect(Currencies.parse(r'$USD10.25', 'SCCC#.#'),
           equals(Money.fromInt(1025, usd)));
       expect(Currencies.parse('USD1,000.25', 'CCC#.#'),
           equals(Money.fromInt(100025, usd)));
@@ -139,15 +139,15 @@ void main() {
   group('deprecated fromString methods', () {
     test('Money', () {
       expect(
-          Money.fromString('\$10.25', usd), equals(Money.fromInt(1025, usd)));
+          Money.fromString(r'$10.25', usd), equals(Money.fromInt(1025, usd)));
     });
 
     test('Currency', () {
-      expect(usd.parse('\$10.25'), equals(Money.fromInt(1025, usd)));
+      expect(usd.parse(r'$10.25'), equals(Money.fromInt(1025, usd)));
     });
 
     test('Currencies', () {
-      expect(Currencies.parse('\$USD10.25', 'SCCC0.0'),
+      expect(Currencies.parse(r'$USD10.25', 'SCCC0.0'),
           equals(Money.fromInt(1025, usd)));
     });
   });

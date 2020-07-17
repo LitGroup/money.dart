@@ -38,7 +38,7 @@ void main() {
 
   group('format', () {
     test('Simple Number', () {
-      expect(usd10d25.toString(), equals('\$10.25'));
+      expect(usd10d25.toString(), equals(r'$10.25'));
       expect(usd10.format('#.#0'), equals('10.00'));
       expect(usd10d25.format('#'), equals('10'));
       expect(usd10d25.format('#.#'), equals('10.2'));
@@ -76,20 +76,20 @@ void main() {
     });
 
     test('less than 10 cents USD in minor units', () {
-      expect(Money.fromInt(01, usd).toString(), '\$0.01');
-      expect(Money.fromInt(301, usd).toString(), '\$3.01');
-      expect(Money.fromBigInt(BigInt.from(301), usd).toString(), '\$3.01');
-      expect(Money.from(3.01, usd).toString(), '\$3.01');
+      expect(Money.fromInt(01, usd).toString(), r'$0.01');
+      expect(Money.fromInt(301, usd).toString(), r'$3.01');
+      expect(Money.fromBigInt(BigInt.from(301), usd).toString(), r'$3.01');
+      expect(Money.from(3.01, usd).toString(), r'$3.01');
     });
 
     test('Symbol tests', () {
-      expect(usd10d25.format('S##.##'), equals('\$10.25'));
-      expect(usd10.format('S##.00'), equals('\$10.00'));
-      expect(usd10.format('##.00 S'), equals('10.00 \$'));
-      expect(usd10d25.format('S##'), equals('\$10'));
-      expect(usd10d25.format('S##'), equals('\$10'));
-      expect(usd10d25.format('S ##'), equals('\$ 10'));
-      expect(usd10d25.format('## S'), equals('10 \$'));
+      expect(usd10d25.format('S##.##'), equals(r'$10.25'));
+      expect(usd10.format('S##.00'), equals(r'$10.00'));
+      expect(usd10.format('##.00 S'), equals(r'10.00 $'));
+      expect(usd10d25.format('S##'), equals(r'$10'));
+      expect(usd10d25.format('S##'), equals(r'$10'));
+      expect(usd10d25.format('S ##'), equals(r'$ 10'));
+      expect(usd10d25.format('## S'), equals(r'10 $'));
     });
 
     test('Currency tests', () {
@@ -98,13 +98,13 @@ void main() {
       expect(usd10d25.format('CCC##.##'), equals('USD10.25'));
       expect(usd10d25.format('##.##CCC'), equals('10.25USD'));
       expect(usd10d25.format('##.## CCC'), equals('10.25 USD'));
-      expect(long1000d90.format('CCC S#,###.00'), equals('LONG \$1,000.90'));
+      expect(long1000d90.format('CCC S#,###.00'), equals(r'LONG $1,000.90'));
     });
 
     test('USD combos', () {
-      expect(usd10d25.format('SCCC 000,000.##'), equals('\$USD 000,010.25'));
-      expect(usd10d25.format('CCC S##.##'), equals('USD \$10.25'));
-      expect(usd10d25.format('S ##.## CCC'), equals('\$ 10.25 USD'));
+      expect(usd10d25.format('SCCC 000,000.##'), equals(r'$USD 000,010.25'));
+      expect(usd10d25.format('CCC S##.##'), equals(r'USD $10.25'));
+      expect(usd10d25.format('S ##.## CCC'), equals(r'$ 10.25 USD'));
     });
 
     test('Invalid Patterns', () {

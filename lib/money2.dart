@@ -66,7 +66,7 @@
 ///
 /// ```dart
 /// import 'money2.dart';
-/// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+/// Currency aud = Currency.create('AUD', 2, pattern:r"$0.00");
 /// Money costPrice = Money.fromInt(1000, aud);
 /// print(costPrice.toString());
 ///   > $10.00

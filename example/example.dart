@@ -24,7 +24,7 @@ void main() {
   /// using [Currency.parse]
   /// The [Currency] of salePrice is USD.
   ///
-  var salePrice = usd.parse('\$10.50');
+  var salePrice = usd.parse(r'$10.50');
   print(salePrice.format('SCC 0.0'));
   // > $US 10.50
 
@@ -32,7 +32,7 @@ void main() {
   /// Create a [Money] instance from a String
   /// using [Money.parse]
   ///
-  var taxPrice = Money.parse('\$1.50', usd);
+  var taxPrice = Money.parse(r'$1.50', usd);
   print(taxPrice.format('CC 0.0 S'));
   // > US 1.50 $
 
@@ -43,11 +43,11 @@ void main() {
   ///
   Currencies.register(usd);
   Currencies.register(aud);
-  var cheapIPhone = Currencies.parse('\$USD1500.0', 'SCCC0.0');
+  var cheapIPhone = Currencies.parse(r'$USD1500.0', 'SCCC0.0');
   print(cheapIPhone.format('SCC0.0'));
   // > $US1500.00
 
-  var expensiveIPhone = Currencies.parse('\$AUD2000.0', 'SCCC0.0');
+  var expensiveIPhone = Currencies.parse(r'$AUD2000.0', 'SCCC0.0');
   print(expensiveIPhone.format('SCC0.0'));
   // > $AUD2000.00
 

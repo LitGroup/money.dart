@@ -44,7 +44,7 @@ import 'pattern_encoder.dart';
 /// e.g.
 ///
 /// ```dart
-/// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+/// Currency aud = Currency.create('AUD', 2, pattern:r"$0.00");
 /// Money costPrice = Money.fromInt(1000, aud);
 /// costPrice.toString();
 /// > $10.00
@@ -220,7 +220,7 @@ class Money implements Comparable<Money> {
   ///
   /// Example:
   /// ```dart
-  /// Currency aud = Currency.create('AUD', 2, pattern:"\$0.00");
+  /// Currency aud = Currency.create('AUD', 2, pattern:r"$0.00");
   /// Money costPrice = Money.fromInt(1000, aud);
   /// costPrice.toString();
   /// > $10.00

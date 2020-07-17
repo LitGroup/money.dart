@@ -89,7 +89,7 @@ class Currency {
   /// then the separators are swapped. This is needed for most non English
   /// speaking [Currency]s.
   Currency.create(this.code, this.minorDigits,
-      {this.symbol = '\$',
+      {this.symbol = r'$',
       this.pattern = 'S0.00',
       this.invertSeparators = false})
       : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
