@@ -1,3 +1,9 @@
+# 1.4.2
+Merge pull request #9 from ibobo/master
+replaced " with ' quotes.
+removed all \$ replaced with r'$
+Fix formatting of negative numbers below minorDigitsFactor
+
 # 1.4.1
 fixed lints to make pub.dev happy.
 ignored settings.json.
