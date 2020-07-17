@@ -55,6 +55,9 @@ class MoneyData {
 
   /// returns the minor currency value of this MoneyData (e.g. the cents amount)
   BigInt getMinorUnits() {
+    if (minorUnits.isNegative) {
+      return (-minorUnits % currency.minorDigitsFactor);
+    }
     return (minorUnits % currency.minorDigitsFactor);
   }
 }

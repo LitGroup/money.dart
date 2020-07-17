@@ -35,6 +35,7 @@ void main() {
   final usd10d25 = Money.fromInt(1025, usd);
   final usd10 = Money.fromInt(1000, usd);
   final long1000d90 = Money.fromInt(100090, long);
+  final usd20cents = Money.fromInt(20, usd);
 
   group('format', () {
     test('Simple Number', () {
@@ -48,6 +49,22 @@ void main() {
       expect(usd10d25.format('###,000.##'), equals('010.25'));
       expect(usd10d25.format('##.##'), equals('10.25'));
       expect(usd10d25.format('##'), equals('10'));
+      expect(usd20cents.format('#,##0.00'), equals('0.20'));
+    });
+
+    test('Negative Number', () {
+      expect((-usd10d25).toString(), equals('\$-10.25'));
+      expect((-usd10).format('#.#0'), equals('-10.00'));
+      expect((-usd10d25).format('#'), equals('-10'));
+      expect((-usd10d25).format('#.#'), equals('-10.2'));
+      expect((-usd10d25).format('0.00'), equals('-10.25'));
+      expect((-usd10d25).format('#,##0.##'), equals('-10.25'));
+      expect((-long1000d90).format('#,##0.00'), equals('-1,000.90'));
+      expect((-usd10d25).format('###,000.##'), equals('-010.25'));
+      expect((-usd10d25).format('##.##'), equals('-10.25'));
+      expect((-usd10d25).format('##'), equals('-10'));
+      expect((-usd20cents).format('#,##0.00'), equals('-0.20'));
+      expect((-usd20cents).format('S#,##0.00'), equals('\$-0.20'));
     });
 
     test('Inverted Decimal Separator', () {

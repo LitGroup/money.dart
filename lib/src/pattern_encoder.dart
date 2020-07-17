@@ -121,6 +121,10 @@ class PatternEncoder implements MoneyEncoder<String> {
     var formattedMajorUnits =
         NumberFormat(moneyPattern).format(majorUnits.toInt());
 
+    if (!majorUnits.isNegative && data.minorUnits.isNegative) {
+      formattedMajorUnits = '-$formattedMajorUnits';
+    }
+
     if (data.currency.invertSeparators) {
       // Now convert them back
       formattedMajorUnits = formattedMajorUnits.replaceAll(',', '.');
