@@ -1,3 +1,6 @@
+# 1.4.3
+add support for parsing negative money values
+
 # 1.4.2
 Merge pull request #9 from ibobo/master
 replaced " with ' quotes.
