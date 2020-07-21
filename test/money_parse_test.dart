@@ -48,6 +48,18 @@ void main() {
           equals(Money.fromInt(100025, usd)));
     });
 
+    test('Default Currency Pattern with negative number', () {
+      expect(Money.parse(r'$-10.25', usd), equals(Money.fromInt(-1025, usd)));
+      expect(Money.parse('-10.25', usd, pattern: '#.#'),
+          equals(Money.fromInt(-1025, usd)));
+      expect(Money.parse('USD-10.25', usd, pattern: 'CCC#.#'),
+          equals(Money.fromInt(-1025, usd)));
+      expect(Money.parse(r'$USD-10.25', usd, pattern: 'SCCC#.#'),
+          equals(Money.fromInt(-1025, usd)));
+      expect(Money.parse('-1,000.25', usd, pattern: '#.#'),
+          equals(Money.fromInt(-100025, usd)));
+    });
+
     test('Inverted Decimal Separator with pattern', () {
       expect(Money.parse('10,25', euro, pattern: '#,#'),
           equals(Money.fromInt(1025, euro)));
@@ -61,6 +73,21 @@ void main() {
           equals(Money.fromInt(100025, euro)));
       expect(Money.parse('1.000,25', euro, pattern: '#.###,00'),
           equals(Money.fromInt(100025, euro)));
+    });
+
+    test('Inverted Decimal Separator with pattern with negative number', () {
+      expect(Money.parse('-10,25', euro, pattern: '#,#'),
+          equals(Money.fromInt(-1025, euro)));
+      expect(Money.parse('€-10,25', euro, pattern: 'S0,0'),
+          equals(Money.fromInt(-1025, euro)));
+      expect(Money.parse('EUR-10,25', euro, pattern: 'CCC0,0'),
+          equals(Money.fromInt(-1025, euro)));
+      expect(Money.parse('€EUR-10,25', euro, pattern: 'SCCC0,0'),
+          equals(Money.fromInt(-1025, euro)));
+      expect(Money.parse('-1.000,25', euro, pattern: '#.###,00'),
+          equals(Money.fromInt(-100025, euro)));
+      expect(Money.parse('-1.000,25', euro, pattern: '#.###,00'),
+          equals(Money.fromInt(-100025, euro)));
     });
   });
 
@@ -84,6 +111,15 @@ void main() {
           equals(Money.fromInt(1025, usd)));
       expect(usd.parse(r'$ USD 10.25', pattern: 'S CCC #.#'),
           equals(Money.fromInt(1025, usd)));
+    });
+
+    test('White space with negative number', () {
+      expect(usd.parse(r'$ -10.25', pattern: 'S #.#'),
+          equals(Money.fromInt(-1025, usd)));
+      expect(usd.parse(r'$USD -10.25', pattern: 'SCCC #.#'),
+          equals(Money.fromInt(-1025, usd)));
+      expect(usd.parse(r'$ USD -10.25', pattern: 'S CCC #.#'),
+          equals(Money.fromInt(-1025, usd)));
     });
 
     test('Inverted Decimal Separator with pattern', () {

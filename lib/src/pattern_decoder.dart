@@ -22,6 +22,7 @@ class PatternDecoder implements MoneyDecoder<String> {
 
   @override
   MoneyData decode(String monetaryValue) {
+    final negativeOne = BigInt.from(-1);
     var majorUnits = BigInt.zero;
     var minorUnits = BigInt.zero;
 
@@ -32,6 +33,7 @@ class PatternDecoder implements MoneyDecoder<String> {
     monetaryValue = compressWhitespace(monetaryValue);
     var codeIndex = 0;
 
+    var isNegative = false;
     var seenMajor = false;
 
     var valueQueue = ValueQueue(monetaryValue, currency.thousandSeparator);
@@ -60,6 +62,13 @@ class PatternDecoder implements MoneyDecoder<String> {
           codeIndex++;
           break;
         case '#':
+          if (!seenMajor) {
+            var char = valueQueue.peek();
+            if (char == '-') {
+              valueQueue.takeOne();
+              isNegative = true;
+            }
+          }
           if (seenMajor) {
             minorUnits = valueQueue.takeDigits();
           } else {
@@ -80,6 +89,11 @@ class PatternDecoder implements MoneyDecoder<String> {
           throw MoneyParseException(
               'Invalid character "${pattern[i]}" found in pattern.');
       }
+    }
+
+    if (isNegative) {
+      majorUnits = majorUnits * negativeOne;
+      minorUnits = minorUnits * negativeOne;
     }
 
     var value = currency.toMinorUnits(majorUnits, minorUnits);
@@ -153,6 +167,10 @@ class ValueQueue {
 
   ///
   ValueQueue(this.monetaryValue, this.thousandsSeparator);
+
+  String peek() {
+    return monetaryValue[index];
+  }
 
   /// takes the next character from the value.
   String takeOne() {
