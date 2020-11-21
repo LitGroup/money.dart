@@ -110,7 +110,8 @@ class PatternDecoder implements MoneyDecoder<String> {
 
     var result = '';
 
-    var regExPattern = '([#|0|$thousandsSeparator]+)$decimalSeparator([#|0]+)';
+    var regExPattern =
+        '([#|0|$thousandsSeparator]+)(?:$decimalSeparator([#|0]+))?';
 
     var regEx = RegExp(regExPattern);
 
@@ -129,14 +130,12 @@ class PatternDecoder implements MoneyDecoder<String> {
 
     Match match = matches.first;
 
-    if (match.group(0) != null && match.group(1) != null) {
+    if (match.group(1) != null && match.group(2) != null) {
       result = pattern.replaceFirst(regEx, '#.#');
-      // result += '#';
-    } else if (match.group(0) != null) {
-      result = pattern.replaceFirst(regEx, '#');
     } else if (match.group(1) != null) {
+      result = pattern.replaceFirst(regEx, '#');
+    } else if (match.group(2) != null) {
       result = pattern.replaceFirst(regEx, '.#');
-      // result += '.#';
     }
     return result;
   }
