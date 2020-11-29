@@ -145,7 +145,7 @@ void main() {
   // the currency code that the currency was created with.
   var usDollar = Currencies.find('USD');
 
-  var invoicePrice = Money.fromInt(1000, usDollar);
+  var invoicePrice = Money.fromInt(1000, usDollar!);
 
   ///
   print(invoicePrice.format('SCCC 0.00'));

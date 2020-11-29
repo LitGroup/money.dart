@@ -99,13 +99,6 @@ class Money implements Comparable<Money> {
   /// [amounts] - the value of the  [currency]. Unlike fromBigInt this method
   ///
   factory Money.from(num amount, Currency currency) {
-    if (amount == null) {
-      throw ArgumentError.notNull('amount');
-    }
-    if (currency == null) {
-      throw ArgumentError.notNull('currency');
-    }
-
     var minorUnits = BigInt.from(amount * currency.minorDigitsFactor.toInt());
 
     return Money._from(MinorUnits.from(minorUnits), currency);
@@ -124,13 +117,6 @@ class Money implements Comparable<Money> {
   ///
   /// @deprecated - use [Money.from(minorUnits, currency)]
   factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
-    if (minorUnits == null) {
-      throw ArgumentError.notNull('minorUnits');
-    }
-    if (currency == null) {
-      throw ArgumentError.notNull('currency');
-    }
-
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
 
@@ -138,9 +124,6 @@ class Money implements Comparable<Money> {
   ///
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
   factory Money.fromInt(int minorUnits, Currency currency) {
-    if (minorUnits == null) {
-      throw ArgumentError.notNull('minorUnits');
-    }
     return Money.fromBigInt(BigInt.from(minorUnits), currency);
   }
 
@@ -148,14 +131,14 @@ class Money implements Comparable<Money> {
   /// Parses the passed [monetaryAmount] and returns a [Money] instance.
   ///
   /// The passed [monetaryAmount] must match the given [pattern] or
-  /// if no pattern is supplied then the default pattern of the
+  /// if no pattern is supplied the the default pattern of the
   /// passed [currency].
   ///
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't
   /// match the pattern.
   ///
   factory Money.parse(String monetaryAmount, Currency currency,
-      {String pattern}) {
+      {String? pattern}) {
     ArgumentError.checkNotNull(monetaryAmount, 'monetaryValue');
     ArgumentError.checkNotNull(currency, 'currency');
 
@@ -172,7 +155,7 @@ class Money implements Comparable<Money> {
   /// @deprecated - use Money.parse
   ///
   factory Money.fromString(String monetaryAmount, Currency currency,
-          {String pattern}) =>
+          {String? pattern}) =>
       Money.parse(monetaryAmount, currency, pattern: pattern);
 
   ///
@@ -434,7 +417,7 @@ class Money implements Comparable<Money> {
   Money _withAmount(MinorUnits amount) => Money._from(amount, _currency);
 
   void _preconditionThatCurrencyTheSameFor(Money other,
-      [String Function() message]) {
+      [String Function()? message]) {
     String defaultMessage() =>
         'Cannot operate with money values in different currencies.';
 

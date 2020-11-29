@@ -50,17 +50,6 @@ void main() {
         expect(Money.from(1.99, usd), equals(Money.fromInt(199, usd)));
         expect(Money.from(-1.99, usd), equals(Money.fromInt(-199, usd)));
       });
-
-      test('Throws an error for null amount', () {
-        expect(() => Money.fromBigInt(null, usd), throwsArgumentError);
-        expect(() => Money.fromInt(null, usd), throwsArgumentError);
-      });
-
-      test('Throws an error for null currency', () {
-        expect(() => Money.fromBigInt(BigInt.from(100), null),
-            throwsArgumentError);
-        expect(() => Money.fromInt(100, null), throwsArgumentError);
-      });
     });
 
     test('bigint hash value', () {

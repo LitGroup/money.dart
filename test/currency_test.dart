@@ -37,14 +37,11 @@ void main() {
       expect(currency.minorDigits, equals(2));
     });
 
-    test('cannot be instantiated with null or empty code', () {
-      expect(() => Currency.create(null, 0), throwsArgumentError);
+    test('cannot be instantiated with empty code', () {
       expect(() => Currency.create('', 0), throwsArgumentError);
     });
 
-    test('cannot be instantiated with null or negative precision', () {
-      expect(() => Currency.create('SOME', null), throwsArgumentError);
-
+    test('cannot be instantiated with negative precision', () {
       expect(() => Currency.create('SOME', -1), throwsArgumentError);
       expect(() => Currency.create('SOME', -2), throwsArgumentError);
     });
