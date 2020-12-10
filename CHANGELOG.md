@@ -1,3 +1,12 @@
+# 2.0.1-nullsafety.1
+Bug fixes for currences by with high precision and parsing amounts with less than the expected decimal places.
+Merge pull request #21 from comigor/precision-0
+Merge pull request #19 from comigor/master
+moved to lint.
+Exposed the encoders as part of the public api.
+Correctly parse currencies with 0 minor digits
+Fix a formatting issue where only currencies with precision=2 were being considered
+
 # 2.0.0-nonnullable.1
 Migrated the library to use the dart non-nulllable options.
 
