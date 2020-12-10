@@ -91,4 +91,6 @@ library money2;
 export 'src/common_currencies.dart';
 export 'src/currencies.dart';
 export 'src/currency.dart';
+export 'src/encoders.dart';
 export 'src/money.dart';
+export 'src/money_data.dart';
