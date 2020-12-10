@@ -1,3 +1,6 @@
+# 2.0.0-nonnullable.1
+Migrated the library to use the dart non-nulllable options.
+
 # 1.4.3
 add support for parsing negative money values
 

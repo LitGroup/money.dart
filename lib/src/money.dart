@@ -131,7 +131,7 @@ class Money implements Comparable<Money> {
   /// Parses the passed [monetaryAmount] and returns a [Money] instance.
   ///
   /// The passed [monetaryAmount] must match the given [pattern] or
-  /// if no pattern is supplied then the default pattern of the
+  /// if no pattern is supplied the the default pattern of the
   /// passed [currency].
   ///
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't

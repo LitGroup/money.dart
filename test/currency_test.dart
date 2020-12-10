@@ -37,7 +37,7 @@ void main() {
       expect(currency.minorDigits, equals(2));
     });
 
-    test('cannot be instantiated  empty code', () {
+    test('cannot be instantiated with empty code', () {
       expect(() => Currency.create('', 0), throwsArgumentError);
     });
 

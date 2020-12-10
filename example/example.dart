@@ -145,9 +145,9 @@ void main() {
 
   // use a registered currency by finding it in the registry using
   // the currency code that the currency was created with.
-  final usDollar = Currencies.find('USD')!;
+  final usDollar = Currencies.find('USD');
 
-  final invoicePrice = Money.fromInt(1000, usDollar);
+  final invoicePrice = Money.fromInt(1000, usDollar!);
 
   ///
   print(invoicePrice.format('SCCC 0.00'));

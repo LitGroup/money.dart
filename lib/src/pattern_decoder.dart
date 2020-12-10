@@ -139,7 +139,6 @@ class PatternDecoder implements MoneyDecoder<String> {
       result = pattern.replaceFirst(regEx, '#');
     } else if (match.group(2) != null) {
       result = pattern.replaceFirst(regEx, '.#');
-      // result += '.#';
     }
     return result;
   }
