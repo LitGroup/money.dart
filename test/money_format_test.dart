@@ -126,15 +126,15 @@ void main() {
 
     test('Invalid Patterns', () {
       expect(() => usd10d25.format('0##'),
-          throwsA(TypeMatcher<IllegalPatternException>()));
+          throwsA(const TypeMatcher<IllegalPatternException>()));
       expect(() => usd10d25.format('000,'),
-          throwsA(TypeMatcher<IllegalPatternException>()));
+          throwsA(const TypeMatcher<IllegalPatternException>()));
       expect(() => usd10d25.format('000#'),
-          throwsA(TypeMatcher<IllegalPatternException>()));
+          throwsA(const TypeMatcher<IllegalPatternException>()));
       expect(() => usd10d25.format('0#'),
-          throwsA(TypeMatcher<IllegalPatternException>()));
+          throwsA(const TypeMatcher<IllegalPatternException>()));
       expect(() => usd10d25.format('0.0#'),
-          throwsA(TypeMatcher<IllegalPatternException>()));
+          throwsA(const TypeMatcher<IllegalPatternException>()));
     });
   });
 }

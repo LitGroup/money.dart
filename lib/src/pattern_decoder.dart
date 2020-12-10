@@ -6,10 +6,10 @@ import 'money_data.dart';
 /// Decodes a monetary amount based on a pattern.
 class PatternDecoder implements MoneyDecoder<String> {
   /// the currency we discovered
-  Currency currency;
+  final Currency currency;
 
   /// the pattern used to decode the amount.
-  String pattern;
+  final String pattern;
 
   /// ctor
   PatternDecoder(
@@ -21,30 +21,31 @@ class PatternDecoder implements MoneyDecoder<String> {
   }
 
   @override
-  MoneyData decode(String monetaryValue) {
+  MoneyData decode(final String monetaryValue) {
     final negativeOne = BigInt.from(-1);
     var majorUnits = BigInt.zero;
     var minorUnits = BigInt.zero;
 
-    var code = currency.code;
+    final code = currency.code;
 
-    pattern = compressDigits(pattern);
-    pattern = compressWhitespace(pattern);
-    monetaryValue = compressWhitespace(monetaryValue);
+    var compressedPattern = compressDigits(pattern);
+    compressedPattern = compressWhitespace(compressedPattern);
+    final compressedMonetaryValue = compressWhitespace(monetaryValue);
     var codeIndex = 0;
 
     var isNegative = false;
     var seenMajor = false;
 
-    var valueQueue = ValueQueue(monetaryValue, currency.thousandSeparator);
+    final valueQueue =
+        ValueQueue(compressedMonetaryValue, currency.thousandSeparator);
 
-    for (var i = 0; i < pattern.length; i++) {
-      switch (pattern[i]) {
+    for (var i = 0; i < compressedPattern.length; i++) {
+      switch (compressedPattern[i]) {
         case 'S':
-          var char = valueQueue.takeOne();
+          final char = valueQueue.takeOne();
           if (char != currency.symbol) {
-            throw MoneyParseException.fromValue(
-                pattern, i, monetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(compressedPattern, i,
+                compressedMonetaryValue, valueQueue.index);
           }
 
           break;
@@ -54,16 +55,16 @@ class PatternDecoder implements MoneyDecoder<String> {
                 'The pattern has more currency code "C" characters '
                 '($codeIndex + 1) than the length of the passed currency.');
           }
-          var char = valueQueue.takeOne();
+          final char = valueQueue.takeOne();
           if (char != code[codeIndex]) {
-            throw MoneyParseException.fromValue(
-                pattern, i, monetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(compressedPattern, i,
+                compressedMonetaryValue, valueQueue.index);
           }
           codeIndex++;
           break;
         case '#':
           if (!seenMajor) {
-            var char = valueQueue.peek();
+            final char = valueQueue.peek();
             if (char == '-') {
               valueQueue.takeOne();
               isNegative = true;
@@ -76,10 +77,10 @@ class PatternDecoder implements MoneyDecoder<String> {
           }
           break;
         case '.':
-          var char = valueQueue.takeOne();
+          final char = valueQueue.takeOne();
           if (char != currency.decimalSeparator) {
-            throw MoneyParseException.fromValue(
-                pattern, i, monetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(compressedPattern, i,
+                compressedMonetaryValue, valueQueue.index);
           }
           seenMajor = true;
           break;
@@ -87,7 +88,7 @@ class PatternDecoder implements MoneyDecoder<String> {
           break;
         default:
           throw MoneyParseException(
-              'Invalid character "${pattern[i]}" found in pattern.');
+              'Invalid character "${compressedPattern[i]}" found in pattern.');
       }
     }
 
@@ -96,8 +97,8 @@ class PatternDecoder implements MoneyDecoder<String> {
       minorUnits = minorUnits * negativeOne;
     }
 
-    var value = currency.toMinorUnits(majorUnits, minorUnits);
-    var result = MoneyData.from(value, currency);
+    final value = currency.toMinorUnits(majorUnits, minorUnits);
+    final result = MoneyData.from(value, currency);
     return result;
   }
 
@@ -105,16 +106,17 @@ class PatternDecoder implements MoneyDecoder<String> {
   /// Compresses all 0 # , . characters into a single #.#
   ///
   String compressDigits(String pattern) {
-    var decimalSeparator = currency.decimalSeparator;
-    var thousandsSeparator = currency.thousandSeparator;
+    final decimalSeparator = currency.decimalSeparator;
+    final thousandsSeparator = currency.thousandSeparator;
 
     var result = '';
 
-    var regExPattern = '([#|0|$thousandsSeparator]+)$decimalSeparator([#|0]+)';
+    final regExPattern =
+        '([#|0|$thousandsSeparator]+)$decimalSeparator([#|0]+)';
 
-    var regEx = RegExp(regExPattern);
+    final regEx = RegExp(regExPattern);
 
-    var matches = regEx.allMatches(pattern);
+    final matches = regEx.allMatches(pattern);
 
     if (matches.isEmpty) {
       throw MoneyParseException(
@@ -124,10 +126,10 @@ class PatternDecoder implements MoneyDecoder<String> {
     if (matches.length != 1) {
       throw MoneyParseException(
           'The pattern contained more than one numberic pattern.'
-          ' Check you don\'t have spaces in the numeric parts of the pattern.');
+          " Check you don't have spaces in the numeric parts of the pattern.");
     }
 
-    Match match = matches.first;
+    final Match match = matches.first;
 
     if (match.group(0) != null && match.group(1) != null) {
       result = pattern.replaceFirst(regEx, '#.#');
@@ -144,7 +146,7 @@ class PatternDecoder implements MoneyDecoder<String> {
   /// Removes all whitespace from a pattern or a value
   /// as when we are parsing we ignore whitespace.
   String compressWhitespace(String value) {
-    var regEx = RegExp(r'\s+');
+    final regEx = RegExp(r'\s+');
 
     return value.replaceAll(regEx, '');
   }
@@ -173,11 +175,7 @@ class ValueQueue {
   }
 
   /// takes the next character from the value.
-  String takeOne() {
-    lastTake = monetaryValue[index++];
-
-    return lastTake;
-  }
+  String takeOne() => lastTake = monetaryValue[index++];
 
   /// return all of the digits from the current position
   /// until we find a non-digit.
@@ -203,6 +201,6 @@ class ValueQueue {
 
   /// true if the passed character is a digit.
   bool isDigit(String char) {
-    return RegExp(r'[0123456789]').hasMatch(char);
+    return RegExp('[0123456789]').hasMatch(char);
   }
 }

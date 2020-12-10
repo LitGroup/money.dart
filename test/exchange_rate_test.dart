@@ -4,11 +4,11 @@ import 'package:test/test.dart';
 void main() {
   group('Exchange Rates', () {
     test('Exchange Rates', () {
-      var aud = Currency.create('AUD', 2);
-      var usd = Currency.create('USD', 2);
-      var invoiceAmount = Money.fromInt(1000, aud);
-      var auToUsExchangeRate = Money.fromInt(68, usd);
-      var us680 = Money.fromInt(680, usd);
+      final aud = Currency.create('AUD', 2);
+      final usd = Currency.create('USD', 2);
+      final invoiceAmount = Money.fromInt(1000, aud);
+      final auToUsExchangeRate = Money.fromInt(68, usd);
+      final us680 = Money.fromInt(680, usd);
 
       expect(invoiceAmount.exchangeTo(auToUsExchangeRate), equals(us680));
     });

@@ -44,7 +44,7 @@ class _TestDecoder implements MoneyDecoder<MoneyData> {
 class _FailingDecoder implements MoneyDecoder<String> {
   @override
   MoneyData decode(String encoded) {
-    throw FormatException();
+    throw const FormatException();
   }
 }
 

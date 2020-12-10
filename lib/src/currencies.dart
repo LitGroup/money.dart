@@ -60,7 +60,7 @@ class Currencies {
 
   /// Register a list of currencies.
   static void registerList(Iterable<Currency> currencies) {
-    for (var currency in currencies) {
+    for (final currency in currencies) {
       _directory[currency.code] = currency;
     }
   }
@@ -86,19 +86,15 @@ class Currencies {
   /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
   /// does not contain a known currency.
   ///
-  static Money parse(String monetaryAmount, [String pattern]) {
+  static Money parse(String monetaryAmountWithCode, [String pattern]) {
     Currency currency;
+
     if (pattern == null) {
       /// No pattern? so find the currency based on the currency
       /// code in the [monetaryAmount].
-      currency = findByCode(monetaryAmount);
-
-      /// The default patterns often don't contain a currency
-      /// code so as a conveience we strip the code out of the
-      /// [monetaryAmount]. I hope this is a good idea :)
-      monetaryAmount = _stripCode(currency, monetaryAmount);
+      currency = findByCode(monetaryAmountWithCode);
     } else {
-      var codeLength = _getCodeLength(pattern);
+      final codeLength = _getCodeLength(pattern);
 
       if (codeLength < 2) {
         throw MoneyParseException(
@@ -106,19 +102,28 @@ class Currencies {
             'least 2 characters long');
       }
 
-      var code = _extractCode(monetaryAmount, codeLength);
+      final code = _extractCode(monetaryAmountWithCode, codeLength);
 
       currency = find(code);
     }
 
     if (currency == null) {
-      throw UnknownCurrencyException(monetaryAmount);
+      throw UnknownCurrencyException(monetaryAmountWithCode);
     }
 
     pattern ??= currency.pattern;
 
-    var decoder = PatternDecoder(currency, pattern);
-    var moneyData = decoder.decode(monetaryAmount);
+    var monetaryAmount = monetaryAmountWithCode;
+
+    if (!containsCode(pattern)) {
+      /// The default patterns often don't contain a currency
+      /// code so as a conveniencce we strip the code out of the
+      /// [monetaryAmount]. I hope this is a good idea :)
+      monetaryAmount = _stripCode(currency, monetaryAmountWithCode);
+    }
+
+    final decoder = PatternDecoder(currency, pattern);
+    final moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, currency);
   }
@@ -126,12 +131,15 @@ class Currencies {
   /// Strips the currency code out of a [monetaryAmount]
   /// e.g.
   /// $USD10.00 becomes $10.00
-  static String _stripCode(Currency currency, String monetaryAmount) {
+  static String _stripCode(Currency currency, String monetaryAmountWithCode) {
+    String monetaryAmount;
     if (currency != null && !containsCode(currency.pattern)) {
-      var code = _extractCode(monetaryAmount, currency.code.length);
+      final code = _extractCode(monetaryAmountWithCode, currency.code.length);
 
       /// Remove the currency code
-      monetaryAmount = monetaryAmount.replaceFirst(code, '');
+      monetaryAmount = monetaryAmountWithCode.replaceFirst(code, '');
+    } else {
+      monetaryAmount = monetaryAmountWithCode;
     }
     return monetaryAmount;
   }
@@ -165,9 +173,9 @@ class Currencies {
   /// Extracts the currency code from a [monetaryValue] on that
   /// assumption that it is [codeLength] long.
   static String _extractCode(String monetaryValue, int codeLength) {
-    var regEx = RegExp('[A-Za-z]' * codeLength);
+    final regEx = RegExp('[A-Za-z]' * codeLength);
 
-    var matches = regEx.allMatches(monetaryValue);
+    final matches = regEx.allMatches(monetaryValue);
     if (matches.isEmpty) {
       throw MoneyParseException(
           'No currency code found in the pattern: $monetaryValue');
@@ -190,7 +198,7 @@ class Currencies {
     longToShort = _directory.values.toList();
     longToShort.sort((lhs, rhs) => lhs.code.length - rhs.code.length);
 
-    for (var currency in longToShort) {
+    for (final currency in longToShort) {
       if (monetaryAmount.contains(currency.code)) {
         match = currency;
         break;

@@ -18,16 +18,14 @@ class PatternEncoder implements MoneyEncoder<String> {
   PatternEncoder(
     this.money,
     this.pattern,
-  ) {
-    assert(money != null);
-    assert(pattern != null);
-  }
+  )   : assert(money != null),
+        assert(pattern != null);
 
   @override
   String encode(MoneyData data) {
     String formatted;
 
-    var decimalSeperatorCount =
+    final decimalSeperatorCount =
         data.currency.decimalSeparator.allMatches(pattern).length;
 
     if (decimalSeperatorCount > 1) {
@@ -44,11 +42,11 @@ class PatternEncoder implements MoneyEncoder<String> {
       hasMinor = false;
     }
 
-    var majorPattern = pattern.substring(0, decimalSeparatorIndex);
+    final majorPattern = pattern.substring(0, decimalSeparatorIndex);
 
     formatted = formatMajorPart(data, majorPattern);
     if (hasMinor) {
-      var minorPattern = pattern.substring(decimalSeparatorIndex + 1);
+      final minorPattern = pattern.substring(decimalSeparatorIndex + 1);
       formatted +=
           data.currency.decimalSeparator + formatMinorPart(data, minorPattern);
     }
@@ -57,32 +55,32 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   /// Formats the major part of the [data].
-  String formatMajorPart(MoneyData data, String majorPattern) {
+  String formatMajorPart(MoneyData data, final String majorPattern) {
     var formatted = '';
 
     // extract the contiguous money components made up of 0 # , and .
-    var moneyPattern = getMoneyPattern(majorPattern);
+    final moneyPattern = getMoneyPattern(majorPattern);
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: false);
 
-    var majorUnits = data.getMajorUnits();
+    final majorUnits = data.getMajorUnits();
 
-    var formattedMajorUnits =
+    final formattedMajorUnits =
         getFormattedMajorUnits(data, moneyPattern, majorUnits);
 
     // replace the the money components with a single #
-    majorPattern = compressMoney(majorPattern);
+    var compressedMajorPattern = compressMoney(majorPattern);
 
-    var code = getCode(data, majorPattern);
+    final code = getCode(data, compressedMajorPattern);
     // replaces multiple C's with a single C
-    majorPattern = compressC(majorPattern);
+    compressedMajorPattern = compressC(compressedMajorPattern);
 
     // checks we have only one S.
-    validateS(majorPattern);
+    validateS(compressedMajorPattern);
 
     // Replace the compressed patterns with actual values.
     // The periods and commas have already been removed from the pattern.
-    for (var i = 0; i < majorPattern.length; i++) {
-      var char = majorPattern[i];
+    for (var i = 0; i < compressedMajorPattern.length; i++) {
+      final char = compressedMajorPattern[i];
       switch (char) {
         case 'S':
           formatted += data.currency.symbol;
@@ -111,15 +109,18 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   ///
   String getFormattedMajorUnits(
-      MoneyData data, String moneyPattern, BigInt majorUnits) {
+      MoneyData data, final String moneyPattern, BigInt majorUnits) {
+    String normalisedMoneyPattern;
     if (data.currency.invertSeparators) {
       // the NumberFormat doesn't like the inverted characters
       // so we normalise them for the conversion.
-      moneyPattern = moneyPattern.replaceAll('.', ',');
+      normalisedMoneyPattern = moneyPattern.replaceAll('.', ',');
+    } else {
+      normalisedMoneyPattern = moneyPattern;
     }
     // format the no. into that pattern.
     var formattedMajorUnits =
-        NumberFormat(moneyPattern).format(majorUnits.toInt());
+        NumberFormat(normalisedMoneyPattern).format(majorUnits.toInt());
 
     if (!majorUnits.isNegative && data.minorUnits.isNegative) {
       formattedMajorUnits = '-$formattedMajorUnits';
@@ -136,7 +137,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   /// supplied [pattern] to find the code.
   String getCode(MoneyData data, String pattern) {
     // find the contigous 'C'
-    var codeLength = 'C'.allMatches(pattern).length;
+    final codeLength = 'C'.allMatches(pattern).length;
 
     // get the code based on the no. of C's.
     String code;
@@ -156,7 +157,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     var inMoney = false;
     var moneyPattern = '';
     for (var i = 0; i < pattern.length; i++) {
-      var char = pattern[i];
+      final char = pattern[i];
       switch (char) {
         case 'S':
           inMoney = false;
@@ -206,17 +207,17 @@ class PatternEncoder implements MoneyEncoder<String> {
   String formatMinorPart(MoneyData data, String minorPattern) {
     var formatted = '';
     // extract the contiguous money components made up of 0 # , and .
-    var moneyPattern = getMoneyPattern(minorPattern);
+    final moneyPattern = getMoneyPattern(minorPattern);
 
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: true);
 
     var paddedTo = 0;
-    var firstZero = moneyPattern.indexOf('0');
+    final firstZero = moneyPattern.indexOf('0');
     if (firstZero != -1) {
       paddedTo = moneyPattern.length;
     }
 
-    var minorUnits = data.getMinorUnits();
+    final minorUnits = data.getMinorUnits();
     // format the no. into that pattern.
     // in order for Number format to format single digit minor unit properly
     // with proper 0s, we first add 100 and then strip the 1 after being
@@ -235,18 +236,18 @@ class PatternEncoder implements MoneyEncoder<String> {
     }
 
     // replace the the money components with a single #
-    minorPattern = compressMoney(minorPattern);
+    var compressedMinorPattern = compressMoney(minorPattern);
 
-    var code = getCode(data, minorPattern);
+    final code = getCode(data, compressedMinorPattern);
     // replaces multiple C's with a single S
-    minorPattern = compressC(minorPattern);
+    compressedMinorPattern = compressC(compressedMinorPattern);
 
     // checks we have only one S.
     validateS(minorPattern);
 
     // expand the pattern
-    for (var i = 0; i < minorPattern.length; i++) {
-      var char = minorPattern[i];
+    for (var i = 0; i < compressedMinorPattern.length; i++) {
+      final char = compressedMinorPattern[i];
       switch (char) {
         case 'S':
           formatted += data.currency.symbol;
@@ -287,7 +288,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   int countMajorPatternDigits(String pattern, String decimalSeparator) {
     var count = 0;
     for (var i = 0; i < pattern.length; i++) {
-      var char = pattern[i];
+      final char = pattern[i];
       if (char == decimalSeparator) {
         break;
       }
@@ -305,7 +306,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     var foundDecimalSeparator = false;
 
     for (var i = 0; i < pattern.length; i++) {
-      var char = pattern[i];
+      final char = pattern[i];
       if (char == decimalSeparator) {
         foundDecimalSeparator = true;
       }
@@ -331,15 +332,15 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   /// Compresses multiple currency pattern characters 'CCC' into a single
   /// 'C'.
-  String compressC(String majorPattern) {
+  String compressC(final String majorPattern) {
     // replaced with a single C.
-    majorPattern = majorPattern.replaceAll(RegExp(r'[C]+'), 'C');
+    final compressedMajorPattern = majorPattern.replaceAll(RegExp('[C]+'), 'C');
 
-    if ('C'.allMatches(majorPattern).length > 1) {
+    if ('C'.allMatches(compressedMajorPattern).length > 1) {
       throw IllegalPatternException(
           "The pattern may only contain a single contigous group of 'C's");
     }
-    return majorPattern;
+    return compressedMajorPattern;
   }
 
   ///
@@ -357,25 +358,28 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  void checkZeros(String moneyPattern, String thousandSeparator, {bool minor}) {
+  void checkZeros(final String moneyPattern, String thousandSeparator,
+      {bool minor}) {
     if (!moneyPattern.contains('0')) return;
 
-    var illegalPattern = IllegalPatternException(
-        '''The '0' pattern characters must only be at the end of the pattern for ${(minor ? 'Minor' : 'Major')} Units''');
+    final illegalPattern = IllegalPatternException(
+        '''The '0' pattern characters must only be at the end of the pattern for ${minor ? 'Minor' : 'Major'} Units''');
 
     // compress zeros so we have only one which should be at the end,
     // unless we have thousand separators then we can have several 0s e.g. 0,0,0
-    moneyPattern = moneyPattern.replaceAll(RegExp(r'0+'), '0');
+    final comppressedMoneyPattern = moneyPattern.replaceAll(RegExp('0+'), '0');
 
     // last char must be a zero (i.e. thousand separater not allowed here)
-    if (moneyPattern[moneyPattern.length - 1] != '0') throw illegalPattern;
+    if (comppressedMoneyPattern[comppressedMoneyPattern.length - 1] != '0') {
+      throw illegalPattern;
+    }
 
     // check that zeros are the trailing character.
     // if the pattern has thousand separators then there can be more than one 0.
     var zerosEnded = false;
-    var len = moneyPattern.length - 1;
+    final len = comppressedMoneyPattern.length - 1;
     for (var i = len; i > 0; i--) {
-      var char = moneyPattern[i];
+      final char = comppressedMoneyPattern[i];
       var isValid = char == '0';
 
       // when looking at the intial zeros a thousand separator
@@ -394,7 +398,7 @@ class PatternEncoder implements MoneyEncoder<String> {
     var trailingZeros = '';
     var result = '';
     for (var i = 0; i < formatted.length; i++) {
-      var char = formatted[i];
+      final char = formatted[i];
 
       if (char == '0' && result.isEmpty) {
         trailingZeros += '0';

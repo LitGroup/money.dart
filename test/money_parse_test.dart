@@ -156,7 +156,7 @@ void main() {
     });
 
     test('Inverted Decimal Separator with pattern', () {
-      var euro = Currency.create('EUR', 2);
+      final euro = Currency.create('EUR', 2);
       expect(Currencies.parse('EUR10,25', 'CCC#,#'),
           equals(Money.fromInt(1025, euro)));
       expect(Currencies.parse('€EUR10,25', 'SCCC0,0'),

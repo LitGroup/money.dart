@@ -106,7 +106,7 @@ class Money implements Comparable<Money> {
       throw ArgumentError.notNull('currency');
     }
 
-    var minorUnits = BigInt.from(amount * currency.minorDigitsFactor.toInt());
+    final minorUnits = BigInt.from(amount * currency.minorDigitsFactor.toInt());
 
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
@@ -161,9 +161,9 @@ class Money implements Comparable<Money> {
 
     pattern ??= currency.pattern;
 
-    var decoder = PatternDecoder(currency, pattern);
+    final decoder = PatternDecoder(currency, pattern);
 
-    var data = decoder.decode(monetaryAmount);
+    final data = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(data.minorUnits, currency);
   }
@@ -191,7 +191,7 @@ class Money implements Comparable<Money> {
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
   /// ```
   Money exchangeTo(Money exchangeRate) {
-    var convertedUnits =
+    final convertedUnits =
         (_minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt()) ~/
             BigInt.from(100);
 
@@ -200,7 +200,7 @@ class Money implements Comparable<Money> {
 
   /* Internal constructor *****************************************************/
 
-  Money._from(this._minorUnits, this._currency);
+  const Money._from(this._minorUnits, this._currency);
 
   ///
   /// Provides a simple means of formating a [Money] instance as a string.
@@ -254,6 +254,7 @@ class Money implements Comparable<Money> {
   /// <T> - the type you are decoding from.
   ///
   /// Throws [FormatException] when the passed value contains an invalid format.
+  // ignore: prefer_constructors_over_static_methods
   static Money decoding<T>(T value, MoneyDecoder<T> decoder) {
     final data = decoder.decode(value);
 
@@ -455,9 +456,12 @@ class MoneyParseException implements Exception {
   ///
   factory MoneyParseException.fromValue(
       String pattern, int i, String monetaryValue, int monetaryIndex) {
-    var message =
-        '''monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
+    final message = '''
+monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
         when a match for pattern character ${pattern[i]} at pos $i was expected.''';
     return MoneyParseException(message);
   }
+
+  @override
+  String toString() => message;
 }

@@ -10,9 +10,9 @@ class MinorUnits implements Comparable<MinorUnits> {
 
   /// Create a MinorUnit from a [BigInt] which contains
   /// a value in minor units.
-  MinorUnits.from(BigInt value) : _value = value {
-    assert(value != null);
-  }
+  const MinorUnits.from(BigInt value)
+      : _value = value,
+        assert(value != null);
 
   /// returns true of the value of this [MinorUnit] is zero.
   bool get isZero => _value == BigInt.zero;
@@ -74,7 +74,7 @@ class MinorUnits implements Comparable<MinorUnits> {
     final absoluteValue = _value.abs();
     var remainder = absoluteValue;
 
-    var shares = ratios.map((ratio) {
+    final shares = ratios.map((ratio) {
       final share = absoluteValue * ratio ~/ totalVolume;
       remainder -= share;
 

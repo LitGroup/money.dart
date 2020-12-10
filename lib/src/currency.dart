@@ -93,8 +93,8 @@ class Currency {
       this.pattern = 'S0.00',
       this.invertSeparators = false})
       : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
-        decimalSeparator = (invertSeparators ? ',' : '.'),
-        thousandSeparator = (invertSeparators ? '.' : ',') {
+        decimalSeparator = invertSeparators ? ',' : '.',
+        thousandSeparator = invertSeparators ? '.' : ',' {
     if (code == null || code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
@@ -120,8 +120,8 @@ class Currency {
   ///
   Money parse(String monetaryAmount, {String pattern}) {
     pattern ??= this.pattern;
-    var decoder = PatternDecoder(this, pattern);
-    var moneyData = decoder.decode(monetaryAmount);
+    final decoder = PatternDecoder(this, pattern);
+    final moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, this);
   }
@@ -131,8 +131,8 @@ class Currency {
   ///
   Money fromString(String monetaryAmount, {String pattern}) {
     pattern ??= this.pattern;
-    var decoder = PatternDecoder(this, pattern);
-    var moneyData = decoder.decode(monetaryAmount);
+    final decoder = PatternDecoder(this, pattern);
+    final moneyData = decoder.decode(monetaryAmount);
 
     return Money.fromBigInt(moneyData.minorUnits, this);
   }

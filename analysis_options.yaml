@@ -1,11 +1,14 @@
 ---
-include: package:pedantic/analysis_options.yaml
+include: package:lint/analysis_options.yaml
 
 linter:
   rules:
     - camel_case_types
 
 analyzer:
- strong-mode:
+  enable-experiment:
+    - non-nullable
+    
+  strong-mode:
     implicit-casts: false
     implicit-dynamic: false
