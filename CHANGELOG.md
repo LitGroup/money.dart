@@ -1,3 +1,15 @@
+# 2.0.1-nullsafety.5
+Fixed the incorrect example output to be correct.
+
+# 2.0.1-nullsafety.4
+3rd attemp to fix formatting.
+
+# 2.0.1-nullsafety.3
+2nd attempt to fix the description formatting ;<
+
+# 2.0.1-nullsafety.2
+attempt to fix the escaping of the description.
+
 # 2.0.1-nullsafety.1
 Bug fixes for currences by with high precision and parsing amounts with less than the expected decimal places.
 Merge pull request #21 from comigor/precision-0
