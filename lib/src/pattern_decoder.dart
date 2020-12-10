@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'currency.dart';
 import 'encoders.dart';
 import 'money.dart';
@@ -71,9 +73,9 @@ class PatternDecoder implements MoneyDecoder<String> {
             }
           }
           if (seenMajor) {
-            minorUnits = valueQueue.takeDigits();
+            minorUnits = valueQueue.takeMinorDigits(currency);
           } else {
-            majorUnits = valueQueue.takeDigits();
+            majorUnits = valueQueue.takeMajorDigits();
           }
           break;
         case '.':
@@ -112,7 +114,7 @@ class PatternDecoder implements MoneyDecoder<String> {
     var result = '';
 
     final regExPattern =
-        '([#|0|$thousandsSeparator]+)$decimalSeparator([#|0]+)';
+        '([#|0|$thousandsSeparator]+)(?:$decimalSeparator([#|0]+))?';
 
     final regEx = RegExp(regExPattern);
 
@@ -131,12 +133,11 @@ class PatternDecoder implements MoneyDecoder<String> {
 
     final Match match = matches.first;
 
-    if (match.group(0) != null && match.group(1) != null) {
+    if (match.group(1) != null && match.group(2) != null) {
       result = pattern.replaceFirst(regEx, '#.#');
-      // result += '#';
-    } else if (match.group(0) != null) {
-      result = pattern.replaceFirst(regEx, '#');
     } else if (match.group(1) != null) {
+      result = pattern.replaceFirst(regEx, '#');
+    } else if (match.group(2) != null) {
       result = pattern.replaceFirst(regEx, '.#');
       // result += '.#';
     }
@@ -165,7 +166,7 @@ class ValueQueue {
   String thousandsSeparator;
 
   /// The last character we took from the queue.
-  String lastTake;
+  String? lastTake;
 
   ///
   ValueQueue(this.monetaryValue, this.thousandsSeparator);
@@ -179,7 +180,38 @@ class ValueQueue {
 
   /// return all of the digits from the current position
   /// until we find a non-digit.
-  BigInt takeDigits() {
+  BigInt takeMajorDigits() {
+    return BigInt.parse(_takeDigits());
+  }
+
+  /// true if the passed character is a digit.
+  bool isDigit(String char) {
+    return RegExp('[0123456789]').hasMatch(char);
+  }
+
+  /// Takes any remaining digits as minor digits.
+  /// If there are less digits than [Currency.minorDigits]
+  /// then we pad the number with zeros before we convert it to an it.
+  ///
+  /// e.g.
+  /// 1.2 -> 1.20
+  /// 1.21 -> 1.21
+  BigInt takeMinorDigits(Currency currency) {
+    var digits = _takeDigits();
+
+    if (digits.length < currency.minorDigits) {
+      digits += '0' * max(0, currency.minorDigits - digits.length);
+    }
+
+    // we have no way of storing less than a minorDigit is this a problem?
+    if (digits.length > currency.minorDigits) {
+      digits = digits.substring(0, currency.minorDigits);
+    }
+
+    return BigInt.parse(digits);
+  }
+
+  String _takeDigits() {
     var digits = ''; //  = lastTake;
 
     while (index < monetaryValue.length &&
@@ -196,11 +228,6 @@ class ValueQueue {
           'Character "${monetaryValue[index]}" at pos $index'
           ' is not a digit when a digit was expected');
     }
-    return BigInt.parse(digits);
-  }
-
-  /// true if the passed character is a digit.
-  bool isDigit(String char) {
-    return RegExp('[0123456789]').hasMatch(char);
+    return digits;
   }
 }

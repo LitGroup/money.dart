@@ -91,6 +91,21 @@ void main() {
     });
   });
 
+  test('Decode and encode with the same currency should be inverse operations',
+      () {
+    final currency = Currency.create('MONEY', 0, pattern: '0 CCC');
+    const stringValue = '1025 MONEY';
+    expect(Money.parse(stringValue, currency).toString(), equals(stringValue));
+
+    for (var precision = 1; precision < 5; precision++) {
+      final currency = Currency.create('MONEY', precision,
+          pattern: '0.${'0' * precision} CCC');
+      final stringValue = '1025.${'0' * (precision - 1)}1 MONEY';
+      expect(
+          Money.parse(stringValue, currency).toString(), equals(stringValue));
+    }
+  });
+
   group('Currency.parse', () {
     test('Default Currency Pattern', () {
       expect(usd.parse(r'$10.25'), equals(Money.fromInt(1025, usd)));
@@ -102,6 +117,13 @@ void main() {
           equals(Money.fromInt(1025, usd)));
       expect(usd.parse('1,000.25', pattern: '#.#'),
           equals(Money.fromInt(100025, usd)));
+    });
+
+    test('Missing decimals', () {
+      expect(euro.parse('€EUR10,2', pattern: 'SCCC0,0'),
+          equals(Money.fromInt(1020, euro)));
+      expect(euro.parse('€EUR10,200', pattern: 'SCCC0,0'),
+          equals(Money.fromInt(1020, euro)));
     });
 
     test('White space', () {

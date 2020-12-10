@@ -52,14 +52,6 @@ void main() {
   final usd = Currency.create('USD', 2);
 
   group('MoneyData', () {
-    test('throws an error during instantiation with null minorUnits', () {
-      expect(() => MoneyData.from(null, usd), throwsArgumentError);
-    });
-
-    test('throws an error during instantiation with null currency', () {
-      expect(() => MoneyData.from(BigInt.from(100), null), throwsArgumentError);
-    });
-
     test('has properties: minorUnits, currency', () {
       final minorUnits = BigInt.from(100);
 

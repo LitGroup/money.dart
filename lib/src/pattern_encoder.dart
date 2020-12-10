@@ -18,8 +18,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   PatternEncoder(
     this.money,
     this.pattern,
-  )   : assert(money != null),
-        assert(pattern != null);
+  );
 
   @override
   String encode(MoneyData data) {
@@ -90,7 +89,6 @@ class PatternEncoder implements MoneyEncoder<String> {
           break;
         case '#':
           formatted += formattedMajorUnits;
-          break;
           break;
         case ' ':
           formatted += ' ';
@@ -220,13 +218,13 @@ class PatternEncoder implements MoneyEncoder<String> {
     final minorUnits = data.getMinorUnits();
     // format the no. into that pattern.
     // in order for Number format to format single digit minor unit properly
-    // with proper 0s, we first add 100 and then strip the 1 after being
-    // formatted.
+    // with proper 0s, we first add [minorDigitsFactor] and then strip the 1
+    // after being formatted.
     //
     // e.g., using ## to format 1 would result in 1, but we want it
     // formatted as 01 because it is really the decimal part of the number.
     var formattedMinorUnits = NumberFormat(moneyPattern)
-        .format(minorUnits.toInt() + 100)
+        .format((minorUnits + data.currency.minorDigitsFactor).toInt())
         .substring(1);
     if (moneyPattern.length < formattedMinorUnits.length) {
       // money pattern is short, so we need to force a truncation as
@@ -323,7 +321,8 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  void isMoneyAllowed({bool inMoney, bool foundMoney, int pos}) {
+  void isMoneyAllowed(
+      {required bool inMoney, required bool foundMoney, required int pos}) {
     if (!inMoney && foundMoney) {
       throw IllegalPatternException('Found a 0 at location $pos. '
           'All money characters (0#,.)must be contiguous');
@@ -358,8 +357,8 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  void checkZeros(final String moneyPattern, String thousandSeparator,
-      {bool minor}) {
+  void checkZeros(final String moneyPattern, final String thousandSeparator,
+      {required bool minor}) {
     if (!moneyPattern.contains('0')) return;
 
     final illegalPattern = IllegalPatternException(

@@ -10,9 +10,7 @@ class MinorUnits implements Comparable<MinorUnits> {
 
   /// Create a MinorUnit from a [BigInt] which contains
   /// a value in minor units.
-  const MinorUnits.from(BigInt value)
-      : _value = value,
-        assert(value != null);
+  const MinorUnits.from(BigInt value) : _value = value;
 
   /// returns true of the value of this [MinorUnit] is zero.
   bool get isZero => _value == BigInt.zero;

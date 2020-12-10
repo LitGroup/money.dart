@@ -58,7 +58,7 @@ class Currency {
 
   /// The factor of 10 to divide a minor value by to get the intended
   /// currency value.
-  ///  e.g. if minorDigits is 1 then this value will be 100.
+  ///  e.g. if minorDigits is 2 then this value will be 100.
   final BigInt minorDigitsFactor;
 
   /// the default pattern used to format and parse monetary amounts for this
@@ -95,12 +95,8 @@ class Currency {
       : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
         decimalSeparator = invertSeparators ? ',' : '.',
         thousandSeparator = invertSeparators ? '.' : ',' {
-    if (code == null || code.isEmpty) {
+    if (code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
-    }
-
-    if (pattern == null) {
-      throw ArgumentError.value(minorDigits, 'pattern', 'Must not be null.');
     }
   }
 
@@ -118,7 +114,7 @@ class Currency {
   /// A [MoneyParseException] is thrown if the [monetarAmount]
   /// doesn't match the [pattern].
   ///
-  Money parse(String monetaryAmount, {String pattern}) {
+  Money parse(String monetaryAmount, {String? pattern}) {
     pattern ??= this.pattern;
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
@@ -129,7 +125,7 @@ class Currency {
   ///
   /// @deprecated - use [Money.parse]
   ///
-  Money fromString(String monetaryAmount, {String pattern}) {
+  Money fromString(String monetaryAmount, {String? pattern}) {
     pattern ??= this.pattern;
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
@@ -147,7 +143,7 @@ class Currency {
       minorDigits == other.minorDigits;
 
   static BigInt _calcMinorDigitsFactor(int minorDigits) {
-    if (minorDigits == null || minorDigits.isNegative) {
+    if (minorDigits.isNegative) {
       throw ArgumentError.value(
           minorDigits, 'minorDigits', 'Must be a non-negative value.');
     }
