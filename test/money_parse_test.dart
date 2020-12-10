@@ -93,7 +93,12 @@ void main() {
     test(
         'Decode and encode with the same currency should be inverse operations',
         () {
-      for (var precision = 2; precision < 5; precision++) {
+      final currency = Currency.create('MONEY', 0, pattern: '0 CCC');
+      final stringValue = '1025 MONEY';
+      expect(
+          Money.parse(stringValue, currency).toString(), equals(stringValue));
+
+      for (var precision = 1; precision < 5; precision++) {
         final currency = Currency.create('MONEY', precision,
             pattern: '0.${'0' * precision} CCC');
         final stringValue = '1025.${'0' * (precision - 1)}1 MONEY';
