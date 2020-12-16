@@ -1,3 +1,10 @@
+# 2.0.1-nullsafety.6
+Added Money.dividedBy with a double as the result.
+
+
+# 2.0.1
+released 2.0.1-nullsafety.5 to fix the description formatting.
+
 # 2.0.1-nullsafety.5
 Fixed the incorrect example output to be correct.
 

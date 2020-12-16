@@ -412,6 +412,12 @@ class Money implements Comparable<Money> {
     return _withAmount(_minorUnits / divisor);
   }
 
+  /// Divides this by [divisor] and returns the result as a double
+  double dividedBy(Money divisor) {
+    _preconditionThatCurrencyTheSameFor(divisor);
+    return minorUnits.toDouble() / divisor.minorUnits.toDouble();
+  }
+
   /* ************************************************************************ */
 
   /// Creates new instance with the same currency and given [amount].
