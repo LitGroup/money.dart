@@ -205,17 +205,31 @@ class PatternEncoder implements MoneyEncoder<String> {
   String formatMinorPart(MoneyData data, String minorPattern) {
     var formatted = '';
     // extract the contiguous money components made up of 0 # , and .
-    final moneyPattern = getMoneyPattern(minorPattern);
+    var moneyPattern = getMoneyPattern(minorPattern);
 
+    /// check that the zero is at the end of the pattern.
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: true);
 
-    var paddedTo = 0;
+    /// If the pattern is longer than the minor digits we need to clip the
+    /// pattern and add trailing zeros back at the end.
+    const extendFormatWithZeros = 0;
+    if (moneyPattern.length > data.currency.minorDigits) {
+      moneyPattern = moneyPattern.substring(0, data.currency.minorDigits);
+      // extendFormatWithZeros
+
+    }
+
+    /// If there are trailing zeros then we must ensure
+    /// the final string is at least [requiredPatternWidth] or if
+    /// its not then we pad with zeros.
+    var requiredPatternWidth = 0;
     final firstZero = moneyPattern.indexOf('0');
     if (firstZero != -1) {
-      paddedTo = moneyPattern.length;
+      requiredPatternWidth = moneyPattern.length;
     }
 
     final minorUnits = data.getMinorUnits();
+
     // format the no. into that pattern.
     // in order for Number format to format single digit minor unit properly
     // with proper 0s, we first add [minorDigitsFactor] and then strip the 1
@@ -223,8 +237,10 @@ class PatternEncoder implements MoneyEncoder<String> {
     //
     // e.g., using ## to format 1 would result in 1, but we want it
     // formatted as 01 because it is really the decimal part of the number.
+
     var formattedMinorUnits = NumberFormat(moneyPattern)
-        .format((minorUnits + data.currency.minorDigitsFactor).toInt())
+        .format((minorUnits + BigInt.from(pow(10, data.currency.minorDigits)))
+            .toInt())
         .substring(1);
     if (moneyPattern.length < formattedMinorUnits.length) {
       // money pattern is short, so we need to force a truncation as
@@ -264,7 +280,7 @@ class PatternEncoder implements MoneyEncoder<String> {
         case '.':
         default:
           throw IllegalPatternException(
-              "The pattern contains an unknown character: '$char'");
+              "The minor part of the pattern contains an unexpected character: '$char'");
       }
     }
 
@@ -277,7 +293,13 @@ class PatternEncoder implements MoneyEncoder<String> {
     }
     // Add trailing zeros.
 
-    if (paddedTo != 0) formatted = formatted.padRight(paddedTo, '0');
+    if (requiredPatternWidth != 0) {
+      formatted = formatted.padRight(requiredPatternWidth, '0');
+    }
+
+    if (extendFormatWithZeros != 0) {
+      formatted = formatted.padRight(extendFormatWithZeros, '0');
+    }
 
     return formatted;
   }
@@ -356,7 +378,8 @@ class PatternEncoder implements MoneyEncoder<String> {
     return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), '#');
   }
 
-  ///
+  /// Check that Zeros are only at the end of the pattern unless we have thousand separators as there
+  /// can then be a zero at the end of each segment.
   void checkZeros(final String moneyPattern, final String thousandSeparator,
       {required bool minor}) {
     if (!moneyPattern.contains('0')) return;
