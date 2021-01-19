@@ -24,6 +24,8 @@
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 
 import 'currency.dart';
@@ -99,7 +101,8 @@ class Money implements Comparable<Money> {
   /// [amounts] - the value of the  [currency]. Unlike fromBigInt this method
   ///
   factory Money.from(num amount, Currency currency) {
-    final minorUnits = BigInt.from(amount * currency.minorDigitsFactor.toInt());
+    final minorUnits = BigInt.from(
+        (amount * currency.minorDigitsFactor.toInt() + 0.5).toInt());
 
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
@@ -176,7 +179,7 @@ class Money implements Comparable<Money> {
   Money exchangeTo(Money exchangeRate) {
     final convertedUnits =
         (_minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt()) ~/
-            BigInt.from(100);
+            BigInt.from(pow(10, exchangeRate._currency.minorDigits));
 
     return Money.fromBigInt(convertedUnits, exchangeRate._currency);
   }
