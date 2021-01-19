@@ -28,7 +28,8 @@ class CommonCurrencies {
   final Currency aud = Currency.create('AUD', 2);
 
   /// Brazilian Real
-  final Currency brl = Currency.create('BRL', 2, symbol: r'R$');
+  final Currency brl = Currency.create('BRL', 2,
+      symbol: r'R$', invertSeparators: true, pattern: 'S0,00');
 
   /// Bit coin dollar
   final Currency btc = Currency.create('BTC', 8, symbol: '₿', pattern: 'S0');
