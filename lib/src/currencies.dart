@@ -124,7 +124,7 @@ class Currencies {
     final decoder = PatternDecoder(currency, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromBigInt(moneyData.minorUnits, currency);
+    return Money.fromInt(moneyData.minorUnits.toInt(), currency);
   }
 
   /// Strips the currency code out of a [monetaryAmount]

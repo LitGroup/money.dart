@@ -43,14 +43,14 @@ class MoneyData {
   /// returns the major currency value of this
   /// MoneyData (e.g. the dollar amount)
   BigInt getMajorUnits() {
-    return minorUnits ~/ currency.minorDigitsFactor;
+    return minorUnits ~/ currency.precisionFactor;
   }
 
   /// returns the minor currency value of this MoneyData (e.g. the cents amount)
   BigInt getMinorUnits() {
     if (minorUnits.isNegative) {
-      return -minorUnits % currency.minorDigitsFactor;
+      return -minorUnits % currency.precisionFactor;
     }
-    return minorUnits % currency.minorDigitsFactor;
+    return minorUnits % currency.precisionFactor;
   }
 }

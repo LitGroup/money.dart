@@ -30,7 +30,7 @@
 /// a (hopefully) more intuiative api.
 ///
 /// The [Currency] class allows you to define the key attributes of a currency
-/// such as Symbol, Code, minorDigits and a default format.
+/// such as Symbol, Code, precision and a default format.
 ///
 /// The [Money] class stores the underlying values using a BigInt. The value
 /// is stored using the currencies 'minor' units (e.g. cents).
@@ -55,8 +55,7 @@
 /// * symbol - the currency symbol. e.g. '$'. It should be noted that not
 /// every currency has a symbol.
 /// * pattern - a pattern used to control the display format.
-/// * minorDigits - the number of minor Units (e.g. cents) which should be
-/// used when storing the currency.
+/// * precision - the number of decimal places assumed when a minor unit value (e.g. cents) is passed.
 /// * decimal separator - the character that separates the fraction part
 /// from the integer of a number e.g. '10.99'. This defaults to '.'
 /// but can be changed to ',' * thousands separator - the character

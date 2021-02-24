@@ -44,8 +44,8 @@ class PatternDecoder implements MoneyDecoder<String> {
     for (var i = 0; i < compressedPattern.length; i++) {
       switch (compressedPattern[i]) {
         case 'S':
-          final char = valueQueue.takeOne();
-          if (char != currency.symbol) {
+          final symbol = valueQueue.takeN(currency.symbol.length);
+          if (symbol != currency.symbol) {
             throw MoneyParseException.fromValue(compressedPattern, i,
                 compressedMonetaryValue, valueQueue.index);
           }
@@ -177,6 +177,18 @@ class ValueQueue {
   /// takes the next character from the value.
   String takeOne() => lastTake = monetaryValue[index++];
 
+  /// takes the next [n] character from the value.
+  String takeN(int n) {
+    var end = index + n;
+
+    end = min(end, monetaryValue.length);
+    final take = lastTake = monetaryValue.substring(index, end);
+
+    index += n;
+
+    return take;
+  }
+
   /// return all of the digits from the current position
   /// until we find a non-digit.
   BigInt takeMajorDigits() {
@@ -189,7 +201,7 @@ class ValueQueue {
   }
 
   /// Takes any remaining digits as minor digits.
-  /// If there are less digits than [Currency.minorDigits]
+  /// If there are less digits than [Currency.precision]
   /// then we pad the number with zeros before we convert it to an it.
   ///
   /// e.g.
@@ -198,13 +210,13 @@ class ValueQueue {
   BigInt takeMinorDigits(Currency currency) {
     var digits = _takeDigits();
 
-    if (digits.length < currency.minorDigits) {
-      digits += '0' * max(0, currency.minorDigits - digits.length);
+    if (digits.length < currency.precision) {
+      digits += '0' * max(0, currency.precision - digits.length);
     }
 
     // we have no way of storing less than a minorDigit is this a problem?
-    if (digits.length > currency.minorDigits) {
-      digits = digits.substring(0, currency.minorDigits);
+    if (digits.length > currency.precision) {
+      digits = digits.substring(0, currency.precision);
     }
 
     return BigInt.parse(digits);

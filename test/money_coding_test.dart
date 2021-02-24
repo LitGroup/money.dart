@@ -63,7 +63,7 @@ void main() {
 
   group('Money', () {
     test('encoding', () {
-      final fiveDollars = Money.fromBigInt(BigInt.from(500), usd);
+      final fiveDollars = Money.fromInt(500, usd);
 
       expect(fiveDollars.encodedBy(_TestEncoder()), equals('USD 500'));
     });
@@ -72,7 +72,23 @@ void main() {
       final money =
           Money.decoding(MoneyData.from(BigInt.from(500), usd), _TestDecoder());
 
-      expect(money, equals(Money.fromBigInt(BigInt.from(500), usd)));
+      expect(money, equals(Money.fromInt(500, usd)));
+    });
+
+    group('round trip', () {
+      test('single-character symbol', () {
+        final m1 = Money.fromInt(0, CommonCurrencies().aud);
+        final m2 = Money.parse(m1.toString(), CommonCurrencies().aud);
+
+        expect(m1, m2);
+      });
+
+      test('multi-character symbol', () {
+        final m1 = Money.fromInt(0, CommonCurrencies().brl);
+        final m2 = Money.parse(m1.toString(), CommonCurrencies().brl);
+
+        expect(m1, m2);
+      });
     });
 
     test('decoding exception', () {

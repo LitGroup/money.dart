@@ -47,6 +47,8 @@ import 'pattern_decoder.dart';
 //@sealed
 @immutable
 class Currency {
+  static const String defaultPattern = 'S0.00';
+
   /// The code of the currency (e.g. 'USD').
   final String code;
 
@@ -54,12 +56,12 @@ class Currency {
   final String symbol;
 
   /// The number of decimals for the currency (zero or more).
-  final int minorDigits;
+  final int precision;
 
   /// The factor of 10 to divide a minor value by to get the intended
   /// currency value.
-  ///  e.g. if minorDigits is 2 then this value will be 100.
-  final BigInt minorDigitsFactor;
+  ///  e.g. if [precision] is 2 then this value will be 100.
+  final BigInt precisionFactor;
 
   /// the default pattern used to format and parse monetary amounts for this
   /// currency.
@@ -77,9 +79,9 @@ class Currency {
   /// The character used for the thousands separator.
   final String thousandSeparator;
 
-  /// Creates a currency with a given [code] and [minorDigits].
+  /// Creates a currency with a given [code] and [precision].
   /// * [code] - the currency code e.g. USD
-  /// * [minorDigits] - the number of digits after the decimal place the
+  /// * [precision] - the number of digits after the decimal place the
   /// the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
   /// * [pattern] - the default output format used when you call toString
   /// on a Money instance created with this currency. See [Money.format]
@@ -88,16 +90,29 @@ class Currency {
   /// thousands separator is ','. When this value is true (defaults to false)
   /// then the separators are swapped. This is needed for most non English
   /// speaking [Currency]s.
-  Currency.create(this.code, this.minorDigits,
+  Currency.create(this.code, this.precision,
       {this.symbol = r'$',
-      this.pattern = 'S0.00',
+      this.pattern = defaultPattern,
       this.invertSeparators = false})
-      : minorDigitsFactor = Currency._calcMinorDigitsFactor(minorDigits),
+      : precisionFactor = Currency._calcPrecisionFactor(precision),
         decimalSeparator = invertSeparators ? ',' : '.',
         thousandSeparator = invertSeparators ? '.' : ',' {
     if (code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
+  }
+
+  Currency copyWith({
+    String? code,
+    int? precision,
+    String? symbol,
+    String? pattern,
+    bool? invertSeparators,
+  }) {
+    return Currency.create(code ?? this.code, precision ?? this.precision,
+        symbol: symbol ?? this.symbol,
+        pattern: pattern ?? this.pattern,
+        invertSeparators: invertSeparators ?? this.invertSeparators);
   }
 
   ///
@@ -119,7 +134,7 @@ class Currency {
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromBigInt(moneyData.minorUnits, this);
+    return Money.fromInt(moneyData.minorUnits.toInt(), this);
   }
 
   ///
@@ -130,7 +145,7 @@ class Currency {
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromBigInt(moneyData.minorUnits, this);
+    return Money.fromInt(moneyData.minorUnits.toInt(), this);
   }
 
   @override
@@ -140,20 +155,20 @@ class Currency {
   bool operator ==(dynamic other) =>
       other is Currency &&
       code == other.code &&
-      minorDigits == other.minorDigits;
+      precision == other.precision;
 
-  static BigInt _calcMinorDigitsFactor(int minorDigits) {
-    if (minorDigits.isNegative) {
+  static BigInt _calcPrecisionFactor(int precision) {
+    if (precision.isNegative) {
       throw ArgumentError.value(
-          minorDigits, 'minorDigits', 'Must be a non-negative value.');
+          precision, 'precision', 'Must be a non-negative value.');
     }
-    return BigInt.from(pow(10, minorDigits));
+    return BigInt.from(pow(10, precision));
   }
 
   /// Takes a [majorUnits] and a [minorUnits] and returns
   /// a BigInt which represents the two combined values in
   /// [minorUnits].
   BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) {
-    return majorUnits * minorDigitsFactor + minorUnits;
+    return majorUnits * precisionFactor + minorUnits;
   }
 }

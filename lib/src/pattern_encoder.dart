@@ -149,6 +149,8 @@ class PatternEncoder implements MoneyEncoder<String> {
     return code;
   }
 
+  /// Just extract the number specific format chacters leaving out
+  /// currency and symbols
   /// MinorUnits use trailing zeros, MajorUnits use leading zeros.
   String getMoneyPattern(String pattern) {
     var foundMoney = false;
@@ -204,20 +206,12 @@ class PatternEncoder implements MoneyEncoder<String> {
   ///
   String formatMinorPart(MoneyData data, String minorPattern) {
     var formatted = '';
+
     // extract the contiguous money components made up of 0 # , and .
     var moneyPattern = getMoneyPattern(minorPattern);
 
-    /// check that the zero is at the end of the pattern.
+    /// check that the zeros are only at is at the end of the pattern.
     checkZeros(moneyPattern, data.currency.thousandSeparator, minor: true);
-
-    /// If the pattern is longer than the minor digits we need to clip the
-    /// pattern and add trailing zeros back at the end.
-    const extendFormatWithZeros = 0;
-    if (moneyPattern.length > data.currency.minorDigits) {
-      moneyPattern = moneyPattern.substring(0, data.currency.minorDigits);
-      // extendFormatWithZeros
-
-    }
 
     /// If there are trailing zeros then we must ensure
     /// the final string is at least [requiredPatternWidth] or if
@@ -226,6 +220,15 @@ class PatternEncoder implements MoneyEncoder<String> {
     final firstZero = moneyPattern.indexOf('0');
     if (firstZero != -1) {
       requiredPatternWidth = moneyPattern.length;
+    }
+
+    /// If the pattern is longer than the minor digits we need to clip the
+    /// pattern and add trailing zeros back at the end.
+    const extendFormatWithZeros = 0;
+    if (moneyPattern.length > data.currency.precision) {
+      moneyPattern = moneyPattern.substring(0, data.currency.precision);
+      // extendFormatWithZeros
+
     }
 
     final minorUnits = data.getMinorUnits();
@@ -239,14 +242,42 @@ class PatternEncoder implements MoneyEncoder<String> {
     // formatted as 01 because it is really the decimal part of the number.
 
     var formattedMinorUnits = NumberFormat(moneyPattern)
-        .format((minorUnits + BigInt.from(pow(10, data.currency.minorDigits)))
-            .toInt())
+        .format((minorUnits + data.currency.precisionFactor).toInt())
         .substring(1);
+
     if (moneyPattern.length < formattedMinorUnits.length) {
       // money pattern is short, so we need to force a truncation as
       // NumberFormat doesn't know we are dealing with minor units.
       formattedMinorUnits =
           formattedMinorUnits.substring(0, moneyPattern.length);
+    }
+
+    /// If we have a minor digits of 4 and minorunits = 10
+    /// then the number format will produce 10 rather than 0010
+    /// So we need to add leading zeros
+    //if ()
+
+    // Fixed problems caused by passing a int to the NumberFormat
+    // when we are trying to format a decimal.
+    // Move leading zeros to the end when minor units >= 10 - i.e.,
+    // we want to keep the leading zeros for single digit cents.
+    if (minorUnits.toInt() >= data.currency.precisionFactor.toInt()) {
+      formatted = invertZeros(formatted);
+    }
+
+    // If the no. of decimal digits contained in the minorunits
+    // then we need to pad the result.
+    if (formattedMinorUnits.length < moneyPattern.length) {
+      formattedMinorUnits.padLeft(moneyPattern.length - formatted.length, '0');
+    }
+    // Add trailing zeros.
+
+    if (requiredPatternWidth != 0) {
+      formattedMinorUnits = formattedMinorUnits.padRight(requiredPatternWidth, '0');
+    }
+
+    if (extendFormatWithZeros != 0) {
+      formattedMinorUnits = formattedMinorUnits.padRight(extendFormatWithZeros, '0');
     }
 
     // replace the the money components with a single #
@@ -282,23 +313,6 @@ class PatternEncoder implements MoneyEncoder<String> {
           throw IllegalPatternException(
               "The minor part of the pattern contains an unexpected character: '$char'");
       }
-    }
-
-    // Fixed problems caused by passing a int to the NumberFormat
-    // when we are trying to format a decimal.
-    // Move leading zeros to the end when minor units >= 10 - i.e.,
-    // we want to keep the leading zeros for single digit cents.
-    if (minorUnits.toInt() >= 10) {
-      formatted = invertZeros(formatted);
-    }
-    // Add trailing zeros.
-
-    if (requiredPatternWidth != 0) {
-      formatted = formatted.padRight(requiredPatternWidth, '0');
-    }
-
-    if (extendFormatWithZeros != 0) {
-      formatted = formatted.padRight(extendFormatWithZeros, '0');
     }
 
     return formatted;

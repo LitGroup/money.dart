@@ -24,8 +24,6 @@
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
-import 'dart:math';
-
 import 'package:meta/meta.dart';
 
 import 'currency.dart';
@@ -102,7 +100,8 @@ class Money implements Comparable<Money> {
   ///
   factory Money.from(num amount, Currency currency) {
     final minorUnits = BigInt.from(
-        (amount * currency.minorDigitsFactor.toInt() + (amount >= 0 ? 0.5 : -0.5)).toInt());
+        (amount * currency.precisionFactor.toInt() + (amount >= 0 ? 0.5 : -0.5))
+            .toInt());
 
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
@@ -118,7 +117,7 @@ class Money implements Comparable<Money> {
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
-  /// @deprecated - use [Money.from(minorUnits, currency)]
+  @Deprecated(' use [Money.from(minorUnits, currency)]')
   factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
@@ -127,7 +126,7 @@ class Money implements Comparable<Money> {
   ///
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
   factory Money.fromInt(int minorUnits, Currency currency) {
-    return Money.fromBigInt(BigInt.from(minorUnits), currency);
+    return Money._from(MinorUnits.from(BigInt.from(minorUnits)), currency);
   }
 
   ///
@@ -142,16 +141,13 @@ class Money implements Comparable<Money> {
   ///
   factory Money.parse(String monetaryAmount, Currency currency,
       {String? pattern}) {
-    ArgumentError.checkNotNull(monetaryAmount, 'monetaryValue');
-    ArgumentError.checkNotNull(currency, 'currency');
-
     pattern ??= currency.pattern;
 
     final decoder = PatternDecoder(currency, pattern);
 
     final data = decoder.decode(monetaryAmount);
 
-    return Money.fromBigInt(data.minorUnits, currency);
+    return Money._from(MinorUnits.from(data.minorUnits), currency);
   }
 
   ///
@@ -162,12 +158,21 @@ class Money implements Comparable<Money> {
       Money.parse(monetaryAmount, currency, pattern: pattern);
 
   ///
-  /// Converts a [Money] instance into a new [Currency] using
-  /// the provided [exchangeRate] which defines the target
-  /// [Currency] and the exchange rate.
-  /// e.g. 1 AUD = 0.68c USD
-  /// Which means that for each Australian Dollar you will recieve
-  /// 0.68 US cents. (AKA I'm not traveling to the USA this year).
+  /// Converts a [Money] instance into a new [Money] instance with its [Currency]
+  /// defined by the [exchangeRate].
+  ///
+  /// The current [Money] amount is multiplied by the exchange rate to arrive at the
+  /// converted currency.
+  ///
+  /// e.g.
+  /// US$0.68 = AU$1.00 * US$0.68
+  ///
+  /// Where US$0.68 is the exchange rate.
+  ///
+  ///
+  /// In the below example we do the following conversion:
+  /// $10.00 * 0.68 = $6.80
+  ///
   /// To do the above conversion:
   /// ```dart
   /// Currency aud = Currency.create('AUD', 2);
@@ -177,11 +182,17 @@ class Money implements Comparable<Money> {
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
   /// ```
   Money exchangeTo(Money exchangeRate) {
-    final convertedUnits =
-        (_minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt()) ~/
-            BigInt.from(pow(10, exchangeRate._currency.minorDigits));
+    /// convertedUnits now has this.precision + exchangeRate.precision
+    /// precision.
+    var convertedUnits =
+        _minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt();
 
-    return Money.fromBigInt(convertedUnits, exchangeRate._currency);
+    /// reduce minor digits back to the exchangeRates no. of minor digits
+    final round = convertedUnits.isNegative ? -0.5 : 0.5;
+    convertedUnits =
+        BigInt.from((convertedUnits / _currency.precisionFactor) + round);
+
+    return Money._from(MinorUnits.from(convertedUnits), exchangeRate._currency);
   }
 
   /* Internal constructor *****************************************************/
@@ -203,6 +214,8 @@ class Money implements Comparable<Money> {
   /// and trailing zeros.
   ///   * , (comma) a placeholder for the grouping separtor
   ///   * . (period) a place holder fo rthe decimal separator
+  ///
+  /// Note: if [Currency.invertSeparators] is true then the meaning of comma and period are swapped.
   ///
   /// Example:
   /// ```dart
@@ -244,7 +257,7 @@ class Money implements Comparable<Money> {
   static Money decoding<T>(T value, MoneyDecoder<T> decoder) {
     final data = decoder.decode(value);
 
-    return Money.fromBigInt(data.minorUnits, data.currency);
+    return Money._from(MinorUnits.from(data.minorUnits), data.currency);
   }
 
   /// Encodes a [Money] instance as a <T>.
