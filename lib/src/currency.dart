@@ -153,9 +153,7 @@ class Currency {
 
   @override
   bool operator ==(dynamic other) =>
-      other is Currency &&
-      code == other.code &&
-      precision == other.precision;
+      other is Currency && code == other.code && precision == other.precision;
 
   static BigInt _calcPrecisionFactor(int precision) {
     if (precision.isNegative) {

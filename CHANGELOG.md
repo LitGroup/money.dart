@@ -1,3 +1,14 @@
+# 2.0.2
+Rreleased null safety preview. fixes: #15 fixes: #29 - lost digits  using exchangeTo fixes: #28 - support more precision for exchange rates fixes #24 - support mutli-character symbols. fixes #22 - document inversion of , and . in format.
+Rounding was wrong for -ve no. Changed to rounding based on sign.
+moved doco to gitbooks.
+Corrected the BRL pattern.
+Corrected the decimal separator for brl.
+Added tests for rounding.
+Added tests for exchange rate precision.
+Added bitcoin, sorted entries.
+Fixed #26 rounding issue - Money.from rounds incorrectly. Fixed a bug in exchangeTo that had hard coded the number of decimal places.
+
 # 2.0.1-nullsafety.6
 Added Money.dividedBy with a double as the result.
 

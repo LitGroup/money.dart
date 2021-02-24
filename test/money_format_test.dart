@@ -266,9 +266,8 @@ void main() {
               .toString(),
           equals('0.035231'));
 
-           expect(
-          Money.fromInt(
-                  35231, Currency.create('AU', 6, pattern: 'S0.000000'))
+      expect(
+          Money.fromInt(35231, Currency.create('AU', 6, pattern: 'S0.000000'))
               .toString(),
           equals(r'$0.035231'));
     });

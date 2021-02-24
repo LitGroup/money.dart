@@ -273,11 +273,13 @@ class PatternEncoder implements MoneyEncoder<String> {
     // Add trailing zeros.
 
     if (requiredPatternWidth != 0) {
-      formattedMinorUnits = formattedMinorUnits.padRight(requiredPatternWidth, '0');
+      formattedMinorUnits =
+          formattedMinorUnits.padRight(requiredPatternWidth, '0');
     }
 
     if (extendFormatWithZeros != 0) {
-      formattedMinorUnits = formattedMinorUnits.padRight(extendFormatWithZeros, '0');
+      formattedMinorUnits =
+          formattedMinorUnits.padRight(extendFormatWithZeros, '0');
     }
 
     // replace the the money components with a single #
