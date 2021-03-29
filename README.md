@@ -43,11 +43,11 @@ Currency usdCurrency = Currency.create('USD', 2);
 
 // Create money from an int.
 Money costPrice = Money.fromInt(1000, usdCurrency);
-print(costPrice.toString());
+print(costPrice);
   > $10.00
 
 final taxInclusive = costPrice * 1.1;
-print(taxInclusive.toString())
+print(taxInclusive)
   > $11.00
 
 print(taxInclusive.format('SCC #.00'));
@@ -60,12 +60,12 @@ print(parsed.format('SCCC 0.0'));
 
 // Create money from an int which contains the MajorUnit (e.g dollars)
 Money buyPrice = Money.from(10);
-print(buyPrice.toString());
+print(buyPrice);
   > $10.00
 
 // Create money from a double which contains Major and Minor units (e.g. dollars and cents)
 // We don't recommend transporting money as a double as you will get rounding errors.
 Money sellPrice = Money.from(10.50);
-print(sellPrice.toString());
+print(sellPrice);
   > $10.50
 ```
