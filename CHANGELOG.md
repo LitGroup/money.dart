@@ -1,3 +1,6 @@
+# 2.0.3
+un deprecated Money.fromBigInt as it is more memory efficient that Money.from
+
 # 2.0.2
 Rreleased null safety preview. fixes: #15 fixes: #29 - lost digits  using exchangeTo fixes: #28 - support more precision for exchange rates fixes #24 - support mutli-character symbols. fixes #22 - document inversion of , and . in format.
 Rounding was wrong for -ve no. Changed to rounding based on sign.
