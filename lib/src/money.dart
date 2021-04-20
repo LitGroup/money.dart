@@ -117,7 +117,6 @@ class Money implements Comparable<Money> {
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
-  @Deprecated(' use [Money.from(minorUnits, currency)]')
   factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
