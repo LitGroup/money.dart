@@ -45,7 +45,7 @@ class CommonCurrencies {
 
   /// euro
   final Currency euro = Currency.create('EUR', 2,
-      symbol: '€', invertSeparators: true, pattern: 'S0.000,00');
+      symbol: '€', invertSeparators: true, pattern: '0,00S');
 
   /// British Pound Sterling
   final Currency gbp = Currency.create('GBP', 2, symbol: '£');
