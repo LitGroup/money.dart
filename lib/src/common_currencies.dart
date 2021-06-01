@@ -84,6 +84,14 @@ class CommonCurrencies {
   /// South African Rand
   final Currency zar = Currency.create('ZAR', 2, symbol: 'R');
 
+  /// Polish zloty
+  final Currency pln = Currency.create('PLN', 2,
+      symbol: 'zł', invertSeparators: true, pattern: '0,00S');
+
+  /// Czech koruna
+  final Currency czk = Currency.create('CZK', 2,
+      symbol: 'Kč', invertSeparators: true, pattern: '0,00S');
+
   /// Registers all of the common currency.
   void registerAll() {
     Currencies.registerList([
@@ -105,7 +113,8 @@ class CommonCurrencies {
       rub,
       twd,
       usd,
-      zar
+      zar,
+      pln
     ]);
   }
 }
