@@ -1,3 +1,8 @@
+# 2.1.0
+Added zloty and Czech koruna
+Default Euro pattern fixed - the symbol is now at the end of the value
+removed support for the beta of 2.12.
+
 # 2.0.3
 un deprecated Money.fromBigInt as it is more memory efficient that Money.from
 
