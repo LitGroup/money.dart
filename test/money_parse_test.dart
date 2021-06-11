@@ -211,10 +211,9 @@ void main() {
     });
   });
 
-  group('deprecated fromString methods', () {
+  group('parse methods', () {
     test('Money', () {
-      expect(
-          Money.fromString(r'$10.25', usd), equals(Money.fromInt(1025, usd)));
+      expect(Money.parse(r'$10.25', usd), equals(Money.fromInt(1025, usd)));
     });
 
     test('Currency', () {

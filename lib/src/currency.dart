@@ -138,8 +138,7 @@ class Currency {
   }
 
   ///
-  /// @deprecated - use [Money.parse]
-  ///
+  @Deprecated("use [Money.parse]")
   Money fromString(String monetaryAmount, {String? pattern}) {
     pattern ??= this.pattern;
     final decoder = PatternDecoder(this, pattern);

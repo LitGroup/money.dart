@@ -150,8 +150,7 @@ class Money implements Comparable<Money> {
   }
 
   ///
-  /// @deprecated - use Money.parse
-  ///
+  @Deprecated("use Money.parse")
   factory Money.fromString(String monetaryAmount, Currency currency,
           {String? pattern}) =>
       Money.parse(monetaryAmount, currency, pattern: pattern);

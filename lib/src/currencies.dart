@@ -143,9 +143,8 @@ class Currencies {
     return monetaryAmount;
   }
 
-  //
-  /// @deprecated - use [Currencies.parse())]
   ///
+  @Deprecated("use [Currencies.parse()")
   static Money fromString(String monetaryAmount, String pattern) {
     return Currencies.parse(monetaryAmount, pattern);
   }
