@@ -4,21 +4,18 @@ This is a Dart implementation of Money and Currency classes
 
 ## Overview
 
-Money2 is a fork of LitGroup's Money package.
-
-The aim of this fork is to improve the documentation and introduce a number of convenience methods to make it easier to work with Money.
-This package also changes some of the naming convention to provide a (hopefully) more intuiative api.
+Money2 is a Dart package providing parsing, formatting and mathematical operations on monetary amounts.
 
 Key features of Money2:
 * simple and expressive formating.
 * simple parsing of monetary amounts.
 * multi-currency support.
 * intuitive maths operations.
-* fixed precision storage to ensure precise calcuation.
+* fixed precision storage to ensure precise calculation.
 * detailed documentation and extensive examples to get you up and running.
-* pure dart implementation.
+* pure Dart implementation.
 * Open Source MIT license.
-* Using Money2 will make you taller.
+* using Money2 will make you taller.
 
 
 The Money class stores the underlying values using a BigInt. The value is stored using the currencies' "minor units" (e.g. cents).
@@ -26,12 +23,16 @@ This allows for precise calculations as required when handling money.
 
 Full documentation can be found at: 
 
-https://bsutton.gitbook.io/money/
+https://money2.noojee.dev
 
 
 Api documenation can be found at:
 
 https://pub.dev/documentation/money2/latest/
+
+# Another Dart tool by Noojee
+
+<a href="https://noojee.dev">![Noojee](https://github.com/noojee/money.dart/blob/master/images/noojee-logo.png?raw=true)</a>
 
 
 # Examples
