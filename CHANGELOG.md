@@ -1,3 +1,6 @@
+# 2.1.2
+Corrected the documentation link.
+
 # 2.1.1
 Updated homepage.
 
