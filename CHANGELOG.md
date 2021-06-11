@@ -1,3 +1,6 @@
+# 2.1.4
+replaced @deprecated with @Deprecated.
+
 # 2.1.3
 Updated links in readme.
 
