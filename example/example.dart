@@ -160,4 +160,9 @@ void main() {
 
   print(taxInclusivePrice.format('SCC 0.00'));
   // $US 11.00
+
+  // retrieve all registered currencies
+  final Iterable<String> registeredCurrencies = Currencies.getRegistered();
+  print(registeredCurrencies);
+  // (USD, AUD, EUR, JPY)
 }
