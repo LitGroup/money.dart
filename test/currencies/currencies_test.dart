@@ -44,7 +44,7 @@ void main() {
     });
 
     test('returns all currencies correctly', () {
-      expect(Currencies.getRegistered(), ['USD', 'EUR']);
+      expect(Currencies.getRegistered(), [usd, eur]);
     });
   });
 }

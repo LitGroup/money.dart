@@ -162,7 +162,8 @@ void main() {
   // $US 11.00
 
   // retrieve all registered currencies
-  final Iterable<String> registeredCurrencies = Currencies.getRegistered();
-  print(registeredCurrencies);
+  final Iterable<Currency> registeredCurrencies = Currencies.getRegistered();
+  final Iterable<String> codes = registeredCurrencies.map((c) => c.code);
+  print(codes);
   // (USD, AUD, EUR, JPY)
 }

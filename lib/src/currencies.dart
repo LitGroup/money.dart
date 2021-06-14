@@ -159,9 +159,9 @@ class Currencies {
     return _directory[code];
   }
 
-  /// Returns the [code]s of all registered [Currency]s
-  static Iterable<String> getRegistered() {
-    return _directory.keys;
+  /// Returns all currently registered [Currency]s
+  static Iterable<Currency> getRegistered() {
+    return _directory.values;
   }
 
   /// Counts the number of 'C' in a pattern
