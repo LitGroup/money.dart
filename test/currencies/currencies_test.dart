@@ -45,6 +45,7 @@ void main() {
 
     test('returns all currencies correctly', () {
       expect(Currencies.getRegistered(), [usd, eur]);
+      expect(Currencies.getRegistered().map((c) => c.code), ['USD', 'EUR']);
     });
   });
 }
