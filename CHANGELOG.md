@@ -1,3 +1,10 @@
+# 2.2.0
+- Add API to access currently registered currencies 
+```dart
+Iterator<Currency> Currencies.getRegistered()
+```
+
+
 # 2.1.4
 replaced @deprecated with @Deprecated.
 

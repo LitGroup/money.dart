@@ -59,6 +59,7 @@ class Currencies {
   }
 
   /// Register a list of currencies.
+  ///
   static void registerList(Iterable<Currency> currencies) {
     for (final currency in currencies) {
       _directory[currency.code] = currency;
@@ -160,6 +161,18 @@ class Currencies {
   }
 
   /// Returns all currently registered [Currency]s
+  ///
+  /// ```dart
+  /// final usd = Currency.create('USD', 2);
+  /// final eur = Currency.create('EUR', 2);
+  /// Currencies.registerList([usd, eur]);
+  /// expect(Currencies.getRegistered(), [usd, eur]);
+  /// expect(Currencies.getRegistered().map((c) => c.code), ['USD', 'EUR']);
+  /// ```
+  ///
+  /// see:
+  /// Currency.register
+  /// Currency.registerList
   static Iterable<Currency> getRegistered() {
     return _directory.values;
   }
