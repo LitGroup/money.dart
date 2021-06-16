@@ -42,5 +42,9 @@ void main() {
     test('returns null if a currency cannot be found', () {
       expect(Currencies.find('BTC'), isNull);
     });
+
+    test('returns all currencies correctly', () {
+      expect(Currencies.getRegistered(), [usd, eur]);
+    });
   });
 }

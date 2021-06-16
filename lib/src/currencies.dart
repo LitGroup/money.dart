@@ -159,6 +159,11 @@ class Currencies {
     return _directory[code];
   }
 
+  /// Returns all currently registered [Currency]s
+  static Iterable<Currency> getRegistered() {
+    return _directory.values;
+  }
+
   /// Counts the number of 'C' in a pattern
   static int _getCodeLength(String pattern) {
     var count = 0;
