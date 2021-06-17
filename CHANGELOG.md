@@ -1,3 +1,6 @@
+# 2.2.1
+Improved documentation around the Currencies class.
+
 # 2.2.0
 - Add API to access currently registered currencies 
 ```dart

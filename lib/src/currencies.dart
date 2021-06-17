@@ -54,12 +54,42 @@ class Currencies {
   static final Map<String, Currency> _directory = {};
 
   /// Register a Currency
+  /// Once a Currency has been registered the
+  /// [Currencies.parse] method will be able to recognize
+  /// the currencey code in String and return the correct type.
+  /// ```dart
+  /// Currency usd = Currency.create('USD', 2);
+  /// Currencies.register(usd);
+  /// final usdAmount = Currencies.parse(r'$USD1500.0');
+  /// ```
+  /// See:
+  /// [Currencies.parse]
+  /// [Currencies.registerAll]
+  /// [CommonCurrencies.registeryAll]
+  /// [Currencies.find]
   static void register(Currency currency) {
     _directory[currency.code] = currency;
   }
 
   /// Register a list of currencies.
+  /// Once a Currency has been registered the
+  /// [Currencies.parse] method will be able to recognize
+  /// the currencey code in String and return the correct type.
   ///
+  /// See [Currencies.register]
+  /// [Currencies.parse]
+  ///
+  /// ```dart
+  /// Currency usd = Currency.create('USD', 2);
+  /// Currency aud = Currency.create('AUD', 2);
+  /// Currencies.registerAll([usd, aud]);
+  /// final usdAmount = Currencies.parse(r'$USD1500.0');
+  /// ```
+  /// See:
+  /// [Currencies.parse]
+  /// [Currencies.register]
+  /// [CommonCurrencies.registeryAll]
+  /// [Currencies.find]
   static void registerList(Iterable<Currency> currencies) {
     for (final currency in currencies) {
       _directory[currency.code] = currency;
@@ -86,7 +116,24 @@ class Currencies {
   ///
   /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
   /// does not contain a known currency.
+  /// ```dart
+  /// Currency usd = Currency.create('USD', 2);
+  /// Currency aud = Currency.create('AUD', 2);
+  /// Currencies.registerAll([usd, aud]);
+  /// final usdAmount = Currencies.parse(r'$USD1500.0');
+  /// ```
   ///
+  /// or
+  /// ```dart
+  /// CommonCurrencies().registerAll();
+  /// final usdAmount = Currencies.parse(r'$USD1500.0');
+  /// ```dart
+  ///
+  /// See:
+  /// [Currencies.register]
+  /// [Currencies.registerAll]
+  /// [CommonCurrencies.registeryAll]
+  /// [Currencies.find]
   static Money parse(String monetaryAmountWithCode, [String? pattern]) {
     Currency? currency;
     if (pattern == null) {
@@ -156,6 +203,15 @@ class Currencies {
   ///
   /// Returns the [Currency] that matches [code] or `null` if
   /// no matching [code] is found.
+  /// ```dart
+  /// CommonCurrencies().registerAll();
+  /// final usdAmount = Currencies.parse(r'$USD1500.0');
+  /// ```dart
+  ///
+  /// See:
+  /// [Currencies.register]
+  /// [Currencies.registerAll]
+  /// [CommonCurrencies.registeryAll]
   static Currency? find(String code) {
     return _directory[code];
   }
@@ -171,8 +227,9 @@ class Currencies {
   /// ```
   ///
   /// see:
-  /// Currency.register
-  /// Currency.registerList
+  /// [Currency.register]
+  /// [Currency.registerList]
+  /// [CommonCurrencies.registeryAll]
   static Iterable<Currency> getRegistered() {
     return _directory.values;
   }
