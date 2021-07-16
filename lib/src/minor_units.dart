@@ -28,8 +28,8 @@ class MinorUnits implements Comparable<MinorUnits> {
   int get hashCode => _value.hashCode;
 
   @override
-  bool operator ==(dynamic other) =>
-      other is MinorUnits && _value == other._value;
+  bool operator ==(covariant MinorUnits other) =>
+      identical(this, other) || (_value == other._value);
 
   /// less than operator
   bool operator <(MinorUnits other) => _value < other._value;

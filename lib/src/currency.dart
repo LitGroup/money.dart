@@ -151,8 +151,9 @@ class Currency {
   int get hashCode => code.hashCode;
 
   @override
-  bool operator ==(dynamic other) =>
-      other is Currency && code == other.code && precision == other.precision;
+  bool operator ==(covariant Currency other) =>
+      identical(this, other) ||
+      (code == other.code && precision == other.precision);
 
   static BigInt _calcPrecisionFactor(int precision) {
     if (precision.isNegative) {
