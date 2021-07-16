@@ -319,9 +319,8 @@ class Money implements Comparable<Money> {
   /// the same currency.
   @override
   bool operator ==(covariant Money other) =>
-      identical(this, other) || (
-      isInSameCurrencyAs(other) &&
-      other._minorUnits == _minorUnits);
+      identical(this, other) ||
+      (isInSameCurrencyAs(other) && other._minorUnits == _minorUnits);
 
   /// Returns `true` when this money is less than [other].
   ///

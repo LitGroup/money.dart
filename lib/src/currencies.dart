@@ -26,7 +26,6 @@ import 'currency.dart';
 import 'money.dart';
 import 'pattern_decoder.dart';
 
-// ignore: avoid_classes_with_only_static_members
 /// A factory for registering and accessing [Currency] instances.
 ///
 /// The [Currencies] class is a convenience class that you aren't required to
@@ -46,12 +45,12 @@ import 'pattern_decoder.dart';
 ///   [Currency]
 ///   [CommonCurrencies]
 
-// ignore: avoid_classes_with_only_static_members
 class Currencies {
-  // static Currencies _self = Currencies._internal();
+  static final Currencies _self = Currencies._internal();
 
-  /// Maps a currency 'code' to its associated currency.
-  static final Map<String, Currency> _directory = {};
+  factory Currencies() => _self;
+
+  Currencies._internal();
 
   /// Register a Currency
   /// Once a Currency has been registered the
@@ -67,8 +66,8 @@ class Currencies {
   /// [Currencies.registerAll]
   /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
-  static void register(Currency currency) {
-    _directory[currency.code] = currency;
+  void register(Currency currency) {
+    _self._directory[currency.code] = currency;
   }
 
   /// Register a list of currencies.
@@ -90,11 +89,14 @@ class Currencies {
   /// [Currencies.register]
   /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
-  static void registerList(Iterable<Currency> currencies) {
+  void registerList(Iterable<Currency> currencies) {
     for (final currency in currencies) {
-      _directory[currency.code] = currency;
+      _self._directory[currency.code] = currency;
     }
   }
+
+  /// Maps a currency 'code' to its associated currency.
+  final Map<String, Currency> _directory = {};
 
   ///
   /// Parses a string containing a money amount including a currency code.
@@ -134,7 +136,7 @@ class Currencies {
   /// [Currencies.registerAll]
   /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
-  static Money parse(String monetaryAmountWithCode, [String? pattern]) {
+  Money parse(String monetaryAmountWithCode, [String? pattern]) {
     Currency? currency;
     if (pattern == null) {
       /// No pattern? so find the currency based on the currency
@@ -178,7 +180,7 @@ class Currencies {
   /// Strips the currency code out of a [monetaryAmount]
   /// e.g.
   /// $USD10.00 becomes $10.00
-  static String _stripCode(Currency? currency, String monetaryAmountWithCode) {
+  String _stripCode(Currency? currency, String monetaryAmountWithCode) {
     String monetaryAmount;
     if (currency != null && !containsCode(currency.pattern)) {
       final code = _extractCode(monetaryAmountWithCode, currency.code.length);
@@ -193,8 +195,8 @@ class Currencies {
 
   ///
   @Deprecated("use [Currencies.parse()")
-  static Money fromString(String monetaryAmount, String pattern) {
-    return Currencies.parse(monetaryAmount, pattern);
+  Money fromString(String monetaryAmount, String pattern) {
+    return Currencies().parse(monetaryAmount, pattern);
   }
 
   /* Protocol *****************************************************************/
@@ -212,7 +214,7 @@ class Currencies {
   /// [Currencies.register]
   /// [Currencies.registerAll]
   /// [CommonCurrencies.registeryAll]
-  static Currency? find(String code) {
+  Currency? find(String code) {
     return _directory[code];
   }
 
@@ -230,12 +232,12 @@ class Currencies {
   /// [Currency.register]
   /// [Currency.registerList]
   /// [CommonCurrencies.registeryAll]
-  static Iterable<Currency> getRegistered() {
+  Iterable<Currency> getRegistered() {
     return _directory.values;
   }
 
   /// Counts the number of 'C' in a pattern
-  static int _getCodeLength(String pattern) {
+  int _getCodeLength(String pattern) {
     var count = 0;
     for (var i = 0; i < pattern.length; i++) {
       if (pattern[i] == 'C') count++;
@@ -245,7 +247,7 @@ class Currencies {
 
   /// Extracts the currency code from a [monetaryValue] on that
   /// assumption that it is [codeLength] long.
-  static String _extractCode(String monetaryValue, int codeLength) {
+  String _extractCode(String monetaryValue, int codeLength) {
     final regEx = RegExp('[A-Za-z]' * codeLength);
 
     final matches = regEx.allMatches(monetaryValue);
@@ -264,7 +266,7 @@ class Currencies {
 
   /// Searches for the matching registered Currency by comparing
   /// the currency codes in a monetaryAmount.
-  static Currency? findByCode(String monetaryAmount) {
+  Currency? findByCode(String monetaryAmount) {
     Currency? match;
     var longToShort = <Currency>[];
 
@@ -281,7 +283,7 @@ class Currencies {
   }
 
   /// tests a pattern to see if it contains a currency code.
-  static bool containsCode(String pattern) {
+  bool containsCode(String pattern) {
     return pattern.contains('C');
   }
 }

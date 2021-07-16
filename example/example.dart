@@ -43,13 +43,13 @@ void main() {
   /// with an embedded Currency Code
   /// using [Currencies.parse]
   ///
-  Currencies.register(usd);
-  Currencies.register(aud);
-  final cheapIPhone = Currencies.parse(r'$USD1500.0', 'SCCC0.0');
+  Currencies().register(usd);
+  Currencies().register(aud);
+  final cheapIPhone = Currencies().parse(r'$USD1500.0', 'SCCC0.0');
   print(cheapIPhone.format('SCC0.0'));
   // > $US1500.00
 
-  final expensiveIPhone = Currencies.parse(r'$AUD2000.0', 'SCCC0.0');
+  final expensiveIPhone = Currencies().parse(r'$AUD2000.0', 'SCCC0.0');
   print(expensiveIPhone.format('SCC0.0'));
   // > $AUD2000.00
 
@@ -139,13 +139,13 @@ void main() {
   /// Make the currencies available globally by registering them
   ///     with the [Currencies] singleton factory.
   ///
-  Currencies.register(usd);
-  Currencies.register(euro);
-  Currencies.register(jpy);
+  Currencies().register(usd);
+  Currencies().register(euro);
+  Currencies().register(jpy);
 
   // use a registered currency by finding it in the registry using
   // the currency code that the currency was created with.
-  final usDollar = Currencies.find('USD');
+  final usDollar = Currencies().find('USD');
 
   final invoicePrice = Money.fromInt(1000, usDollar!);
 
@@ -162,7 +162,7 @@ void main() {
   // $US 11.00
 
   // retrieve all registered currencies
-  final Iterable<Currency> registeredCurrencies = Currencies.getRegistered();
+  final Iterable<Currency> registeredCurrencies = Currencies().getRegistered();
   final Iterable<String> codes = registeredCurrencies.map((c) => c.code);
   print(codes);
   // (USD, AUD, EUR, JPY)

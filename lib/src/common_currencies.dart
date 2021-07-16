@@ -94,7 +94,7 @@ class CommonCurrencies {
 
   /// Registers all of the common currency.
   void registerAll() {
-    Currencies.registerList([
+    Currencies().registerList([
       aud,
       cad,
       chf,

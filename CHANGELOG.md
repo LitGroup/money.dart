@@ -1,3 +1,15 @@
+# 3.0.0-beta.1
+Breaking changes
+- re-implemented each of the == operator to use 'covariant' rather than taking a dynamic as this moves the type check to a compile time error rather than a runtime error. You can nolonger pass a dynamic to the == operator.
+- Changed the Currencies class to a singleton as per #38. You will need to change calls such as:
+```
+Currencies.register() -> Currences().register();
+Currencies.registerAll() -> Currences().registerAll();
+Currencies.parse() -> Currences().parse();
+```
+- restructured the unit test directory so it confirms to the recommended structure.
+
+
 # 2.2.1
 Improved documentation around the Currencies class.
 

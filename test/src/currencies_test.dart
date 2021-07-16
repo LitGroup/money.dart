@@ -31,21 +31,21 @@ void main() {
     final eur = Currency.create('EUR', 2);
 
     setUp(() {
-      Currencies.registerList([usd, eur]);
+      Currencies().registerList([usd, eur]);
     });
 
     test('returns a currency identified by code', () {
-      expect(Currencies.find('USD'), equals(usd));
-      expect(Currencies.find('EUR'), equals(eur));
+      expect(Currencies().find('USD'), equals(usd));
+      expect(Currencies().find('EUR'), equals(eur));
     });
 
     test('returns null if a currency cannot be found', () {
-      expect(Currencies.find('BTC'), isNull);
+      expect(Currencies().find('BTC'), isNull);
     });
 
     test('returns all currencies correctly', () {
-      expect(Currencies.getRegistered(), [usd, eur]);
-      expect(Currencies.getRegistered().map((c) => c.code), ['USD', 'EUR']);
+      expect(Currencies().getRegistered(), [usd, eur]);
+      expect(Currencies().getRegistered().map((c) => c.code), ['USD', 'EUR']);
     });
   });
 }

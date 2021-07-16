@@ -30,14 +30,14 @@ void main() {
   group('A currency', () {
     test('has a code and a precision', () {
       // register just one currency
-      Currencies.register(CommonCurrencies().usd);
+      Currencies().register(CommonCurrencies().usd);
 
-      var value = Currencies.parse(r'$USD10.50');
+      var value = Currencies().parse(r'$USD10.50');
       expect(value, equals(Money.fromInt(1050, CommonCurrencies().usd)));
 
       // register all common currencies.
       CommonCurrencies().registerAll();
-      value = Currencies.parse(r'$NZD10.50');
+      value = Currencies().parse(r'$NZD10.50');
       expect(value, equals(Money.fromInt(1050, CommonCurrencies().nzd)));
     });
   });
