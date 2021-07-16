@@ -30,13 +30,13 @@ void main() {
   final usd = Currency.create('USD', 2);
 
   test('Rounding', () {
-    expect(Money.from(69.99, usd).minorUnits.toInt(), 6999);
-    expect(Money.from(10.00, usd).minorUnits.toInt(), 1000);
+    expect(Money.fromWithCurrency(69.99, usd).minorUnits.toInt(), 6999);
+    expect(Money.fromWithCurrency(10.00, usd).minorUnits.toInt(), 1000);
 
-    expect(Money.from(10.0000001, usd).minorUnits.toInt(), 1000);
-    expect(Money.from(10.004, usd).minorUnits.toInt(), 1000);
-    expect(Money.from(10.005, usd).minorUnits.toInt(), 1001);
+    expect(Money.fromWithCurrency(10.0000001, usd).minorUnits.toInt(), 1000);
+    expect(Money.fromWithCurrency(10.004, usd).minorUnits.toInt(), 1000);
+    expect(Money.fromWithCurrency(10.005, usd).minorUnits.toInt(), 1001);
 
-    expect(Money.from(29.99, usd).minorUnits.toInt(), 2999);
+    expect(Money.fromWithCurrency(29.99, usd).minorUnits.toInt(), 2999);
   });
 }

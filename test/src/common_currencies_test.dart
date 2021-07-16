@@ -29,16 +29,15 @@ import 'package:test/test.dart';
 void main() {
   group('A currency', () {
     test('has a code and a precision', () {
-      // register just one currency
-      Currencies().register(CommonCurrencies().usd);
+      // Check common currencies are registered.
+      expect(Currencies().find('USD'), equals(CommonCurrencies().usd));
 
       var value = Currencies().parse(r'$USD10.50');
-      expect(value, equals(Money.fromInt(1050, CommonCurrencies().usd)));
+      expect(value, equals(Money.fromInt(1050, code: 'USD')));
 
       // register all common currencies.
-      CommonCurrencies().registerAll();
       value = Currencies().parse(r'$NZD10.50');
-      expect(value, equals(Money.fromInt(1050, CommonCurrencies().nzd)));
+      expect(value, equals(Money.fromInt(1050, code: 'NZD')));
     });
   });
 }

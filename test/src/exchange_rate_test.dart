@@ -6,9 +6,9 @@ void main() {
     test('Exchange Rates', () {
       final aud = Currency.create('AUD', 2);
       final usd = Currency.create('USD', 2);
-      final invoiceAmount = Money.fromInt(1000, aud);
-      final auToUsExchangeRate = Money.fromInt(68, usd);
-      final us680 = Money.fromInt(680, usd);
+      final invoiceAmount = Money.fromIntWithCurrency(1000, aud);
+      final auToUsExchangeRate = Money.fromIntWithCurrency(68, usd);
+      final us680 = Money.fromIntWithCurrency(680, usd);
 
       expect(invoiceAmount.exchangeTo(auToUsExchangeRate), equals(us680));
     });
@@ -17,10 +17,11 @@ void main() {
       final Currency twd = Currency.create('TWD', 0, symbol: 'NT\$');
       final Currency usd = Currency.create('USD', 2);
 
-      final Money twdM = Money.fromInt(1000, twd);
+      final Money twdM = Money.fromIntWithCurrency(1000, twd);
       expect(twdM.toString(), equals(r'NT$1000.00'));
 
-      final twdToUsdRate = Money.fromInt(3, usd); // 1 TWD = 0.03 USD
+      final twdToUsdRate =
+          Money.fromIntWithCurrency(3, usd); // 1 TWD = 0.03 USD
       expect(twdToUsdRate.toString(), equals(r'$0.03'));
 
       final usdM = twdM.exchangeTo(twdToUsdRate);
@@ -30,7 +31,7 @@ void main() {
           Currency.create('USD', 6, pattern: 'S0.000000');
 
       final acurateTwdToUsdRate =
-          Money.fromInt(35231, usdExchange); // 1 TWD = 0.035231 USD
+          Money.fromIntWithCurrency(35231, usdExchange); // 1 TWD = 0.035231 USD
       expect(acurateTwdToUsdRate.toString(), equals(r'$0.035231'));
 
       expect(acurateTwdToUsdRate.format('S0.00'), equals(r'$0.03'));
@@ -43,10 +44,10 @@ void main() {
       final jpy = Currency.create('JPY', 0, symbol: '¥');
       final twd = Currency.create('TWD', 0, symbol: 'NT\$');
 
-      final twdM = Money.fromInt(1000, twd);
+      final twdM = Money.fromWithCurrency(1000, twd);
       expect(twdM.toString(), equals(r'NT$1000.00'));
 
-      final twdToJpyRate = Money.fromInt(3, jpy);
+      final twdToJpyRate = Money.fromWithCurrency(3, jpy);
       expect(twdToJpyRate.toString(), equals('¥3.00'));
 
       final jpyM = twdM.exchangeTo(twdToJpyRate);

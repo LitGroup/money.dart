@@ -43,6 +43,10 @@ class CommonCurrencies {
   /// Chinese renminbi
   final Currency cny = Currency.create('CNY', 2, symbol: '¥');
 
+  /// Czech koruna
+  final Currency czk = Currency.create('CZK', 2,
+      symbol: 'Kč', invertSeparators: true, pattern: '0,00S');
+
   /// euro
   final Currency euro = Currency.create('EUR', 2,
       symbol: '€', invertSeparators: true, pattern: '0,00S');
@@ -88,22 +92,19 @@ class CommonCurrencies {
   final Currency pln = Currency.create('PLN', 2,
       symbol: 'zł', invertSeparators: true, pattern: '0,00S');
 
-  /// Czech koruna
-  final Currency czk = Currency.create('CZK', 2,
-      symbol: 'Kč', invertSeparators: true, pattern: '0,00S');
-
   /// Registers all of the common currency.
-  void registerAll() {
-    Currencies().registerList([
+  List<Currency> asList() {
+    return [
       aud,
-      cad,
-      chf,
       brl,
       btc,
+      cad,
+      chf,
       cny,
+      czk,
       euro,
-      inr,
       gbp,
+      inr,
       jpy,
       krw,
       ltry,
@@ -115,6 +116,6 @@ class CommonCurrencies {
       usd,
       zar,
       pln
-    ]);
+    ];
   }
 }

@@ -3,20 +3,13 @@ import 'package:money2/money2.dart';
 
 void main() {
   ///
-  /// Create a currency
-  /// USD currency uses 2 decimal places.
-  ///
-  final usd = Currency.create('USD', 2);
-  final aud = Currency.create('AUD', 2);
-
-  ///
   /// Create a money which stores $USD 10.00
   ///
   /// Note: we use the minor unit (e.g. cents) when passing in the
   ///   monetary value.
   /// So $10.00 is 1000 cents.
   ///
-  final costPrice = Money.fromInt(1000, usd);
+  final costPrice = Money.fromInt(1000, code: 'USD');
 
   print(costPrice.toString());
   // > $10.00
@@ -26,7 +19,7 @@ void main() {
   /// using [Currency.parse]
   /// The [Currency] of salePrice is USD.
   ///
-  final salePrice = usd.parse(r'$10.50');
+  final salePrice = CommonCurrencies().usd.parse(r'$10.50');
   print(salePrice.format('SCC 0.0'));
   // > $US 10.50
 
@@ -34,7 +27,7 @@ void main() {
   /// Create a [Money] instance from a String
   /// using [Money.parse]
   ///
-  final taxPrice = Money.parse(r'$1.50', usd);
+  final taxPrice = Money.parse(r'$1.50', code: 'USD');
   print(taxPrice.format('CC 0.0 S'));
   // > US 1.50 $
 
@@ -43,15 +36,24 @@ void main() {
   /// with an embedded Currency Code
   /// using [Currencies.parse]
   ///
-  Currencies().register(usd);
-  Currencies().register(aud);
-  final cheapIPhone = Currencies().parse(r'$USD1500.0', 'SCCC0.0');
+  /// Create a custom currency
+  /// USD currency uses 2 decimals, we need 3.
+  ///
+  final usd = Currency.create('USD', 3);
+
+  final cheapIPhone = Currencies().parse(r'$USD1500.0', pattern: 'SCCC0.0');
   print(cheapIPhone.format('SCC0.0'));
   // > $US1500.00
 
-  final expensiveIPhone = Currencies().parse(r'$AUD2000.0', 'SCCC0.0');
+  final expensiveIPhone = Currencies().parse(r'$AUD2000.0', pattern: 'SCCC0.0');
   print(expensiveIPhone.format('SCC0.0'));
   // > $AUD2000.00
+
+  /// Register a non-common currency (dogecoin)
+  Currencies().register(Currency.create('DOGE', 5, symbol: 'Ð'));
+  final dodge = Currencies().find('DODGE');
+  Money.fromWithCurrency(0.1123, dodge!);
+  Money.from(0.1123, code: 'DODGE');
 
   ///
   /// Do some maths
@@ -87,7 +89,7 @@ void main() {
   ///      0 - force at least a single digit in the output.
   ///
   final jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
-  final jpyMoney = Money.fromInt(500, jpy);
+  final jpyMoney = Money.fromIntWithCurrency(500, jpy);
   print(jpyMoney.toString());
   // > ¥500
 
@@ -103,7 +105,7 @@ void main() {
   final euro = Currency.create('EUR', 2,
       symbol: '€', invertSeparators: true, pattern: '#.##0,00 S');
 
-  final bmwPrice = Money.fromInt(10025090, euro);
+  final bmwPrice = Money.fromIntWithCurrency(10025090, euro);
   print(bmwPrice.toString());
   // > 100.250,90 €
 
@@ -113,7 +115,7 @@ void main() {
   ///
 
   // 100,345.30 usd
-  final teslaPrice = Money.fromInt(10034530, usd);
+  final teslaPrice = Money.fromInt(10034530, code: 'USD');
 
   print(teslaPrice.format('###,###'));
   // > 100,345
@@ -125,7 +127,7 @@ void main() {
   // > US100,345.30
 
   // 100,345.30 EUR
-  final euroCostPrice = Money.fromInt(10034530, euro);
+  final euroCostPrice = Money.fromInt(10034530, code: 'euro');
   print(euroCostPrice.format('###.###'));
   // > 100.345
 
@@ -147,7 +149,7 @@ void main() {
   // the currency code that the currency was created with.
   final usDollar = Currencies().find('USD');
 
-  final invoicePrice = Money.fromInt(1000, usDollar!);
+  final invoicePrice = Money.fromIntWithCurrency(1000, usDollar!);
 
   ///
   print(invoicePrice.format('SCCC 0.00'));

@@ -134,17 +134,7 @@ class Currency {
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromInt(moneyData.minorUnits.toInt(), this);
-  }
-
-  ///
-  @Deprecated("use [Money.parse]")
-  Money fromString(String monetaryAmount, {String? pattern}) {
-    pattern ??= this.pattern;
-    final decoder = PatternDecoder(this, pattern);
-    final moneyData = decoder.decode(monetaryAmount);
-
-    return Money.fromInt(moneyData.minorUnits.toInt(), this);
+    return Money.fromIntWithCurrency(moneyData.minorUnits.toInt(), this);
   }
 
   @override

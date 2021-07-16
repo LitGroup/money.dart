@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  */
 
+import 'package:money2/src/common_currencies.dart';
+
 import 'currency.dart';
 import 'money.dart';
 import 'pattern_decoder.dart';
@@ -50,7 +52,11 @@ class Currencies {
 
   factory Currencies() => _self;
 
-  Currencies._internal();
+  Currencies._internal() {
+    for (final currency in CommonCurrencies().asList()) {
+      _directory[currency.code] = currency;
+    }
+  }
 
   /// Register a Currency
   /// Once a Currency has been registered the
@@ -101,7 +107,7 @@ class Currencies {
   ///
   /// Parses a string containing a money amount including a currency code.
   ///
-  /// Provided the passed currency code belongs to a [Currency]
+  /// Provided the passed currency code is a [CommonCurrency] or belongs to a [Currency]
   /// that has been registered via [Currencies.register] or
   /// [Currencies.registerList] then this method will return a
   /// [Money] instance of that [Currency] type.
@@ -136,7 +142,7 @@ class Currencies {
   /// [Currencies.registerAll]
   /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
-  Money parse(String monetaryAmountWithCode, [String? pattern]) {
+  Money parse(String monetaryAmountWithCode, {String? pattern}) {
     Currency? currency;
     if (pattern == null) {
       /// No pattern? so find the currency based on the currency
@@ -174,29 +180,7 @@ class Currencies {
     final decoder = PatternDecoder(currency, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromInt(moneyData.minorUnits.toInt(), currency);
-  }
-
-  /// Strips the currency code out of a [monetaryAmount]
-  /// e.g.
-  /// $USD10.00 becomes $10.00
-  String _stripCode(Currency? currency, String monetaryAmountWithCode) {
-    String monetaryAmount;
-    if (currency != null && !containsCode(currency.pattern)) {
-      final code = _extractCode(monetaryAmountWithCode, currency.code.length);
-
-      /// Remove the currency code
-      monetaryAmount = monetaryAmountWithCode.replaceFirst(code, '');
-    } else {
-      monetaryAmount = monetaryAmountWithCode;
-    }
-    return monetaryAmount;
-  }
-
-  ///
-  @Deprecated("use [Currencies.parse()")
-  Money fromString(String monetaryAmount, String pattern) {
-    return Currencies().parse(monetaryAmount, pattern);
+    return Money.fromIntWithCurrency(moneyData.minorUnits.toInt(), currency);
   }
 
   /* Protocol *****************************************************************/
@@ -236,6 +220,45 @@ class Currencies {
     return _directory.values;
   }
 
+  /// Searches for the matching registered Currency by comparing
+  /// the currency codes in a monetaryAmount.
+  Currency? findByCode(String monetaryAmount) {
+    Currency? match;
+    var longToShort = <Currency>[];
+
+    longToShort = _directory.values.toList();
+    longToShort.sort((lhs, rhs) => lhs.code.length - rhs.code.length);
+
+    for (final currency in longToShort) {
+      if (monetaryAmount.contains(currency.code)) {
+        match = currency;
+        break;
+      }
+    }
+    return match;
+  }
+
+  /// tests a pattern to see if it contains a currency code.
+  bool containsCode(String pattern) {
+    return pattern.contains('C');
+  }
+
+  /// Strips the currency code out of a [monetaryAmount]
+  /// e.g.
+  /// $USD10.00 becomes $10.00
+  String _stripCode(Currency? currency, String monetaryAmountWithCode) {
+    String monetaryAmount;
+    if (currency != null && !containsCode(currency.pattern)) {
+      final code = _extractCode(monetaryAmountWithCode, currency.code.length);
+
+      /// Remove the currency code
+      monetaryAmount = monetaryAmountWithCode.replaceFirst(code, '');
+    } else {
+      monetaryAmount = monetaryAmountWithCode;
+    }
+    return monetaryAmount;
+  }
+
   /// Counts the number of 'C' in a pattern
   int _getCodeLength(String pattern) {
     var count = 0;
@@ -262,29 +285,6 @@ class Currencies {
     }
 
     return monetaryValue.substring(matches.first.start, matches.first.end);
-  }
-
-  /// Searches for the matching registered Currency by comparing
-  /// the currency codes in a monetaryAmount.
-  Currency? findByCode(String monetaryAmount) {
-    Currency? match;
-    var longToShort = <Currency>[];
-
-    longToShort = _directory.values.toList();
-    longToShort.sort((lhs, rhs) => lhs.code.length - rhs.code.length);
-
-    for (final currency in longToShort) {
-      if (monetaryAmount.contains(currency.code)) {
-        match = currency;
-        break;
-      }
-    }
-    return match;
-  }
-
-  /// tests a pattern to see if it contains a currency code.
-  bool containsCode(String pattern) {
-    return pattern.contains('C');
   }
 }
 

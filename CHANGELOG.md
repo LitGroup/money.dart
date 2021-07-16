@@ -1,3 +1,21 @@
+# 3.0.0-beta.2
+Revised the Money constructors to take a currency 'code' rather than a currency.
+
+```
+Money.from(100, CommonCurrency.usd);
+
+becomes
+
+Money.from(100, 'USD');
+
+Old methods are still available as:
+
+Money.fromWithCurrency(100, CommonCurrency.usd);
+
+```
+
+To support this CommonCurrencies are now automatically registered.
+
 # 3.0.0-beta.1
 Breaking changes
 - re-implemented each of the == operator to use 'covariant' rather than taking a dynamic as this moves the type check to a compile time error rather than a runtime error. You can nolonger pass a dynamic to the == operator.

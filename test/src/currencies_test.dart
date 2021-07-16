@@ -40,12 +40,13 @@ void main() {
     });
 
     test('returns null if a currency cannot be found', () {
-      expect(Currencies().find('BTC'), isNull);
+      expect(Currencies().find('DDD'), isNull);
     });
 
     test('returns all currencies correctly', () {
-      expect(Currencies().getRegistered(), [usd, eur]);
-      expect(Currencies().getRegistered().map((c) => c.code), ['USD', 'EUR']);
+      expect(Currencies().getRegistered(), [...CommonCurrencies().asList()]);
+      expect(Currencies().getRegistered().map((c) => c.code),
+          [...CommonCurrencies().asList().map((currency) => currency.code)]);
     });
   });
 }

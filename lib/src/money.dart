@@ -25,6 +25,7 @@
 // import 'package:meta/meta.dart' show sealed, immutable;
 
 import 'package:meta/meta.dart';
+import 'package:money2/src/currencies.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
@@ -80,6 +81,41 @@ class Money implements Comparable<Money> {
 
   /* Instantiation ************************************************************/
 
+  /// ******************************************
+  /// Money.from
+  /// ******************************************
+
+  /// Creates an instance of [Money] from a [num] holding the monetary value.
+  /// Unlike [fromBigInt] the amount is in dollars and cents (not just cents).
+  ///
+  /// This means that you can intiate a Money value from a double or int
+  /// as follows:
+  /// ```dart
+  /// Money buyPrice = Money.from(10);
+  /// print(buyPrice.toString());
+  ///  > $10.00
+  /// Money sellPrice = Money.from(10.50);
+  /// print(sellPrice.toString());
+  ///  > $10.50
+  /// ```
+  /// NOTE: be very careful using doubles to transport money as you are
+  /// guarenteed to get rounding errors!!!  You should use a [String]
+  /// with [Money.parse()].
+  ///
+  /// [amount] - the monetary value.
+  /// [code] - the currency code of the [amount]. This must be either one
+  /// of the [CommonCurrencies] or a currency you have registered via [Currencies.register].
+  ///
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  factory Money.from(num amount, {required String code}) {
+    final currency = Currencies().find(code);
+
+    if (currency == null) throw UnknownCurrencyException(code);
+
+    return Money.fromWithCurrency(amount, currency);
+  }
+
   /// Creates an instance of [Money] from a num holding the monetary value.
   /// Unlike [fromBigInt] the amount is in dollars and cents (not just cents).
   /// This means that you can intiate a Money value from a double or int
@@ -96,9 +132,9 @@ class Money implements Comparable<Money> {
   /// guarenteed to get rounding errors!!!  You should use a [String]
   /// with [Money.parse()].
   ///
-  /// [amounts] - the value of the  [currency]. Unlike fromBigInt this method
-  ///
-  factory Money.from(num amount, Currency currency) {
+  /// [amount] - the monetary value.
+  /// [currency] - the currency code of the [amount].
+  factory Money.fromWithCurrency(num amount, Currency currency) {
     final minorUnits = BigInt.from(
         (amount * currency.precisionFactor.toInt() + (amount >= 0 ? 0.5 : -0.5))
             .toInt());
@@ -106,26 +142,110 @@ class Money implements Comparable<Money> {
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
 
-  /// Creates an instance of [Money].
-  /// [minorUnits] - the minimal minorUnits of the [currency], e.g (cents).
+  /// ******************************************
+  /// Money.fromBigInt
+  /// ******************************************
+
+  /// Creates an instance of [Money] from an amount represented by
+  /// [minorUnits] which is in the minorUnits of the [currency], e.g (cents).
   ///
   /// e.g.
   /// USA dollars with 2 decimal places.
   ///
-  /// final usd = Currency.withCodeAndPrecision('USD', 2);
+  /// final usd = Currency.create('USD', 2);
   ///
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
-  factory Money.fromBigInt(BigInt minorUnits, Currency currency) {
+  /// [code] - the currency code of the [minorUnits]. This must be either one
+  /// of the [CommonCurrencies] or a currency you have
+  /// registered via [Currencies.register].
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  factory Money.fromBigInt(BigInt minorUnits, {required String code}) {
+    final currency = Currencies().find(code);
+    if (currency == null) throw UnknownCurrencyException(code);
+
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
 
-  /// Creates an instance of [Money].
+  /// Creates an instance of [Money] from an amount represented by
+  /// [minorUnits] which is in the minorUnits of the [currency], e.g (cents).
+  ///
+  /// e.g.
+  /// USA dollars with 2 decimal places.
+  ///
+  /// final usd = Currency.create('USD', 2);
+  ///
+  /// 500 cents is $5 USD.
+  /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
+  ///
+  factory Money.fromBigIntWitCurrency(BigInt minorUnits, Currency currency) {
+    return Money._from(MinorUnits.from(minorUnits), currency);
+  }
+
+  /// ******************************************
+  /// Money.fromInt
+  /// ******************************************
+
+  /// Creates an instance of [Money] from an integer.
   ///
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
-  factory Money.fromInt(int minorUnits, Currency currency) {
+  /// [code] - the currency code of the [minorUnits]. This must be either one
+  /// of the [CommonCurrencies] or a currency you have
+  /// registered via [Currencies.register].
+  ///
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  factory Money.fromInt(int minorUnits, {required String code}) {
+    final currency = Currencies().find(code);
+    if (currency == null) throw UnknownCurrencyException(code);
+
     return Money._from(MinorUnits.from(BigInt.from(minorUnits)), currency);
+  }
+
+  /// Creates an instance of [Money] from an integer.
+  ///
+  /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
+  factory Money.fromIntWithCurrency(int minorUnits, Currency currency) {
+    return Money._from(MinorUnits.from(BigInt.from(minorUnits)), currency);
+  }
+
+  /// ******************************************
+  /// Money.parse
+  /// ******************************************
+
+  ///
+  /// Parses the passed [monetaryAmount] and returns a [Money] instance.
+  ///
+  /// The passed [monetaryAmount] must match the given [pattern] or
+  /// if no pattern is supplied the the default pattern of the
+  /// currency indicated by the [code].
+  ///
+  /// Throws an MoneyParseException if the [monetaryAmount] doesn't
+  /// match the pattern.
+  ///
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  ///
+  /// [code] - the currency code of the [minorUnits]. This must be either one
+  /// of the [CommonCurrencies] or a currency you have
+  /// registered via [Currencies.register].
+  ///
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  factory Money.parse(String monetaryAmount,
+      {required String code, String? pattern}) {
+    final currency = Currencies().find(code);
+    if (currency == null) throw UnknownCurrencyException(code);
+
+    pattern ??= currency.pattern;
+
+    final decoder = PatternDecoder(currency, pattern);
+
+    final data = decoder.decode(monetaryAmount);
+
+    return Money._from(MinorUnits.from(data.minorUnits), currency);
   }
 
   ///
@@ -138,7 +258,7 @@ class Money implements Comparable<Money> {
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't
   /// match the pattern.
   ///
-  factory Money.parse(String monetaryAmount, Currency currency,
+  factory Money.parseWithCurrency(String monetaryAmount, Currency currency,
       {String? pattern}) {
     pattern ??= currency.pattern;
 
@@ -148,12 +268,6 @@ class Money implements Comparable<Money> {
 
     return Money._from(MinorUnits.from(data.minorUnits), currency);
   }
-
-  ///
-  @Deprecated("use Money.parse")
-  factory Money.fromString(String monetaryAmount, Currency currency,
-          {String? pattern}) =>
-      Money.parse(monetaryAmount, currency, pattern: pattern);
 
   ///
   /// Converts a [Money] instance into a new [Money] instance with its [Currency]
@@ -299,10 +413,12 @@ class Money implements Comparable<Money> {
   /* Comparison ***************************************************************/
 
   /// Returns `true` if this money value is in the specified [currency].
-  bool isInCurrency(Currency currency) => _currency == currency;
+  bool isInCurrency(String code) => _currency == Currencies().find(code);
+  bool isInCurrencyWithCurrency(Currency currency) => _currency == currency;
 
   /// Returns `true` if this money value is in same currency as [other].
-  bool isInSameCurrencyAs(Money other) => isInCurrency(other._currency);
+  bool isInSameCurrencyAs(Money other) =>
+      isInCurrencyWithCurrency(other._currency);
 
   /// Compares this to [other].
   ///
