@@ -48,5 +48,11 @@ void main() {
       expect(Currencies().getRegistered().map((c) => c.code),
           [...CommonCurrencies().asList().map((currency) => currency.code)]);
     });
+
+    test('operators', () {
+      expect(Currencies()['USD'], equals(Currencies().find('USD')));
+      Currencies()['TEST'] = Currency.create('TEST', 2);
+      expect(Currencies().find('TEST'), isNotNull);
+    });
   });
 }
