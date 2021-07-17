@@ -23,7 +23,6 @@
  */
 
 import 'package:money2/money2.dart';
-import 'package:money2/src/pattern_encoder.dart';
 import 'package:test/test.dart';
 
 void main() {

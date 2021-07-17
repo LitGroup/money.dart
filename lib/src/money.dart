@@ -25,7 +25,7 @@
 // import 'package:meta/meta.dart' show sealed, immutable;
 
 import 'package:meta/meta.dart';
-import 'package:money2/src/currencies.dart';
+import 'currencies.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
