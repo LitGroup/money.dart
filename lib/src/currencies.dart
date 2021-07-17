@@ -205,16 +205,16 @@ class Currencies {
   /// Short hand method to [find] a currency based on its code.
   /// Throw [UnknownCurrencyException] if the [code] hasn't been
   /// registered and is not a [CommonCurrency].
-  /// '''dart
+  /// ```dart
   /// final usd = Currencies()['USD'];
   /// ```
   Currency? operator [](String code) => find(code);
 
   /// Short hand method to [register] a [Currency].
   ///
-  /// '''dart
+  /// ```dart
   /// Currencies['USD'] = Currency.create('USD', ....);
-  /// '''
+  /// ```
   void operator []=(String code, Currency currency) => register(currency);
 
   /// Returns all currently registered [Currency]s
