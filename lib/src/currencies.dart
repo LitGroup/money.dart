@@ -129,11 +129,6 @@ class Currencies {
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
   /// ```
   ///
-  /// or
-  /// ```dart
-  /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
-  ///
   /// See:
   /// [Currencies.register]
   /// [Currencies.registerAll]
