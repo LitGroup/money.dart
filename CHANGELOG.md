@@ -1,3 +1,9 @@
+# 3.0.0-beta.3
+- upgraded to latest meta.
+- moved to lints package.
+- added [] and []= operators to access Currencies.
+- cleaned up package imports.
+
 # 3.0.0-beta.2
 Revised the Money constructors to take a currency 'code' rather than a currency.
 
