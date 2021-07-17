@@ -70,7 +70,6 @@ class Currencies {
   /// See:
   /// [Currencies.parse]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   void register(Currency currency) {
     _self._directory[currency.code] = currency;
@@ -90,7 +89,6 @@ class Currencies {
   /// See:
   /// [Currencies.parse]
   /// [Currencies.register]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   void registerList(Iterable<Currency> currencies) {
     for (final currency in currencies) {
@@ -128,16 +126,9 @@ class Currencies {
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
   /// ```
   ///
-  /// or
-  /// ```dart
-  /// CommonCurrencies().registerAll();
-  /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
-  ///
   /// See:
   /// [Currencies.register]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   Money parse(String monetaryAmountWithCode, {String? pattern}) {
     Currency? currency;
@@ -187,14 +178,12 @@ class Currencies {
   /// Returns the [Currency] that matches [code] or `null` if
   /// no matching [code] is found.
   /// ```dart
-  /// CommonCurrencies().registerAll();
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
   /// ```
   ///
   /// See:
   /// [Currencies.register]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   Currency? find(String code) {
     return _directory[code];
   }
@@ -227,7 +216,6 @@ class Currencies {
   /// see:
   /// [Currency.register]
   /// [Currency.registerList]
-  /// [CommonCurrencies.registeryAll]
   Iterable<Currency> getRegistered() {
     return _directory.values;
   }
