@@ -1,5 +1,4 @@
----
-include: package:lint/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 
 # For lint rules and documentation, see http://dart-lang.github.io/linter/lints.
@@ -10,12 +9,10 @@ linter:
     lines_longer_than_80_chars: false
     camel_case_types: true
     always_declare_return_types: true
+    prefer_relative_imports: true
   
 
 analyzer:
-  enable-experiment:
-    - non-nullable
-  
   strong-mode:
     implicit-casts: false
     implicit-dynamic: false
