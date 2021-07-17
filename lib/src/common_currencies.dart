@@ -1,4 +1,4 @@
-import '../money2.dart';
+import 'currency.dart';
 
 /// Provides a list of the most common currencies.
 /// You can use individual currencies from this list or
