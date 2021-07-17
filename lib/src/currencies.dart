@@ -81,9 +81,6 @@ class Currencies {
   /// [Currencies.parse] method will be able to recognize
   /// the currencey code in String and return the correct type.
   ///
-  /// See [Currencies.register]
-  /// [Currencies.parse]
-  ///
   /// ```dart
   /// Currency usd = Currency.create('USD', 2);
   /// Currency aud = Currency.create('AUD', 2);
@@ -192,7 +189,7 @@ class Currencies {
   /// ```dart
   /// CommonCurrencies().registerAll();
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
+  /// ```
   ///
   /// See:
   /// [Currencies.register]
