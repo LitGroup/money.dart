@@ -81,9 +81,6 @@ class Currencies {
   /// [Currencies.parse] method will be able to recognize
   /// the currencey code in String and return the correct type.
   ///
-  /// See [Currencies.register]
-  /// [Currencies.parse]
-  ///
   /// ```dart
   /// Currency usd = Currency.create('USD', 2);
   /// Currency aud = Currency.create('AUD', 2);
@@ -192,7 +189,7 @@ class Currencies {
   /// ```dart
   /// CommonCurrencies().registerAll();
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
+  /// ```
   ///
   /// See:
   /// [Currencies.register]
@@ -205,16 +202,16 @@ class Currencies {
   /// Short hand method to [find] a currency based on its code.
   /// Throw [UnknownCurrencyException] if the [code] hasn't been
   /// registered and is not a [CommonCurrency].
-  /// '''dart
+  /// ```dart
   /// final usd = Currencies()['USD'];
   /// ```
   Currency? operator [](String code) => find(code);
 
   /// Short hand method to [register] a [Currency].
   ///
-  /// '''dart
+  /// ```dart
   /// Currencies['USD'] = Currency.create('USD', ....);
-  /// '''
+  /// ```
   void operator []=(String code, Currency currency) => register(currency);
 
   /// Returns all currently registered [Currency]s
