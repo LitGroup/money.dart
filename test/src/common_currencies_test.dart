@@ -26,7 +26,7 @@ import 'package:money2/money2.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('A currency', () {
+  group('CommonCurrency', () {
     test('has a code and a precision', () {
       // Check common currencies are registered.
       expect(Currencies().find('USD'), equals(CommonCurrencies().usd));
@@ -37,6 +37,32 @@ void main() {
       // register all common currencies.
       value = Currencies().parse(r'$NZD10.50');
       expect(value, equals(Money.fromInt(1050, code: 'NZD')));
+    });
+
+    test('Test Default Formats', () {
+      expect(Currencies().find('AUD')!.parse(r'$1234.56').toString(),
+          equals(r'$1234.56'));
+
+      expect(Currencies().find('INR')!.parse(r'₹1234,56').toString(),
+          equals(r'₹1234,56'));
+    });
+
+    test('Test 1000 separator', () {
+      expect(
+          Currencies()
+              .find('AUD')!
+              .copyWith(pattern: r'S#,###.##')
+              .parse(r'$1234.56')
+              .toString(),
+          equals(r'$1,234.56'));
+
+      expect(
+          Currencies()
+              .find('AUD')!
+              .copyWith(pattern: r'S#,###.##')
+              .parse(r'$1234.56')
+              .toString(),
+          equals(r'$1,234.56'));
     });
   });
 }
