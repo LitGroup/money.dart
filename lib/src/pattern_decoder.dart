@@ -46,8 +46,12 @@ class PatternDecoder implements MoneyDecoder<String> {
         case 'S':
           final symbol = valueQueue.takeN(currency.symbol.length);
           if (symbol != currency.symbol) {
-            throw MoneyParseException.fromValue(compressedPattern, i,
-                compressedMonetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(
+                compressedPattern: compressedPattern,
+                patternIndex: i,
+                compressedValue: compressedMonetaryValue,
+                monetaryIndex: valueQueue.index,
+                monetaryValue: monetaryValue);
           }
 
           break;
@@ -59,8 +63,12 @@ class PatternDecoder implements MoneyDecoder<String> {
           }
           final char = valueQueue.takeOne();
           if (char != code[codeIndex]) {
-            throw MoneyParseException.fromValue(compressedPattern, i,
-                compressedMonetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(
+                compressedPattern: compressedPattern,
+                patternIndex: i,
+                compressedValue: compressedMonetaryValue,
+                monetaryIndex: valueQueue.index,
+                monetaryValue: monetaryValue);
           }
           codeIndex++;
           break;
@@ -81,8 +89,12 @@ class PatternDecoder implements MoneyDecoder<String> {
         case '.':
           final char = valueQueue.takeOne();
           if (char != currency.decimalSeparator) {
-            throw MoneyParseException.fromValue(compressedPattern, i,
-                compressedMonetaryValue, valueQueue.index);
+            throw MoneyParseException.fromValue(
+                compressedPattern: compressedPattern,
+                patternIndex: i,
+                compressedValue: compressedMonetaryValue,
+                monetaryIndex: valueQueue.index,
+                monetaryValue: monetaryValue);
           }
           seenMajor = true;
           break;

@@ -573,10 +573,14 @@ class MoneyParseException implements Exception {
 
   ///
   factory MoneyParseException.fromValue(
-      String pattern, int i, String monetaryValue, int monetaryIndex) {
+      {required String compressedPattern,
+      required int patternIndex,
+      required String compressedValue,
+      required int monetaryIndex,
+      required String monetaryValue}) {
     final message = '''
-monetaryValue contained an unexpected character '${monetaryValue[monetaryIndex]}' at pos $monetaryIndex 
-        when a match for pattern character ${pattern[i]} at pos $i was expected.''';
+$monetaryValue contained an unexpected character '${compressedValue[monetaryIndex]}' at pos $monetaryIndex 
+        when a match for pattern character ${compressedPattern[patternIndex]} at pos $patternIndex was expected.''';
     return MoneyParseException(message);
   }
 
