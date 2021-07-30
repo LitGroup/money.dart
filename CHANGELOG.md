@@ -1,3 +1,7 @@
+# 3.0.0-beta.5
+Change the common currency format for the inr currencies as it was inconsistent with all other default formats.
+This also sides steps bug #50.
+
 # 3.0.0-beta.4
 - reverted meta to 1.3 as flutter_test isn't compatible with meta 1.7 Fixes: #47
 
