@@ -63,15 +63,14 @@ void main() {
               .parse(r'₹1234.56')
               .toString(),
           equals(r'₹1,234.56'));
- 
-  expect(
+
+      expect(
           Currencies()
               .find('INR')!
               .copyWith(pattern: r'S##,##,###.##')
               .parse(r'₹1234567.89')
               .toString(),
           equals(r'₹12,34,567.89'));
-
     });
   });
 }

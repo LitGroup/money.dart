@@ -1,3 +1,7 @@
+# 3.0.0-beta.6
+- Added additional tests for INR.
+- INR had invertseparator as true which isn't correct for INR. The pattern was also wrong.
+
 # 3.0.0-beta.5
 Change the common currency format for the inr currencies as it was inconsistent with all other default formats.
 This also sides steps bug #50.
