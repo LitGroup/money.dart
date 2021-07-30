@@ -55,8 +55,7 @@ class CommonCurrencies {
   final Currency gbp = Currency.create('GBP', 2, symbol: '£');
 
   /// Indian Rupee
-  final Currency inr = Currency.create('INR', 2,
-      symbol: '₹', invertSeparators: true, pattern: 'S0,00');
+  final Currency inr = Currency.create('INR', 2, symbol: '₹', pattern: 'S0.00');
 
   /// Japanese Yen
   final Currency jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
