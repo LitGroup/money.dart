@@ -563,7 +563,7 @@ class Money implements Comparable<Money> {
   }
 }
 
-/// Exception thrown we a parse fails.
+/// Exception thrown when a parse fails.
 class MoneyParseException implements Exception {
   /// The error message
   String message;

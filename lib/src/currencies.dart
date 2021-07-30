@@ -70,7 +70,6 @@ class Currencies {
   /// See:
   /// [Currencies.parse]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   void register(Currency currency) {
     _self._directory[currency.code] = currency;
@@ -81,9 +80,6 @@ class Currencies {
   /// [Currencies.parse] method will be able to recognize
   /// the currencey code in String and return the correct type.
   ///
-  /// See [Currencies.register]
-  /// [Currencies.parse]
-  ///
   /// ```dart
   /// Currency usd = Currency.create('USD', 2);
   /// Currency aud = Currency.create('AUD', 2);
@@ -93,7 +89,6 @@ class Currencies {
   /// See:
   /// [Currencies.parse]
   /// [Currencies.register]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   void registerList(Iterable<Currency> currencies) {
     for (final currency in currencies) {
@@ -131,16 +126,9 @@ class Currencies {
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
   /// ```
   ///
-  /// or
-  /// ```dart
-  /// CommonCurrencies().registerAll();
-  /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
-  ///
   /// See:
   /// [Currencies.register]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   /// [Currencies.find]
   Money parse(String monetaryAmountWithCode, {String? pattern}) {
     Currency? currency;
@@ -190,14 +178,12 @@ class Currencies {
   /// Returns the [Currency] that matches [code] or `null` if
   /// no matching [code] is found.
   /// ```dart
-  /// CommonCurrencies().registerAll();
   /// final usdAmount = Currencies.parse(r'$USD1500.0');
-  /// ```dart
+  /// ```
   ///
   /// See:
   /// [Currencies.register]
   /// [Currencies.registerAll]
-  /// [CommonCurrencies.registeryAll]
   Currency? find(String code) {
     return _directory[code];
   }
@@ -205,16 +191,16 @@ class Currencies {
   /// Short hand method to [find] a currency based on its code.
   /// Throw [UnknownCurrencyException] if the [code] hasn't been
   /// registered and is not a [CommonCurrency].
-  /// '''dart
+  /// ```dart
   /// final usd = Currencies()['USD'];
   /// ```
   Currency? operator [](String code) => find(code);
 
   /// Short hand method to [register] a [Currency].
   ///
-  /// '''dart
+  /// ```dart
   /// Currencies['USD'] = Currency.create('USD', ....);
-  /// '''
+  /// ```
   void operator []=(String code, Currency currency) => register(currency);
 
   /// Returns all currently registered [Currency]s
@@ -230,7 +216,6 @@ class Currencies {
   /// see:
   /// [Currency.register]
   /// [Currency.registerList]
-  /// [CommonCurrencies.registeryAll]
   Iterable<Currency> getRegistered() {
     return _directory.values;
   }
