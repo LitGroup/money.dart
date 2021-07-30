@@ -43,8 +43,8 @@ void main() {
       expect(Currencies().find('AUD')!.parse(r'$1234.56').toString(),
           equals(r'$1234.56'));
 
-      expect(Currencies().find('INR')!.parse(r'₹1234,56').toString(),
-          equals(r'₹1234,56'));
+      expect(Currencies().find('INR')!.parse(r'₹1234.56').toString(),
+          equals(r'₹1234.56'));
     });
 
     test('Test 1000 separator', () {
@@ -58,11 +58,20 @@ void main() {
 
       expect(
           Currencies()
-              .find('AUD')!
+              .find('INR')!
               .copyWith(pattern: r'S#,###.##')
-              .parse(r'$1234.56')
+              .parse(r'₹1234.56')
               .toString(),
-          equals(r'$1,234.56'));
+          equals(r'₹1,234.56'));
+ 
+  expect(
+          Currencies()
+              .find('INR')!
+              .copyWith(pattern: r'S##,##,###.##')
+              .parse(r'₹1234567.89')
+              .toString(),
+          equals(r'₹12,34,567.89'));
+
     });
   });
 }
