@@ -140,6 +140,11 @@ class Currency {
   @override
   int get hashCode => code.hashCode;
 
+  /// Two currencies are considered equivalent if the
+  /// [code] and [precision] are the same.
+  /// TODO: should we comparing the other fields?
+  /// Are we breaking the semantics of the == operator?
+  /// Maybe we need another method that just compares the code?
   @override
   bool operator ==(covariant Currency other) =>
       identical(this, other) ||
