@@ -1,3 +1,7 @@
+# 2.2.2
+- Fix overflow issue when using high precision currencies - thanks to Bob Jackman for the contribution.
+
+
 # 3.0.0-beta.6
 - Added additional tests for INR.
 - INR had invertseparator as true which isn't correct for INR. The pattern was also wrong.

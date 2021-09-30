@@ -47,13 +47,16 @@ void main() {
             equals(Money.fromInt(-199, code: 'USD')));
       });
 
-      test('from', () {
+      test('high precision', () {
         var currency = Currency.create('BIG', 63);
         Currencies().register(currency);
 
-        expect(Money.from(10.0, code: 'BIG').minorUnits / currency.precisionFactor,
+        expect(
+            Money.from(10.0, code: 'BIG').minorUnits / currency.precisionFactor,
             equals(10.0));
-        expect(Money.from(-10.0, code: 'BIG').minorUnits / currency.precisionFactor,
+        expect(
+            Money.from(-10.0, code: 'BIG').minorUnits /
+                currency.precisionFactor,
             equals(-10.0));
       });
     });
