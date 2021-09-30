@@ -136,8 +136,7 @@ class Money implements Comparable<Money> {
   /// [currency] - the currency code of the [amount].
   factory Money.fromWithCurrency(num amount, Currency currency) {
     final minorUnits = BigInt.from(
-        (amount * currency.precisionFactor.toInt() + (amount >= 0 ? 0.5 : -0.5))
-            .toInt());
+        (amount * currency.precisionFactor.toInt() + (amount >= 0 ? 0.5 : -0.5)));
 
     return Money._from(MinorUnits.from(minorUnits), currency);
   }
