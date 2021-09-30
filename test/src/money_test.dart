@@ -46,6 +46,16 @@ void main() {
         expect(Money.from(-1.99, code: 'USD'),
             equals(Money.fromInt(-199, code: 'USD')));
       });
+
+      test('from', () {
+        var currency = Currency.create('BIG', 63);
+        Currencies().register(currency);
+
+        expect(Money.from(10.0, code: 'BIG').minorUnits / currency.precisionFactor,
+            equals(10.0));
+        expect(Money.from(-10.0, code: 'BIG').minorUnits / currency.precisionFactor,
+            equals(-10.0));
+      });
     });
 
     test('bigint hash value', () {
