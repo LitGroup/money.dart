@@ -227,5 +227,18 @@ void main() {
       expect(Currencies().parse(r'$USD10.25', pattern: 'SCCC0.0'),
           equals(Money.fromInt(1025, code: 'USD')));
     });
+
+    test('example', () {
+      final aud = Currency.create('AUD', 2);
+      final one = aud.parse(r'$1.12345');
+      expect(one.format('#'), equals('1'));
+      expect(one.format('#.#'), equals('1.1'));
+      expect(one.format('#.##'), equals('1.12'));
+      expect(one.format('#.##0'), equals('1.120'));
+
+      expect(one.format('#.0'), equals('1.1'));
+      expect(one.format('#.00'), equals('1.12'));
+      expect(one.format('#.000'), equals('1.120'));
+    });
   });
 }
