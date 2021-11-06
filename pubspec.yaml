@@ -1,5 +1,5 @@
 name: money2
-version: 2.2.2
+version: 2.3.0
 homepage: https://www.noojee.dev
 documentation: https://money2.noojee.dev
 description: Money and Currency classes with fixed precision maths, parsing and formating. (Money.parse('$2010.00') * 10).format('S CC#,##0') -> $ US20,100

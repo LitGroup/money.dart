@@ -122,7 +122,7 @@ class Currency {
   /// format of the [monetaryAmount].
   /// If you don't pass in a [pattern] then the [Currency]s
   /// default pattern is used.
-  /// 
+  ///
   /// If the number of minorUnits in [monetaryAmount]
   /// exceeds the [Currency]s precision then excess digits will be ignored.
   ///
