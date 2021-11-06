@@ -231,6 +231,7 @@ void main() {
     test('example', () {
       final aud = Currency.create('AUD', 2);
       final one = aud.parse(r'$1.12345');
+      expect(one.minorUnits.toInt(), equals(112));
       expect(one.format('#'), equals('1'));
       expect(one.format('#.#'), equals('1.1'));
       expect(one.format('#.##'), equals('1.12'));
