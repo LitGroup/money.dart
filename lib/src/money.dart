@@ -224,6 +224,9 @@ class Money implements Comparable<Money> {
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't
   /// match the pattern.
   ///
+  /// If the number of minorUnits in [monetaryAmount]
+  /// exceeds the [Currency]s precision then excess digits will be ignored.
+  ///
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
   ///
@@ -253,6 +256,9 @@ class Money implements Comparable<Money> {
   /// The passed [monetaryAmount] must match the given [pattern] or
   /// if no pattern is supplied the the default pattern of the
   /// passed [currency].
+  ///
+  /// If the number of minorUnits in [monetaryAmount]
+  /// exceeds the [Currency]s precision then excess digits will be ignored.
   ///
   /// Throws an MoneyParseException if the [monetaryAmount] doesn't
   /// match the pattern.

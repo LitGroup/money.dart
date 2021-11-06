@@ -106,6 +106,9 @@ class Currencies {
   /// that has been registered via [Currencies.register] or
   /// [Currencies.registerList] then this method will return a
   /// [Money] instance of that [Currency] type.
+
+  /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
+  /// does not contain a known currency.
   ///
   /// [monetaryAmount] is the monetary value that you want parsed.
   ///
@@ -113,12 +116,12 @@ class Currencies {
   /// The [pattern] is optional and if not passed then the default pattern
   /// registered with the [Currency] will be used to parse the [monetaryAmount].
   ///
+  /// If the number of minorUnits in [monetaryAmountWithCode]
+  /// exceeds the [Currency]s precision then excess digits will be ignored.
   ///
   /// A [MoneyParseException] is thrown if the [monetaryAmount]
   /// doesn't match the [pattern].
   ///
-  /// An [UnknownCurrencyException] is thrown if the [monetaryAmount]
-  /// does not contain a known currency.
   /// ```dart
   /// Currency usd = Currency.create('USD', 2);
   /// Currency aud = Currency.create('AUD', 2);
