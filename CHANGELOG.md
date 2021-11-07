@@ -1,3 +1,10 @@
+# 2.3.0
+- In response to issue #53 we have modified how excess minorUnits (decimals) are parsed.  Even if the parse pattern doesn't contain decimal places we will still parse decimal places in the Monetary Value. This ensures that we always retain the original parsed values precisions. However the api is currently quiet on how precision is treated when parsing decimals. We have now documented the api to state that we will parse upto the Currencies defined precisions.
+- - This means:
+   if you pass a monetary value with decimal digits in excess of the Currencies precision they will be ignored.
+   If you pass a monetary value with decimal digits in excess of the passed pattern then they will be parsed upto the precision of the Currency.
+- Fixed a bug where parsing a no. of the form '.99' (i.e. no leading major digit) would thrown an exception.
+
 # 2.2.2
 - Fix overflow issue when using high precision currencies - thanks to Bob Jackman for the contribution.
 

@@ -37,6 +37,7 @@ class PatternDecoder implements MoneyDecoder<String> {
 
     var isNegative = false;
     var seenMajor = false;
+    var seenDecimal = false;
 
     final valueQueue =
         ValueQueue(compressedMonetaryValue, currency.thousandSeparator);
@@ -81,20 +82,32 @@ class PatternDecoder implements MoneyDecoder<String> {
             }
           }
           if (seenMajor) {
-            minorUnits = valueQueue.takeMinorDigits(currency);
+            /// we can have a pattern with a decmial but the moneyValue
+            /// contains no minorUnits.
+            if (seenDecimal) {
+              minorUnits = valueQueue.takeMinorDigits(currency);
+            }
           } else {
             majorUnits = valueQueue.takeMajorDigits();
           }
           break;
         case '.':
-          final char = valueQueue.takeOne();
-          if (char != currency.decimalSeparator) {
-            throw MoneyParseException.fromValue(
-                compressedPattern: compressedPattern,
-                patternIndex: i,
-                compressedValue: compressedMonetaryValue,
-                monetaryIndex: valueQueue.index,
-                monetaryValue: monetaryValue);
+
+          /// we can have a pattern with a decimal but the
+          /// value doesn't contain any minor units
+          /// So check if the value queue has digits.
+          if (valueQueue.isNotEmpty &&
+              valueQueue.contains(currency.decimalSeparator)) {
+            final char = valueQueue.takeOne();
+            if (char != currency.decimalSeparator) {
+              throw MoneyParseException.fromValue(
+                  compressedPattern: compressedPattern,
+                  patternIndex: i,
+                  compressedValue: compressedMonetaryValue,
+                  monetaryIndex: valueQueue.index,
+                  monetaryValue: monetaryValue);
+            }
+            seenDecimal = true;
           }
           seenMajor = true;
           break;
@@ -146,12 +159,32 @@ class PatternDecoder implements MoneyDecoder<String> {
     final Match match = matches.first;
 
     if (match.group(1) != null && match.group(2) != null) {
+      // we have minor and major units
       result = pattern.replaceFirst(regEx, '#.#');
     } else if (match.group(1) != null) {
+      // we have only major units
       result = pattern.replaceFirst(regEx, '#');
+
+      /// We force the capture of all minor units by ensuring the
+      /// pattern always contains a .#.
+      final decimalLocation = result.indexOf(decimalSeparator);
+      if (decimalLocation == -1) {
+        final majorLocation = result.indexOf('#');
+        result = result.substring(0, majorLocation + 1) +
+            '.#' +
+            result.substring(majorLocation + 1);
+      } else {
+        // decimal but no minor units
+        // e.g. #.
+        result = result.substring(0, decimalLocation + 1) +
+            '#' +
+            result.substring(decimalLocation + 1);
+      }
     } else if (match.group(2) != null) {
+      // we have only minor units
       result = pattern.replaceFirst(regEx, '.#');
     }
+
     return result;
   }
 
@@ -186,6 +219,9 @@ class ValueQueue {
     return monetaryValue[index];
   }
 
+  bool get isEmpty => index == monetaryValue.length;
+  bool get isNotEmpty => !isEmpty;
+
   /// takes the next character from the value.
   String takeOne() => lastTake = monetaryValue[index++];
 
@@ -204,7 +240,8 @@ class ValueQueue {
   /// return all of the digits from the current position
   /// until we find a non-digit.
   BigInt takeMajorDigits() {
-    return BigInt.parse(_takeDigits());
+    final majorDigits = _takeDigits();
+    return majorDigits.isEmpty ? BigInt.zero : BigInt.parse(majorDigits);
   }
 
   /// true if the passed character is a digit.
@@ -246,11 +283,17 @@ class ValueQueue {
       index++;
     }
 
-    if (digits.isEmpty) {
-      throw MoneyParseException(
-          'Character "${monetaryValue[index]}" at pos $index'
-          ' is not a digit when a digit was expected');
-    }
+    // if (digits.isEmpty) {
+    //   throw MoneyParseException(
+    //       'Character "${monetaryValue[index]}" at pos $index'
+    //       ' is not a digit when a digit was expected');
+    // }
     return digits;
+  }
+
+  /// returns true if the value queue still contains [char]
+  bool contains(String char) {
+    final remaining = monetaryValue.substring(index);
+    return remaining.contains(char);
   }
 }
