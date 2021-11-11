@@ -1,6 +1,6 @@
 import 'package:decimal/decimal.dart';
 
-import '../../test/src/fixed_precision_decoder.dart';
+import 'fixed_precision_decoder.dart';
 
 class FixedPrecision {
   late final Decimal decimal;
