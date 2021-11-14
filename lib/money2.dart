@@ -92,5 +92,6 @@ export 'src/currencies.dart';
 export 'src/currency.dart';
 export 'src/encoders.dart';
 export 'src/money.dart';
-export 'src/money_data.dart';
 export 'src/pattern_encoder.dart' show IllegalPatternException;
+export 'src/exchange_rates/exchange_rate.dart';
+export 'package:fixed/fixed.dart';

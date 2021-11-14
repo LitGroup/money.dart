@@ -171,7 +171,7 @@ class Currencies {
     final decoder = PatternDecoder(currency, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromIntWithCurrency(moneyData.minorUnits.toInt(), currency);
+    return Money.fromFixedWithCurrency(moneyData.amount, currency);
   }
 
   /* Protocol *****************************************************************/

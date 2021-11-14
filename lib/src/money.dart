@@ -24,12 +24,13 @@
 
 // import 'package:meta/meta.dart' show sealed, immutable;
 
+import 'package:fixed/fixed.dart';
 import 'package:meta/meta.dart';
 import 'currencies.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
-import 'minor_units.dart';
+import 'exchange_rates/exchange_rate.dart';
 import 'money_data.dart';
 import 'pattern_decoder.dart';
 import 'pattern_encoder.dart';
@@ -68,7 +69,7 @@ import 'pattern_encoder.dart';
 // @sealed
 @immutable
 class Money implements Comparable<Money> {
-  final MinorUnits _minorUnits;
+  final Fixed amount;
   final Currency _currency;
 
   /// Returns the currency for this monetary amount.
@@ -77,7 +78,7 @@ class Money implements Comparable<Money> {
   /// Returns the underlying minorUnits
   /// for this monetary amount.
   /// e.g. $10.10 is returned as 1010
-  BigInt get minorUnits => _minorUnits.toBigInt();
+  BigInt get minorUnits => amount.minorUnits;
 
   /* Instantiation ************************************************************/
 
@@ -105,15 +106,18 @@ class Money implements Comparable<Money> {
   /// [amount] - the monetary value.
   /// [code] - the currency code of the [amount]. This must be either one
   /// of the [CommonCurrencies] or a currency you have registered via [Currencies.register].
-  ///
+  /// If the [scale] is provided then the [Money] instance is created with the
+  /// supplied [scale]. If [scale] isn't provided then the scale from the [Currency]
+  /// associated with the [code]
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
-  factory Money.from(num amount, {required String code}) {
+  factory Money.from(num amount, {required String code, int? scale}) {
     final currency = Currencies().find(code);
 
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money.fromWithCurrency(amount, currency);
+    return Money.fromWithCurrency(amount, currency,
+        scale: scale ?? currency.scale);
   }
 
   /// Creates an instance of [Money] from a num holding the monetary value.
@@ -134,11 +138,12 @@ class Money implements Comparable<Money> {
   ///
   /// [amount] - the monetary value.
   /// [currency] - the currency code of the [amount].
-  factory Money.fromWithCurrency(num amount, Currency currency) {
-    final minorUnits = BigInt.from((amount * currency.precisionFactor.toInt() +
-        (amount >= 0 ? 0.5 : -0.5)));
+  factory Money.fromWithCurrency(num amount, Currency currency, {int? scale}) {
+    final minorUnits = BigInt.from(
+        (amount * currency.scaleFactor.toInt() + (amount >= 0 ? 0.5 : -0.5)));
 
-    return Money._from(MinorUnits.from(minorUnits), currency);
+    return Money._from(
+        Fixed.fromBigInt(minorUnits, scale: scale ?? currency.scale), currency);
   }
 
   /// ******************************************
@@ -161,11 +166,13 @@ class Money implements Comparable<Money> {
   /// registered via [Currencies.register].
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
-  factory Money.fromBigInt(BigInt minorUnits, {required String code}) {
+  factory Money.fromBigInt(BigInt minorUnits,
+      {required String code, int? scale}) {
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money._from(MinorUnits.from(minorUnits), currency);
+    return Money._from(
+        Fixed.fromBigInt(minorUnits, scale: scale ?? currency.scale), currency);
   }
 
   /// Creates an instance of [Money] from an amount represented by
@@ -179,8 +186,10 @@ class Money implements Comparable<Money> {
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromMinorUnits(BigInt.from(500), usd);
   ///
-  factory Money.fromBigIntWitCurrency(BigInt minorUnits, Currency currency) {
-    return Money._from(MinorUnits.from(minorUnits), currency);
+  factory Money.fromBigIntWitCurrency(BigInt minorUnits, Currency currency,
+      {int? scale}) {
+    return Money._from(
+        Fixed.fromBigInt(minorUnits, scale: scale ?? currency.scale), currency);
   }
 
   /// ******************************************
@@ -196,18 +205,40 @@ class Money implements Comparable<Money> {
   ///
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
-  factory Money.fromInt(int minorUnits, {required String code}) {
+  factory Money.fromInt(int minorUnits, {required String code, int? scale}) {
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money._from(MinorUnits.from(BigInt.from(minorUnits)), currency);
+    return Money._from(
+        Fixed.fromMinorUnits(minorUnits, scale: scale ?? currency.scale),
+        currency);
+  }
+
+  /// Creates a Money from a [Fixed] [amount].
+  /// The [amount] is scaled to match the currency selected via
+  /// [code].
+  /// If [code] isn't a valid currency then an [UnknownCurrencyException]
+  /// is thrown.
+  factory Money.fromFixed(Fixed amount, {required String code, int? scale}) {
+    final currency = Currencies().find(code);
+    if (currency == null) throw UnknownCurrencyException(code);
+
+    return Money._from(Fixed(amount, scale: scale ?? currency.scale), currency);
+  }
+
+  factory Money.fromFixedWithCurrency(Fixed amount, Currency currency,
+      {int? scale}) {
+    return Money._from(Fixed(amount, scale: scale ?? currency.scale), currency);
   }
 
   /// Creates an instance of [Money] from an integer.
   ///
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
-  factory Money.fromIntWithCurrency(int minorUnits, Currency currency) {
-    return Money._from(MinorUnits.from(BigInt.from(minorUnits)), currency);
+  factory Money.fromIntWithCurrency(int minorUnits, Currency currency,
+      {int? scale}) {
+    return Money._from(
+        Fixed.fromMinorUnits(minorUnits, scale: scale ?? currency.scale),
+        currency);
   }
 
   /// ******************************************
@@ -237,7 +268,7 @@ class Money implements Comparable<Money> {
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
   factory Money.parse(String monetaryAmount,
-      {required String code, String? pattern}) {
+      {required String code, String? pattern, int? scale}) {
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
@@ -247,7 +278,8 @@ class Money implements Comparable<Money> {
 
     final data = decoder.decode(monetaryAmount);
 
-    return Money._from(MinorUnits.from(data.minorUnits), currency);
+    return Money._from(
+        Fixed(data.amount, scale: scale ?? currency.scale), currency);
   }
 
   ///
@@ -264,14 +296,15 @@ class Money implements Comparable<Money> {
   /// match the pattern.
   ///
   factory Money.parseWithCurrency(String monetaryAmount, Currency currency,
-      {String? pattern}) {
+      {String? pattern, int? scale}) {
     pattern ??= currency.pattern;
 
     final decoder = PatternDecoder(currency, pattern);
 
     final data = decoder.decode(monetaryAmount);
 
-    return Money._from(MinorUnits.from(data.minorUnits), currency);
+    return Money._from(
+        Fixed(data.amount, scale: scale ?? currency.scale), currency);
   }
 
   ///
@@ -282,13 +315,13 @@ class Money implements Comparable<Money> {
   /// converted currency.
   ///
   /// e.g.
-  /// US$0.68 = AU$1.00 * US$0.68
+  /// US$0.68 = AU$1.00 * US$0.6800
   ///
   /// Where US$0.68 is the exchange rate.
   ///
   ///
   /// In the below example we do the following conversion:
-  /// $10.00 * 0.68 = $6.80
+  /// $10.00 * 0.68 = $6.8000
   ///
   /// To do the above conversion:
   /// ```dart
@@ -298,23 +331,11 @@ class Money implements Comparable<Money> {
   /// Money auToUsExchangeRate = Money.fromInt(68, usd);
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
   /// ```
-  Money exchangeTo(Money exchangeRate) {
-    /// convertedUnits now has this.precision + exchangeRate.precision
-    /// precision.
-    var convertedUnits =
-        _minorUnits.toBigInt() * exchangeRate._minorUnits.toBigInt();
-
-    /// reduce minor digits back to the exchangeRates no. of minor digits
-    final round = convertedUnits.isNegative ? -0.5 : 0.5;
-    convertedUnits =
-        BigInt.from((convertedUnits / _currency.precisionFactor) + round);
-
-    return Money._from(MinorUnits.from(convertedUnits), exchangeRate._currency);
-  }
+  Money exchangeTo(ExchangeRate exchangeRate) => exchangeRate.applyRate(this);
 
   /* Internal constructor *****************************************************/
 
-  const Money._from(this._minorUnits, this._currency);
+  const Money._from(this.amount, this._currency);
 
   ///
   /// Provides a simple means of formating a [Money] instance as a string.
@@ -361,6 +382,14 @@ class Money implements Comparable<Money> {
     return encodedBy(PatternEncoder(this, _currency.pattern));
   }
 
+  /// The component of the number before the decimal point
+  BigInt get integerPart => amount.integerPart;
+
+  /// The component of the number after the decimal point.
+  BigInt get decimalPart => amount.decimalPart;
+
+  int get scale => amount.scale;
+
   /* Encoding/Decoding ********************************************************/
 
   /// Returns a [Money] instance decoded from [value] by [decoder].
@@ -374,7 +403,9 @@ class Money implements Comparable<Money> {
   static Money decoding<T>(T value, MoneyDecoder<T> decoder) {
     final data = decoder.decode(value);
 
-    return Money._from(MinorUnits.from(data.minorUnits), data.currency);
+    return Money._from(
+        Fixed(data.amount, scale: data.currency.scale),
+        data.currency);
   }
 
   /// Encodes a [Money] instance as a <T>.
@@ -387,29 +418,29 @@ class Money implements Comparable<Money> {
   /// <T> - the type you want to encode the [Money]
   /// Returns this money representation encoded by [encoder].
   T encodedBy<T>(MoneyEncoder<T> encoder) {
-    return encoder.encode(MoneyData.from(_minorUnits.toBigInt(), _currency));
+    return encoder.encode(MoneyData.from(amount, _currency));
   }
 
   /* Amount predicates ********************************************************/
 
   /// Returns `true` when amount of this money is zero.
-  bool get isZero => _minorUnits.isZero;
+  bool get isZero => amount.isZero;
 
   /// Returns `true` when amount of this money is negative.
-  bool get isNegative => _minorUnits.isNegative;
+  bool get isNegative => amount.isNegative;
 
   /// Returns `true` when amount of this money is positive (greater than zero).
   ///
   /// **TIP:** If you need to check that this value is zero or greater,
   /// use expression `!money.isNegative` instead.
-  bool get isPositive => _minorUnits.isPositive;
+  bool get isPositive => amount.isPositive;
 
   /* Hash Code ****************************************************************/
 
   @override
   int get hashCode {
     var result = 17;
-    result = 37 * result + _minorUnits.hashCode;
+    result = 37 * result + amount.hashCode;
     result = 37 * result + _currency.hashCode;
 
     return result;
@@ -433,7 +464,7 @@ class Money implements Comparable<Money> {
   int compareTo(Money other) {
     _preconditionThatCurrencyTheSameFor(other);
 
-    return _minorUnits.compareTo(other._minorUnits);
+    return amount.compareTo(other.amount);
   }
 
   /// Returns `true` if [other] is the same amount of money in
@@ -441,7 +472,7 @@ class Money implements Comparable<Money> {
   @override
   bool operator ==(covariant Money other) =>
       identical(this, other) ||
-      (isInSameCurrencyAs(other) && other._minorUnits == _minorUnits);
+      (isInSameCurrencyAs(other) && other.amount == amount);
 
   /// Returns `true` when this money is less than [other].
   ///
@@ -451,7 +482,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _minorUnits < other._minorUnits;
+    return amount < other.amount;
   }
 
   /// Returns `true` when this money is less than or equal to [other].
@@ -462,7 +493,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _minorUnits <= other._minorUnits;
+    return amount <= other.amount;
   }
 
   /// Returns `true` when this money is greater than [other].
@@ -473,7 +504,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _minorUnits > other._minorUnits;
+    return amount > other.amount;
   }
 
   /// Returns `true` when this money is greater than or equal to [other].
@@ -484,7 +515,7 @@ class Money implements Comparable<Money> {
     _preconditionThatCurrencyTheSameFor(
         other, () => 'Cannot compare money in different currencies.');
 
-    return _minorUnits >= other._minorUnits;
+    return amount >= other.amount;
   }
 
   /* Allocation ***************************************************************/
@@ -494,7 +525,7 @@ class Money implements Comparable<Money> {
   /// A value of the parameter [ratios] must be a non-empty list, with
   /// not negative values and sum of these values must be greater than zero.
   List<Money> allocationAccordingTo(List<int> ratios) =>
-      _minorUnits.allocationAccordingTo(ratios).map(_withAmount).toList();
+      amount.allocationAccordingTo(ratios).map(_withAmount).toList();
 
   /// Returns allocation of this money to N `targets`.
   ///
@@ -520,11 +551,11 @@ class Money implements Comparable<Money> {
   Money operator +(Money summand) {
     _preconditionThatCurrencyTheSameFor(summand);
 
-    return _withAmount(_minorUnits + summand._minorUnits);
+    return _withAmount(amount + summand.amount);
   }
 
   /// unary minus operator.
-  Money operator -() => _withAmount(-_minorUnits);
+  Money operator -() => _withAmount(-amount);
 
   /// Subtracts right operand from the left one.
   ///
@@ -533,17 +564,18 @@ class Money implements Comparable<Money> {
   Money operator -(Money subtrahend) {
     _preconditionThatCurrencyTheSameFor(subtrahend);
 
-    return _withAmount(_minorUnits - subtrahend._minorUnits);
+    return _withAmount(amount - subtrahend.amount);
   }
 
   /// Returns [Money] multiplied by [multiplier], using schoolbook rounding.
   Money operator *(num multiplier) {
-    return _withAmount(_minorUnits * multiplier);
+    return _withAmount(
+        Fixed(amount.multiply(multiplier), scale: currency.scale));
   }
 
   /// Returns [Money] divided by [divisor], using schoolbook rounding.
   Money operator /(num divisor) {
-    return _withAmount(_minorUnits / divisor);
+    return _withAmount(Fixed(amount.divide(divisor), scale: currency.scale));
   }
 
   /// Divides this by [divisor] and returns the result as a double
@@ -555,7 +587,7 @@ class Money implements Comparable<Money> {
   /* ************************************************************************ */
 
   /// Creates new instance with the same currency and given [amount].
-  Money _withAmount(MinorUnits amount) => Money._from(amount, _currency);
+  Money _withAmount(Fixed amount) => Money._from(amount, _currency);
 
   void _preconditionThatCurrencyTheSameFor(Money other,
       [String Function()? message]) {

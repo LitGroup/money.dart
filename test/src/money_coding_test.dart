@@ -23,12 +23,13 @@
  */
 
 import 'package:money2/money2.dart';
+import 'package:money2/src/money_data.dart';
 import 'package:test/test.dart';
 
 class _TestEncoder implements MoneyEncoder<String> {
   @override
   String encode(MoneyData data) {
-    return '${data.currency.code} ${data.minorUnits}';
+    return '${data.currency.code} ${data.amount.minorUnits}';
   }
 }
 
@@ -53,8 +54,9 @@ void main() {
     test('has properties: minorUnits, currency', () {
       final minorUnits = BigInt.from(100);
 
-      final data = MoneyData.from(minorUnits, usd);
-      expect(data.minorUnits, equals(minorUnits));
+      final data = MoneyData.from(Fixed.fromBigInt(minorUnits, scale: 2), usd);
+      expect(data.amount.minorUnits, equals(minorUnits));
+      expect(data.amount.scale, equals(2));
       expect(data.currency, equals(usd));
     });
   });
@@ -67,8 +69,8 @@ void main() {
     });
 
     test('decoding', () {
-      final money =
-          Money.decoding(MoneyData.from(BigInt.from(500), usd), _TestDecoder());
+      final money = Money.decoding(
+          MoneyData.from(Fixed.from(500, scale: 2), usd), _TestDecoder());
 
       expect(money, equals(Money.fromIntWithCurrency(500, usd)));
     });

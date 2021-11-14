@@ -133,15 +133,19 @@ void main() {
       final Currency receiveCurrency =
           Currency.create('EXC', 8, pattern: 'S0.00000000');
 
-      final Money exchangeRate =
-          Money.fromIntWithCurrency(212345678, receiveCurrency);
+      final exchangeRate = ExchangeRate.fromMinorUnits(
+        212345678,
+        scale: 8,
+        toCode: receiveCurrency.code,
+      );
       expect('$exchangeRate', equals(r'$2.12345678'));
 
       final Money receiveAmount = sendAmount.exchangeTo(exchangeRate);
       expect('$receiveAmount', equals(r'$2.61185184'));
 
-      final Money exchangeTwoDigits =
-          Money.fromIntWithCurrency(100, Currency.create('DST', 2));
+      final exchangeTwoDigits =
+          ExchangeRate.fromMinorUnits(100, scale: 2, toCode: 'CUR1');
+
       final Money receiveAmountTwoDigits =
           receiveAmount.exchangeTo(exchangeTwoDigits);
       expect('$receiveAmountTwoDigits', equals(r'$2.61'));

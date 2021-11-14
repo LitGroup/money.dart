@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+import 'package:fixed/fixed.dart';
 import 'package:meta/meta.dart' show sealed, immutable;
 import 'currency.dart';
 import 'money.dart';
@@ -32,25 +33,18 @@ import 'money.dart';
 @immutable
 class MoneyData {
   /// Amount of money in the smallest units (e.g. cent for USD).
-  final BigInt minorUnits;
+  final Fixed amount;
 
   /// The currency
   final Currency currency;
 
   /// Creates a MoneyData from [MinorUnits] and a [Currency]
-  const MoneyData.from(this.minorUnits, this.currency);
+  const MoneyData.from(this.amount, this.currency);
 
   /// returns the major currency value of this
   /// MoneyData (e.g. the dollar amount)
-  BigInt getMajorUnits() {
-    return minorUnits ~/ currency.precisionFactor;
-  }
+  BigInt get integerPart => amount.integerPart;
 
   /// returns the minor currency value of this MoneyData (e.g. the cents amount)
-  BigInt getMinorUnits() {
-    if (minorUnits.isNegative) {
-      return -minorUnits % currency.precisionFactor;
-    }
-    return minorUnits % currency.precisionFactor;
-  }
+  BigInt getMinorUnits() => amount.minorUnits;
 }

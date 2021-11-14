@@ -30,11 +30,11 @@ void main() {
     test('has a code and a precision', () {
       var currency = Currency.create('JPY', 0);
       expect(currency.code, equals('JPY'));
-      expect(currency.precision, equals(0));
+      expect(currency.scale, equals(0));
 
       currency = Currency.create('USD', 2);
       expect(currency.code, equals('USD'));
-      expect(currency.precision, equals(2));
+      expect(currency.scale, equals(2));
     });
 
     test('cannot be instantiated with empty code', () {

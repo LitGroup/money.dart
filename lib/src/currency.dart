@@ -56,12 +56,12 @@ class Currency {
   final String symbol;
 
   /// The number of decimals for the currency (zero or more).
-  final int precision;
+  final int scale;
 
   /// The factor of 10 to divide a minor value by to get the intended
   /// currency value.
-  ///  e.g. if [precision] is 2 then this value will be 100.
-  final BigInt precisionFactor;
+  ///  e.g. if [scale] is 2 then this value will be 100.
+  final BigInt scaleFactor;
 
   /// the default pattern used to format and parse monetary amounts for this
   /// currency.
@@ -70,7 +70,7 @@ class Currency {
   /// Most western currencies use the period as the decimal separator
   /// and comma for formating.
   // Some other currencies invert the use of periods and commas.
-  /// If this value is true the invert version is used.
+  /// If this value is true then the use of the period and comma is swapped.
   final bool invertSeparators;
 
   /// The character used for the decimal place
@@ -79,9 +79,9 @@ class Currency {
   /// The character used for the thousands separator.
   final String thousandSeparator;
 
-  /// Creates a currency with a given [code] and [precision].
+  /// Creates a currency with a given [code] and [scale].
   /// * [code] - the currency code e.g. USD
-  /// * [precision] - the number of digits after the decimal place the
+  /// * [scale] - the number of digits after the decimal place the
   /// the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
   /// * [pattern] - the default output format used when you call toString
   /// on a Money instance created with this currency. See [Money.format]
@@ -90,11 +90,11 @@ class Currency {
   /// thousands separator is ','. When this value is true (defaults to false)
   /// then the separators are swapped. This is needed for most non English
   /// speaking [Currency]s.
-  Currency.create(this.code, this.precision,
+  Currency.create(this.code, this.scale,
       {this.symbol = r'$',
       this.pattern = defaultPattern,
       this.invertSeparators = false})
-      : precisionFactor = Currency._calcPrecisionFactor(precision),
+      : scaleFactor = Currency._calcPrecisionFactor(scale),
         decimalSeparator = invertSeparators ? ',' : '.',
         thousandSeparator = invertSeparators ? '.' : ',' {
     if (code.isEmpty) {
@@ -109,7 +109,7 @@ class Currency {
     String? pattern,
     bool? invertSeparators,
   }) {
-    return Currency.create(code ?? this.code, precision ?? this.precision,
+    return Currency.create(code ?? this.code, precision ?? scale,
         symbol: symbol ?? this.symbol,
         pattern: pattern ?? this.pattern,
         invertSeparators: invertSeparators ?? this.invertSeparators);
@@ -137,21 +137,20 @@ class Currency {
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
 
-    return Money.fromIntWithCurrency(moneyData.minorUnits.toInt(), this);
+    return Money.fromFixedWithCurrency(moneyData.amount, this);
   }
 
   @override
   int get hashCode => code.hashCode;
 
   /// Two currencies are considered equivalent if the
-  /// [code] and [precision] are the same.
+  /// [code] and [scale] are the same.
   /// TODO: should we comparing the other fields?
   /// Are we breaking the semantics of the == operator?
   /// Maybe we need another method that just compares the code?
   @override
   bool operator ==(covariant Currency other) =>
-      identical(this, other) ||
-      (code == other.code && precision == other.precision);
+      identical(this, other) || (code == other.code && scale == other.scale);
 
   static BigInt _calcPrecisionFactor(int precision) {
     if (precision.isNegative) {
@@ -165,6 +164,6 @@ class Currency {
   /// a BigInt which represents the two combined values in
   /// [minorUnits].
   BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) {
-    return majorUnits * precisionFactor + minorUnits;
+    return majorUnits * scaleFactor + minorUnits;
   }
 }

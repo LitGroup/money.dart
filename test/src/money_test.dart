@@ -52,11 +52,11 @@ void main() {
         Currencies().register(currency);
 
         expect(
-            Money.from(10.0, code: 'BIG').minorUnits / currency.precisionFactor,
+            Money.from(10.0, code: 'BIG').minorUnits / currency.scaleFactor,
             equals(10.0));
         expect(
             Money.from(-10.0, code: 'BIG').minorUnits /
-                currency.precisionFactor,
+                currency.scaleFactor,
             equals(-10.0));
       });
     });
@@ -238,6 +238,16 @@ void main() {
         final fiftyCents = Money.fromInt(50, code: 'USD');
         final oneDollar = Money.fromInt(100, code: 'USD');
         final twoDollars = Money.fromInt(200, code: 'USD');
+
+        final t1 = twoDollars / 2;
+        expect(t1.integerPart, equals(BigInt.one));
+        expect(t1.decimalPart, equals(BigInt.zero));
+        expect(t1.scale, 2);
+
+        final t2 = -oneDollar;
+        expect(t2.integerPart, equals(BigInt.from(-1)));
+        expect(t2.decimalPart, equals(BigInt.zero));
+        expect(t2.scale, equals(2));
 
         // Test with integral divisor:
         expect(zeroDollars / 2, equals(zeroDollars));

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:fixed/fixed.dart';
+
 import 'currency.dart';
 import 'encoders.dart';
 import 'money.dart';
@@ -125,7 +127,8 @@ class PatternDecoder implements MoneyDecoder<String> {
     }
 
     final value = currency.toMinorUnits(majorUnits, minorUnits);
-    final result = MoneyData.from(value, currency);
+    final result = MoneyData.from(
+        Fixed.fromBigInt(value, scale: currency.scale), currency);
     return result;
   }
 
@@ -250,7 +253,7 @@ class ValueQueue {
   }
 
   /// Takes any remaining digits as minor digits.
-  /// If there are less digits than [Currency.precision]
+  /// If there are less digits than [Currency.scale]
   /// then we pad the number with zeros before we convert it to an it.
   ///
   /// e.g.
@@ -259,13 +262,13 @@ class ValueQueue {
   BigInt takeMinorDigits(Currency currency) {
     var digits = _takeDigits();
 
-    if (digits.length < currency.precision) {
-      digits += '0' * max(0, currency.precision - digits.length);
+    if (digits.length < currency.scale) {
+      digits += '0' * max(0, currency.scale - digits.length);
     }
 
     // we have no way of storing less than a minorDigit is this a problem?
-    if (digits.length > currency.precision) {
-      digits = digits.substring(0, currency.precision);
+    if (digits.length > currency.scale) {
+      digits = digits.substring(0, currency.scale);
     }
 
     return BigInt.parse(digits);
