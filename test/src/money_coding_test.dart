@@ -70,14 +70,14 @@ void main() {
 
     test('decoding', () {
       final money = Money.decoding(
-          MoneyData.from(Fixed.from(500, scale: 2), usd), _TestDecoder());
+          MoneyData.from(Fixed.fromNum(500, scale: 2), usd), _TestDecoder());
 
-      expect(money, equals(Money.fromIntWithCurrency(500, usd)));
+      expect(money, equals(Money.fromIntWithCurrency(50000, usd)));
     });
 
     group('round trip', () {
       test('single-character symbol', () {
-        final m1 = Money.fromWithCurrency(0, CommonCurrencies().aud);
+        final m1 = Money.fromNumWithCurrency(0, CommonCurrencies().aud);
         final m2 =
             Money.parseWithCurrency(m1.toString(), CommonCurrencies().aud);
 

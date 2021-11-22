@@ -35,28 +35,33 @@ void main() {
       });
 
       test('from', () {
-        expect(
-            Money.from(0, code: 'USD'), equals(Money.fromInt(0, code: 'USD')));
-        expect(Money.from(1, code: 'USD'),
+        expect(Money.fromNum(0, code: 'USD'),
+            equals(Money.fromInt(0, code: 'USD')));
+        expect(Money.fromNum(1, code: 'USD'),
             equals(Money.fromInt(100, code: 'USD')));
-        expect(Money.from(-1, code: 'USD'),
+        expect(Money.fromNum(-1, code: 'USD'),
             equals(Money.fromInt(-100, code: 'USD')));
-        expect(Money.from(1.99, code: 'USD'),
+        expect(Money.fromNum(1.99, code: 'USD'),
             equals(Money.fromInt(199, code: 'USD')));
-        expect(Money.from(-1.99, code: 'USD'),
+        expect(Money.fromNum(-1.99, code: 'USD'),
             equals(Money.fromInt(-199, code: 'USD')));
       });
 
       test('high precision', () {
         var currency = Currency.create('BIG', 63);
         Currencies().register(currency);
+        expect(
+            Money.parse(r'$10.0', code: 'BIG').minorUnits /
+                currency.scaleFactor,
+            equals(10.0));
 
         expect(
-            Money.from(10.0, code: 'BIG').minorUnits / currency.scaleFactor,
-            equals(10.0));
-        expect(
-            Money.from(-10.0, code: 'BIG').minorUnits /
+            () =>
+                Money.fromNum(10.0, code: 'BIG').minorUnits /
                 currency.scaleFactor,
+            throwsA(isA<AmountTooLargeException>()));
+        expect(
+            Money.parse(r'$-10.0', code: 'BIG').minorUnits / currency.scaleFactor,
             equals(-10.0));
       });
     });

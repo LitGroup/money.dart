@@ -52,8 +52,8 @@ void main() {
   /// Register a non-common currency (dogecoin)
   Currencies().register(Currency.create('DOGE', 5, symbol: 'Ð'));
   final dodge = Currencies().find('DODGE');
-  Money.fromWithCurrency(0.1123, dodge!);
-  Money.from(0.1123, code: 'DODGE');
+  Money.fromNumWithCurrency(0.1123, dodge!);
+  Money.fromNum(0.1123, code: 'DODGE');
 
   ///
   /// Do some maths

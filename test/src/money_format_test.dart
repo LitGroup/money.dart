@@ -79,7 +79,10 @@ void main() {
     });
     test('Lead zero USD', () {
       expect(
-          Money.fromInt(310, code: 'USD').format('000.##'), equals('003.10'));
+          Money.fromInt(310, code: 'USD').format('000.00'), equals('003.10'));
+      expect(Money.fromInt(310, code: 'USD').format('000.##'), equals('003.1'));
+      expect(
+          Money.fromInt(301, code: 'USD').format('000.00'), equals('003.01'));
       expect(
           Money.fromInt(301, code: 'USD').format('000.##'), equals('003.01'));
       expect(usd10d25.format('000.##'), equals('010.25'));
@@ -96,7 +99,7 @@ void main() {
     test('less than 10 cents USD in minor units', () {
       expect(Money.fromInt(01, code: 'USD').toString(), r'$0.01');
       expect(Money.fromInt(301, code: 'USD').toString(), r'$3.01');
-      expect(Money.from(3.01, code: 'USD').toString(), r'$3.01');
+      expect(Money.fromNum(3.01, code: 'USD').toString(), r'$3.01');
     });
 
     test('Symbol tests', () {
@@ -125,17 +128,22 @@ void main() {
     });
 
     test('Exchange rates', () {
-      final Money sendAmount =
-          Money.fromIntWithCurrency(123, Currency.create('CUR1', 2));
+      final cur1 = Currency.create('CUR1', 2);
+
+      final Money sendAmount = Money.fromIntWithCurrency(123, cur1);
+      Currencies().register(cur1);
 
       expect('$sendAmount', equals(r'$1.23'));
 
       final Currency receiveCurrency =
           Currency.create('EXC', 8, pattern: 'S0.00000000');
 
+      Currencies().register(receiveCurrency);
+
       final exchangeRate = ExchangeRate.fromMinorUnits(
         212345678,
         scale: 8,
+        fromCode: 'CUR1',
         toCode: receiveCurrency.code,
       );
       expect('$exchangeRate', equals(r'$2.12345678'));
@@ -143,8 +151,8 @@ void main() {
       final Money receiveAmount = sendAmount.exchangeTo(exchangeRate);
       expect('$receiveAmount', equals(r'$2.61185184'));
 
-      final exchangeTwoDigits =
-          ExchangeRate.fromMinorUnits(100, scale: 2, toCode: 'CUR1');
+      final exchangeTwoDigits = ExchangeRate.fromMinorUnits(100,
+          scale: 2, fromCode: 'EXC', toCode: 'CUR1');
 
       final Money receiveAmountTwoDigits =
           receiveAmount.exchangeTo(exchangeTwoDigits);

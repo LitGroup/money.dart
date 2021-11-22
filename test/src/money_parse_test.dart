@@ -47,6 +47,8 @@ void main() {
           equals(Money.fromInt(1025, code: 'USD')));
       expect(Money.parse('1,000.25', code: 'USD', pattern: '#.#'),
           equals(Money.fromInt(100025, code: 'USD')));
+
+          
     });
 
     test('Default Currency Pattern with negative number', () {
