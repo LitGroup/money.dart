@@ -7,7 +7,7 @@ This is a Dart implementation of Money and Currency classes
 Money2 is a Dart package providing parsing, formatting and mathematical operations on monetary amounts.
 
 Key features of Money2:
-* simple and expressive formating.
+* simple and expressive formatting.
 * simple parsing of monetary amounts.
 * multi-currency support.
 * intuitive maths operations.
