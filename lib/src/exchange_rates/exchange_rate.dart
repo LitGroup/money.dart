@@ -32,48 +32,118 @@ typedef CurrencyCode = String;
 /// The target [Currency] also has a default scale which is used
 /// if the [toScale] isn't specified.
 class ExchangeRate {
-  ExchangeRate.fromMinorUnits(int rateAsMinorUnits,
-      {required int scale, required CurrencyCode toCode, this.toScale}) {
-    currency = _findCurrency(toCode);
+  /// From Fixed
+  factory ExchangeRate.fromFixed(Fixed exchangeRate,
+          {required CurrencyCode fromCode,
+          required CurrencyCode toCode,
+          int? toScale}) =>
+      ExchangeRate.fromFixedWitCurrency(exchangeRate,
+          fromCurrency: _findCurrency(fromCode),
+          toCurrency: _findCurrency(toCode),
+          toScale: toScale);
 
-    rate = Fixed.fromMinorUnits(rateAsMinorUnits, scale: scale);
-  }
+  ExchangeRate.fromFixedWitCurrency(this.exchangeRate,
+      {required this.fromCurrency, required this.toCurrency, this.toScale});
 
-  ExchangeRate.from(
+  // From MinorUnits
+  factory ExchangeRate.fromMinorUnits(int exchangeRateMinorUnits,
+          {required int scale,
+          required CurrencyCode fromCode,
+          required CurrencyCode toCode,
+          int? toScale}) =>
+      ExchangeRate.fromMinorUnitsWithCurrency(exchangeRateMinorUnits,
+          scale: scale,
+          fromCurrency: _findCurrency(fromCode),
+          toCurrency: _findCurrency(toCode),
+          toScale: toScale);
+
+  ExchangeRate.fromMinorUnitsWithCurrency(int exchangeRateMinorUnits,
+      {required int scale,
+      required this.fromCurrency,
+      required this.toCurrency,
+      this.toScale})
+      : exchangeRate = Fixed.fromInt(exchangeRateMinorUnits, scale: scale);
+
+  /// fromNum
+  factory ExchangeRate.fromNum(
+    num exchangeRate, {
+    required int scale,
+    required CurrencyCode fromCode,
+    required CurrencyCode toCode,
+    int? toScale,
+  }) =>
+      ExchangeRate.fromNumWithCurrency(exchangeRate,
+          scale: scale,
+          fromCurrency: _findCurrency(fromCode),
+          toCurrency: _findCurrency(toCode),
+          toScale: toScale);
+
+  ExchangeRate.fromNumWithCurrency(
     num rateAsNum, {
     required int scale,
-    required CurrencyCode toCode,
+    required this.fromCurrency,
+    required this.toCurrency,
     this.toScale,
   }) {
-    currency = _findCurrency(toCode);
-    rate = Fixed.from(rateAsNum, scale: scale);
+    exchangeRate = Fixed.fromNum(rateAsNum, scale: scale);
   }
 
-  ExchangeRate.fromBigInt(BigInt minorUnits,
-      {required int scale, required CurrencyCode toCode, this.toScale})
-      : rate = Fixed.fromBigInt(minorUnits, scale: scale);
+  /// fromBigInt
+  factory ExchangeRate.fromBigInt(BigInt exchangeRateMinorUnits,
+          {required int scale,
+          required CurrencyCode fromCode,
+          required CurrencyCode toCode,
+          int? toScale}) =>
+      ExchangeRate.fromBigIntWithCurrency(exchangeRateMinorUnits,
+          scale: scale,
+          fromCurrency: _findCurrency(fromCode),
+          toCurrency: _findCurrency(toCode));
 
-  late final Fixed rate;
-  late final Currency currency;
+  ExchangeRate.fromBigIntWithCurrency(
+    BigInt exchangeRateMinorUnits, {
+    required int scale,
+    required this.fromCurrency,
+    required this.toCurrency,
+    this.toScale,
+  }) {
+    exchangeRate = Fixed.fromBigInt(exchangeRateMinorUnits, scale: scale);
+  }
+
+  /// The Currency that we are converting from.
+  late final Currency fromCurrency;
+
+  late final Fixed exchangeRate;
+
+  /// After the exchange rate is applied this
+  /// is the resulting [Currency]
+  late final Currency toCurrency;
+
+  /// The scale of the resulting [Currency]
+  /// If not passed then we use the default scale
+  /// of the [toCurrency]
   final int? toScale;
 
   Money applyRate(Money amount) {
-    //d  return Money.fromFixed(fromAmount.amount * rate, code: to.code);
+    if (fromCurrency != amount.currency) {
+      throw MismatchedCurrencyException(
+          expected: fromCurrency.code, actual: amount.currency.code);
+    }
+
     /// convertedUnits now has this.scale + exchangeRate.scale
     /// scale.
-    var convertedUnits = amount.amount * rate;
-
-    /// reduce minor digits back to the exchangeRates no. of minor digits
-    final round = Fixed.fromMinorUnits(convertedUnits.isNegative ? -5 : 5,
-        scale: convertedUnits.scale + 1);
-
-    convertedUnits = Fixed(
-        //  (convertedUnits / _currency.scaleFactor) + round,
-        convertedUnits + round,
-        scale: convertedUnits.scale);
+    var convertedUnits = amount.amount * exchangeRate;
 
     return Money.fromFixed(convertedUnits,
-        code: currency.code, scale: toScale ?? currency.scale);
+        code: toCurrency.code, scale: toScale ?? toCurrency.scale);
+  }
+
+  Money applyInverseRate(Money fromAmount) {
+    return Money.fromFixedWithCurrency(
+        fromAmount.amount *
+            Fixed.fromNum(1, scale: toScale ?? toCurrency.scale) /
+            exchangeRate,
+        fromCurrency,
+        scale: toScale ?? toCurrency.scale);
   }
 
   static Currency _findCurrency(String code) {
@@ -89,10 +159,10 @@ class ExchangeRate {
   // An exchange rate isn't a money amount but we can use the same format
   // to display it.
   @override
-  String toString() => '${currency.symbol}$rate';
+  String toString() => '${toCurrency.symbol}$exchangeRate';
 
   String format(String pattern) =>
-      Money.fromFixed(rate, code: currency.code).format(pattern);
+      Money.fromFixed(exchangeRate, code: toCurrency.code).format(pattern);
 }
 
 class ExchangeRateMap {
@@ -117,14 +187,14 @@ class ExchangeRateMap {
 
     convertedUnits = Fixed(
         //  (convertedUnits / _currency.scaleFactor) + round,
-        convertedUnits + Fixed.from(round),
+        convertedUnits + Fixed.fromNum(round),
         scale: convertedUnits.scale);
 
     return Money.fromFixed(convertedUnits, code: to.code);
   }
 
   Money applyInverseRate(Money fromAmount) {
-    return Money.fromFixed(fromAmount.amount * Fixed.from(1) / rate,
+    return Money.fromFixed(fromAmount.amount * Fixed.fromNum(1) / rate,
         code: to.code);
   }
 
