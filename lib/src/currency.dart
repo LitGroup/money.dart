@@ -49,36 +49,6 @@ import 'pattern_decoder.dart';
 class Currency {
   static const String defaultPattern = 'S0.00';
 
-  /// The code of the currency (e.g. 'USD').
-  final String code;
-
-  /// The currency symbol (e.g. $)
-  final String symbol;
-
-  /// The number of decimals for the currency (zero or more).
-  final int scale;
-
-  /// The factor of 10 to divide a minor value by to get the intended
-  /// currency value.
-  ///  e.g. if [scale] is 2 then this value will be 100.
-  final BigInt scaleFactor;
-
-  /// the default pattern used to format and parse monetary amounts for this
-  /// currency.
-  final String pattern;
-
-  /// Most western currencies use the period as the decimal separator
-  /// and comma for formating.
-  // Some other currencies invert the use of periods and commas.
-  /// If this value is true then the use of the period and comma is swapped.
-  final bool invertSeparators;
-
-  /// The character used for the decimal place
-  final String decimalSeparator;
-
-  /// The character used for the thousands separator.
-  final String thousandSeparator;
-
   /// Creates a currency with a given [code] and [scale].
   /// * [code] - the currency code e.g. USD
   /// * [scale] - the number of digits after the decimal place the
@@ -139,6 +109,36 @@ class Currency {
 
     return Money.fromFixedWithCurrency(moneyData.amount, this);
   }
+
+  /// The code of the currency (e.g. 'USD').
+  final String code;
+
+  /// The currency symbol (e.g. $)
+  final String symbol;
+
+  /// The number of decimals for the currency (zero or more).
+  final int scale;
+
+  /// The factor of 10 to divide a minor value by to get the intended
+  /// currency value.
+  ///  e.g. if [scale] is 2 then this value will be 100.
+  final BigInt scaleFactor;
+
+  /// the default pattern used to format and parse monetary amounts for this
+  /// currency.
+  final String pattern;
+
+  /// Most western currencies use the period as the decimal separator
+  /// and comma for formating.
+  // Some other currencies invert the use of periods and commas.
+  /// If this value is true then the use of the period and comma is swapped.
+  final bool invertSeparators;
+
+  /// The character used for the decimal place
+  final String decimalSeparator;
+
+  /// The character used for the thousands separator.
+  final String thousandSeparator;
 
   @override
   int get hashCode => code.hashCode;
