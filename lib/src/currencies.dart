@@ -302,6 +302,6 @@ class UnknownCurrencyException implements Exception {
   @override
   String toString() {
     return "An unknown currency '$code' was passed. Register the currency"
-        ' via [Currencies.register()] and try again.';
+        ' via [Currencies().register()] and try again.';
   }
 }

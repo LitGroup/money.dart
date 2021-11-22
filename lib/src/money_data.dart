@@ -45,6 +45,8 @@ class MoneyData {
   /// MoneyData (e.g. the dollar amount)
   BigInt get integerPart => amount.integerPart;
 
+  BigInt get decimalPart => amount.decimalPart;
+
   /// returns the minor currency value of this MoneyData (e.g. the cents amount)
   BigInt getMinorUnits() => amount.minorUnits;
 }

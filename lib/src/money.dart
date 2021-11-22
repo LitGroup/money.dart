@@ -267,6 +267,8 @@ class Money implements Comparable<Money> {
   ///
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
+  ///
+  /// Throws a [MoneyParseException] if the [monetaryAmount] or the [pattern] is invalid.
   factory Money.parse(String monetaryAmount,
       {required String code, String? pattern, int? scale}) {
     final currency = Currencies().find(code);
@@ -280,6 +282,20 @@ class Money implements Comparable<Money> {
 
     return Money._from(
         Fixed(data.amount, scale: scale ?? currency.scale), currency);
+  }
+
+  /// The same as [parse]  but returns null if we are unable to
+  /// [parse] the [monetaryAmount]
+  static Money? tryParse(String monetaryAmount,
+      {required String code, String? pattern, int? scale}) {
+    try {
+      return Money.parse(monetaryAmount,
+          code: code, pattern: pattern, scale: scale);
+    } on UnknownCurrencyException catch (_) {
+      return null;
+    } on MoneyParseException catch (_) {
+      return null;
+    }
   }
 
   ///
@@ -331,7 +347,8 @@ class Money implements Comparable<Money> {
   /// Money auToUsExchangeRate = Money.fromInt(68, usd);
   /// Money usdAmount = invoiceAmount.exchangeTo(auToUsExchangeRate);
   /// ```
-  Money exchangeTo(ExchangeRate exchangeRate) => exchangeRate.applyRate(this);
+  Money exchangeTo(ExchangeRate exchangeRate) =>
+     exchangeRate.applyRate(this);
 
   /* Internal constructor *****************************************************/
 
@@ -404,8 +421,7 @@ class Money implements Comparable<Money> {
     final data = decoder.decode(value);
 
     return Money._from(
-        Fixed(data.amount, scale: data.currency.scale),
-        data.currency);
+        Fixed(data.amount, scale: data.currency.scale), data.currency);
   }
 
   /// Encodes a [Money] instance as a <T>.
@@ -422,6 +438,10 @@ class Money implements Comparable<Money> {
   }
 
   /* Amount predicates ********************************************************/
+
+  /// Returns the sign of this [Fixed] amount.
+  /// Returns 0 for zero, -1 for values less than zero and +1 for values greater than zero.
+  int get sign => amount.sign;
 
   /// Returns `true` when amount of this money is zero.
   bool get isZero => amount.isZero;
