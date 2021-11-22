@@ -34,7 +34,7 @@ class CommonCurrencies {
   /// Nigerian Naira
   final Currency ngn = Currency.create('NGN', 2, symbol: '₦', pattern: 'S0.00');
 
-  /// Ghana Cedis
+  /// Ghana Cedi
   final Currency ghs = Currency.create('GHS', 2, symbol: '₵', pattern: 'S0.00');
 
   /// Bit coin dollar
