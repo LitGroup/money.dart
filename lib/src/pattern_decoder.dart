@@ -7,7 +7,7 @@ import 'encoders.dart';
 import 'money.dart';
 import 'money_data.dart';
 
-/// Decodes a monetary amount based on a pattern.
+/// Parses a String containing a monetary amount based on a pattern.
 class PatternDecoder implements MoneyDecoder<String> {
   /// the currency we discovered
   final Currency currency;
@@ -47,14 +47,18 @@ class PatternDecoder implements MoneyDecoder<String> {
     for (var i = 0; i < compressedPattern.length; i++) {
       switch (compressedPattern[i]) {
         case 'S':
-          final symbol = valueQueue.takeN(currency.symbol.length);
-          if (symbol != currency.symbol) {
-            throw MoneyParseException.fromValue(
-                compressedPattern: compressedPattern,
-                patternIndex: i,
-                compressedValue: compressedMonetaryValue,
-                monetaryIndex: valueQueue.index,
-                monetaryValue: monetaryValue);
+          final possibleSymbol = valueQueue.peekN(currency.symbol.length);
+          if (possibleSymbol == currency.symbol) {
+            valueQueue.takeN(currency.symbol.length);
+          } else {
+            if (!isNumeric(possibleSymbol) && !isCode(possibleSymbol)) {
+              throw MoneyParseException.fromValue(
+                  compressedPattern: compressedPattern,
+                  patternIndex: i,
+                  compressedValue: compressedMonetaryValue,
+                  monetaryIndex: valueQueue.index,
+                  monetaryValue: monetaryValue);
+            }
           }
 
           break;
@@ -64,16 +68,21 @@ class PatternDecoder implements MoneyDecoder<String> {
                 'The pattern has more currency code "C" characters '
                 '($codeIndex + 1) than the length of the passed currency.');
           }
-          final char = valueQueue.takeOne();
+          final char = valueQueue.peek();
+
           if (char != code[codeIndex]) {
-            throw MoneyParseException.fromValue(
-                compressedPattern: compressedPattern,
-                patternIndex: i,
-                compressedValue: compressedMonetaryValue,
-                monetaryIndex: valueQueue.index,
-                monetaryValue: monetaryValue);
+            if (!isNumeric(char) && !isSymbol(char)) {
+              throw MoneyParseException.fromValue(
+                  compressedPattern: compressedPattern,
+                  patternIndex: i,
+                  compressedValue: compressedMonetaryValue,
+                  monetaryIndex: valueQueue.index,
+                  monetaryValue: monetaryValue);
+            }
+          } else {
+            valueQueue.takeOne();
+            codeIndex++;
           }
-          codeIndex++;
           break;
         case '#':
           if (!seenMajor) {
@@ -195,8 +204,38 @@ class PatternDecoder implements MoneyDecoder<String> {
   /// as when we are parsing we ignore whitespace.
   String compressWhitespace(String value) {
     final regEx = RegExp(r'\s+');
-
     return value.replaceAll(regEx, '');
+  }
+
+  bool isCode(String value) {
+    final code = currency.code;
+    for (final char in value.codeUnits) {
+      if (!code.contains(char.toString())) return false;
+    }
+    return true;
+  }
+
+  static const numerics = '0123456789+=,.';
+
+  /// true if the pass value is one of the characters used
+  /// to represent a number as defined by [numerics]
+  bool isNumeric(String value) {
+    for (final char in value.codeUnits) {
+      if (!numerics.codeUnits.contains(char)) return false;
+    }
+    return true;
+  }
+
+  bool isSymbol(String value) {
+    /// If the pattern doesn't contain an S
+    /// then the value may not have a symbol.
+    if (!pattern.contains('S')) {
+      return false;
+    }
+    for (final char in value.codeUnits) {
+      if (!currency.symbol.codeUnits.contains(char)) return false;
+    }
+    return true;
   }
 }
 
@@ -218,8 +257,21 @@ class ValueQueue {
   ///
   ValueQueue(this.monetaryValue, this.thousandsSeparator);
 
+  /// returns the next character from the queue without
+  /// removing it.
   String peek() {
     return monetaryValue[index];
+  }
+
+  /// returns the next [n] character from the queue
+  /// without removing them..
+  String peekN(int n) {
+    var end = index + n;
+
+    end = min(end, monetaryValue.length);
+    final peek = lastTake = monetaryValue.substring(index, end);
+
+    return peek;
   }
 
   bool get isEmpty => index == monetaryValue.length;
@@ -230,10 +282,7 @@ class ValueQueue {
 
   /// takes the next [n] character from the value.
   String takeN(int n) {
-    var end = index + n;
-
-    end = min(end, monetaryValue.length);
-    final take = lastTake = monetaryValue.substring(index, end);
+    final take = peekN(n);
 
     index += n;
 
