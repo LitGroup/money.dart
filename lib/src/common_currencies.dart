@@ -31,6 +31,12 @@ class CommonCurrencies {
   final Currency brl = Currency.create('BRL', 2,
       symbol: r'R$', invertSeparators: true, pattern: 'S0,00');
 
+  /// Nigerian Naira
+  final Currency ngn = Currency.create('NGN', 2, symbol: '₦', pattern: 'S0.00');
+
+  /// Ghana Cedis
+  final Currency ghs = Currency.create('GHS', 2, symbol: '₵', pattern: 'S0.00');
+
   /// Bit coin dollar
   final Currency btc =
       Currency.create('BTC', 8, symbol: '₿', pattern: 'S0.00000000');
@@ -115,7 +121,9 @@ class CommonCurrencies {
       twd,
       usd,
       zar,
-      pln
+      pln,
+      ghs,
+      ngn
     ];
   }
 }
