@@ -292,7 +292,7 @@ class Currencies {
 }
 
 /// Throw if the currency is not registered.
-class UnknownCurrencyException implements Exception {
+class UnknownCurrencyException implements MoneyException {
   /// The code or monetary amount that contained the unknow currency
   String code;
 
@@ -304,4 +304,13 @@ class UnknownCurrencyException implements Exception {
     return "An unknown currency '$code' was passed. Register the currency"
         ' via [Currencies().register()] and try again.';
   }
+}
+
+class MismatchedCurrencyException extends MoneyException {
+  MismatchedCurrencyException(
+      {required String expected, required String actual}) {
+    message =
+        "The exchange rate 'fromCurrency' of $expected is not the same as the Money's currency $actual";
+  }
+  late final String message;
 }
