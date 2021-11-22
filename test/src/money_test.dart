@@ -61,7 +61,8 @@ void main() {
                 currency.scaleFactor,
             throwsA(isA<AmountTooLargeException>()));
         expect(
-            Money.parse(r'$-10.0', code: 'BIG').minorUnits / currency.scaleFactor,
+            Money.parse(r'$-10.0', code: 'BIG').minorUnits /
+                currency.scaleFactor,
             equals(-10.0));
       });
     });

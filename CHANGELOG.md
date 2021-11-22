@@ -1,3 +1,20 @@
+# 3.0.0-beta2
+- added notes on v2-v3 conversion.
+- Changed ExchangePlatform to work with ExchangeRate changes.
+- Added ctors to ExchangeRate for the supported data types. 
+- Added a method to apply an inverse rate.  Added the from Currency so it could be used in the ExchangePlatform and is fully self desribing.
+- Fixed the # char for decimal patterns as it was acting like the 0 char.
+- Made the Code and Symbol patterns optional.
+- renamed Money.from to Money.fromNum. 
+- Added Money.fromIntWithCurrency. 
+- Added Money.fromDecimal 
+- Added operators for Money and Fixed operations.
+- Change all exceptions to be derived from a common MoneyException.
+- Updated bitcoins pattern to make it consistent with other currencies.
+- Added the exchange_platform to the set of exported classes.
+- Added decimalPart to moneyData. 
+- Added sign to Money.
+
 # 2.3.0
 - In response to issue #53 we have modified how excess minorUnits (decimals) are parsed.  Even if the parse pattern doesn't contain decimal places we will still parse decimal places in the Monetary Value. This ensures that we always retain the original parsed values precisions. However the api is currently quiet on how precision is treated when parsing decimals. We have now documented the api to state that we will parse upto the Currencies defined precisions.
 - - This means:

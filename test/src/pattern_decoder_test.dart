@@ -108,8 +108,6 @@ void main() {
         equals(Fixed.parse('12.34')));
     expect(Money.parse(r'$USD12.34', code: 'USD', pattern: 'SCCC#.#').amount,
         equals(Fixed.parse('12.34')));
-
-    
   });
 
   test('Issue #53', () {
