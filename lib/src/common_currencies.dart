@@ -32,7 +32,8 @@ class CommonCurrencies {
       symbol: r'R$', invertSeparators: true, pattern: 'S0,00');
 
   /// Bit coin dollar
-  final Currency btc = Currency.create('BTC', 8, symbol: '₿', pattern: 'S0');
+  final Currency btc =
+      Currency.create('BTC', 8, symbol: '₿', pattern: 'S0.00000000');
 
   /// Canada
   final Currency cad = Currency.create('CAD', 2);
