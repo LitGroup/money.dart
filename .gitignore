@@ -13,3 +13,4 @@ doc/api/
 .history
 .vscode/settings.json
 .failed_tracker
+.idea
