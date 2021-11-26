@@ -110,6 +110,7 @@ class Money implements Comparable<Money> {
         scale: scale ?? currency.scale);
   }
 
+
   /// Creates an instance of [Money] from a num holding the monetary value.
   /// Unlike [fromBigInt] the amount is in dollars and cents (not just cents).
   /// This means that you can intiate a Money value from a double or int
@@ -247,16 +248,16 @@ class Money implements Comparable<Money> {
   /// ******************************************
 
   ///
-  /// Parses the passed [monetaryAmount] and returns a [Money] instance.
+  /// Parses the passed [amount] and returns a [Money] instance.
   ///
-  /// The passed [monetaryAmount] must match the given [pattern] or
+  /// The passed [amount] must match the given [pattern] or
   /// if no pattern is supplied the the default pattern of the
   /// currency indicated by the [code].
   ///
-  /// Throws an MoneyParseException if the [monetaryAmount] doesn't
+  /// Throws an MoneyParseException if the [amount] doesn't
   /// match the pattern.
   ///
-  /// If the number of minorUnits in [monetaryAmount]
+  /// If the number of minorUnits in [amount]
   /// exceeds the [Currency]s precision then excess digits will be ignored.
   ///
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
@@ -269,36 +270,36 @@ class Money implements Comparable<Money> {
   /// Throws an [UnknownCurrencyException] if the [code] is not a registered
   /// code.
   ///
-  /// Throws a [MoneyParseException] if the [monetaryAmount] or the [pattern] is invalid.
-  factory Money.parse(String monetaryAmount,
+  /// Throws a [MoneyParseException] if the [amount] or the [pattern] is invalid.
+  factory Money.parse(String amount,
       {required String code, String? pattern, int? scale}) {
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money.parseWithCurrency(monetaryAmount, currency,
+    return Money.parseWithCurrency(amount, currency,
         scale: scale, pattern: pattern);
   }
 
   ///
-  /// Parses the passed [monetaryAmount] and returns a [Money] instance.
+  /// Parses the passed [amount] and returns a [Money] instance.
   ///
-  /// The passed [monetaryAmount] must match the given [pattern] or
+  /// The passed [amount] must match the given [pattern] or
   /// if no pattern is supplied the the default pattern of the
   /// passed [currency].
   ///
-  /// If the number of minorUnits in [monetaryAmount]
+  /// If the number of minorUnits in [amount]
   /// exceeds the [Currency]s precision then excess digits will be ignored.
   ///
-  /// Throws an MoneyParseException if the [monetaryAmount] doesn't
+  /// Throws an MoneyParseException if the [amount] doesn't
   /// match the pattern.
   ///
-  factory Money.parseWithCurrency(String monetaryAmount, Currency currency,
+  factory Money.parseWithCurrency(String amount, Currency currency,
       {String? pattern, int? scale}) {
     pattern ??= currency.pattern;
 
     final decoder = PatternDecoder(currency, pattern);
 
-    final data = decoder.decode(monetaryAmount);
+    final data = decoder.decode(amount);
 
     return Money._from(
         Fixed(data.amount, scale: scale ?? currency.scale), currency);
