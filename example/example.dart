@@ -50,7 +50,7 @@ void main() {
   // > $AUD2000.00
 
   /// Register a non-common currency (dogecoin)
-  Currencies().register(Currency.create('DOGE', 5, symbol: 'Ð'));
+  Currencies().register(Currency.create('DODGE', 5, symbol: 'Ð'));
   final dodge = Currencies().find('DODGE');
   Money.fromNumWithCurrency(0.1123, dodge!);
   Money.fromNum(0.1123, code: 'DODGE');
@@ -127,7 +127,7 @@ void main() {
   // > US100,345.30
 
   // 100,345.30 EUR
-  final euroCostPrice = Money.fromInt(10034530, code: 'euro');
+  final euroCostPrice = Money.fromInt(10034530, code: 'EUR');
   print(euroCostPrice.format('###.###'));
   // > 100.345
 
