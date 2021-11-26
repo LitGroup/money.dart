@@ -37,6 +37,14 @@ void main() {
       // register all common currencies.
       value = Currencies().parse(r'$NZD10.50');
       expect(value, equals(Money.fromInt(1050, code: 'NZD')));
+      
+      //Test for newly added currency
+      value = Currencies().parse(r'₦NGN4.50');
+      expect(value, equals(Money.fromInt(450, code: 'NGN')));
+
+      value = Currencies().parse(r'₵GHS4.50');
+      expect(value, equals(Money.fromInt(450, code: 'GHS')));
+
     });
 
     test('Test Default Formats', () {
