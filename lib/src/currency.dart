@@ -57,7 +57,7 @@ class Currency {
   /// on a Money instance created with this currency. See [Money.format]
   /// for details on the supported patterns.
   /// * [inverSeparator] - normally the decimal separator is '.' and the
-  /// thousands separator is ','. When this value is true (defaults to false)
+  /// group separator is ','. When this value is true (defaults to false)
   /// then the separators are swapped. This is needed for most non English
   /// speaking [Currency]s.
   Currency.create(this.code, this.scale,
@@ -66,7 +66,7 @@ class Currency {
       this.invertSeparators = false})
       : scaleFactor = Currency._calcPrecisionFactor(scale),
         decimalSeparator = invertSeparators ? ',' : '.',
-        thousandSeparator = invertSeparators ? '.' : ',' {
+        groupSeparator = invertSeparators ? '.' : ',' {
     if (code.isEmpty) {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
@@ -137,8 +137,8 @@ class Currency {
   /// The character used for the decimal place
   final String decimalSeparator;
 
-  /// The character used for the thousands separator.
-  final String thousandSeparator;
+  /// The character used for the group separator.
+  final String groupSeparator;
 
   @override
   int get hashCode => code.hashCode;

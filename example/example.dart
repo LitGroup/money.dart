@@ -96,10 +96,10 @@ void main() {
   ///
   /// Define a currency that has inverted separators.
   /// i.e. The USD uses '.' for the integer/fractional separator
-  ///      and ',' for the thousands separator.
+  ///      and ',' for the group separator.
   ///      -> 1,000.00
   /// The EURO use ',' for the integer/fractional separator
-  ///      and '.' for the thousands separator.
+  ///      and '.' for the group separator.
   ///      -> 1.000,00
   ///
   final euro = Currency.create('EUR', 2,
