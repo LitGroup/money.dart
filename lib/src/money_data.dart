@@ -38,7 +38,7 @@ class MoneyData {
   /// The currency
   final Currency currency;
 
-  /// Creates a MoneyData from [MinorUnits] and a [Currency]
+  /// Creates a MoneyData
   const MoneyData.from(this.amount, this.currency);
 
   /// returns the major currency value of this
