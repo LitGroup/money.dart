@@ -29,8 +29,6 @@ import 'package:meta/meta.dart';
 import 'money.dart';
 import 'pattern_decoder.dart';
 
-// import 'package:meta/meta.dart' show sealed, immutable;
-
 /// Allows you to create a [Currency] which is then used to construct
 /// [Money] instances.
 ///
@@ -50,6 +48,7 @@ class Currency {
   static const String defaultPattern = 'S0.00';
 
   /// Creates a currency with a given [code] and [scale].
+  ///
   /// * [code] - the currency code e.g. USD
   /// * [scale] - the number of digits after the decimal place the
   /// the currency uses. e.g. 2 for USD as it uses cents to 2 digits.
@@ -63,7 +62,10 @@ class Currency {
   Currency.create(this.code, this.scale,
       {this.symbol = r'$',
       this.pattern = defaultPattern,
-      this.invertSeparators = false})
+      this.invertSeparators = false,
+      this.country = '',
+      this.unit = '',
+      this.name = ''})
       : scaleFactor = Currency._calcPrecisionFactor(scale),
         decimalSeparator = invertSeparators ? ',' : '.',
         groupSeparator = invertSeparators ? '.' : ',' {
@@ -72,6 +74,7 @@ class Currency {
     }
   }
 
+  /// Creates a [Currency] from an existing [Currency] with changes.
   Currency copyWith({
     String? code,
     int? precision,
@@ -85,9 +88,9 @@ class Currency {
         invertSeparators: invertSeparators ?? this.invertSeparators);
   }
 
-  ///
   /// Takes a monetary amount encoded as a string
   /// and converts it to a [Money] instance.
+  ///
   /// You can pass in a [pattern] to define the
   /// format of the [monetaryAmount].
   /// If you don't pass in a [pattern] then the [Currency]s
@@ -121,6 +124,7 @@ class Currency {
 
   /// The factor of 10 to divide a minor value by to get the intended
   /// currency value.
+  ///
   ///  e.g. if [scale] is 2 then this value will be 100.
   final BigInt scaleFactor;
 
@@ -128,8 +132,18 @@ class Currency {
   /// currency.
   final String pattern;
 
+  /// Full name of the currency. e.g. Australian Dollar
+  final String country;
+
+  /// The major units of the currency. e.g. 'Dollar'
+  final String unit;
+
+  /// The name of the currency. e.g. Australian Dollar
+  final String name;
+
   /// Most western currencies use the period as the decimal separator
   /// and comma for formating.
+  ///
   // Some other currencies invert the use of periods and commas.
   /// If this value is true then the use of the period and comma is swapped.
   final bool invertSeparators;
@@ -145,7 +159,7 @@ class Currency {
 
   /// Two currencies are considered equivalent if the
   /// [code] and [scale] are the same.
-  /// TODO: should we comparing the other fields?
+  ///
   /// Are we breaking the semantics of the == operator?
   /// Maybe we need another method that just compares the code?
   @override
