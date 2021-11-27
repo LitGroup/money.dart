@@ -1,7 +1,17 @@
+import 'package:decimal/decimal.dart';
 import 'package:money2/money2.dart';
 // ignore_for_file: avoid_print
 
 void main() {
+  /// Create money from Fixed amount
+
+  final fixed = Fixed.fromInt(100, scale: 2);
+  Money.parse('1.23', code: 'AUD');
+
+  Money.fromFixed(fixed, code: 'AUD');
+
+  Money.fromDecimal(Decimal.parse('1.23'), code: 'EUR');
+
   ///
   /// Create a money which stores $USD 10.00
   ///
