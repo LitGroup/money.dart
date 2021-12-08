@@ -58,5 +58,13 @@ void main() {
       final jpyM = twdM.exchangeTo(twdToJpyRate);
       expect(jpyM.toString(), equals('¥3000'));
     });
+
+    test('rub', () {
+      final price = Money.fromNum(28000, code: 'RUB');
+      final rubToUsExchangeRate = ExchangeRate.fromNum(0.013445,
+          scale: 6, fromCode: 'RUB', toCode: 'USD');
+      expect(price.exchangeTo(rubToUsExchangeRate).format('###,###.## S'),
+          equals(r'376.46 $'));
+    });
   });
 }

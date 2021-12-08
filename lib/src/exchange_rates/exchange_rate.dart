@@ -1,7 +1,5 @@
-import 'package:fixed/fixed.dart';
 import '../../money2.dart';
 
-import '../currency.dart';
 
 typedef CurrencyCode = String;
 
