@@ -28,17 +28,14 @@ import 'currency.dart';
 import 'money.dart';
 import 'pattern_decoder.dart';
 
-/// A factory for registering and accessing [Currency] instances.
+/// A factory for registering, parsing and finding [Currency] instances.
 ///
-/// The [Currencies] class is a convenience class that you aren't required to
-/// use.
+/// Money2 registers a default set of[CommonCurrencies] with the [Currencies]
+/// class. This allows you to use the [Currencies.parse] method to parse
+/// a Money amount with a currency code.
 ///
-/// Money2 does not register a default set of currencies instead you need to
-/// explicitly create each currency or register one or more of the [Currency]s
-/// from the list of [CommonCurrencies]s.
-///
-/// The [Currencies] class lets you register each [Currency] for easy
-/// reuse and access from this singleton.
+/// You can add additional [Currency] or replace existing [Currency]s
+/// by calling [Currencies.register].
 ///
 /// You don't need to register [Currency]s, you can just create [Currency]s
 /// and use them as needed.
@@ -58,7 +55,8 @@ class Currencies {
     }
   }
 
-  /// Register a Currency
+  /// Register a Currency.
+  ///
   /// Once a Currency has been registered the
   /// [Currencies.parse] method will be able to recognize
   /// the currencey code in String and return the correct type.
@@ -76,6 +74,7 @@ class Currencies {
   }
 
   /// Register a list of currencies.
+  ///
   /// Once a Currency has been registered the
   /// [Currencies.parse] method will be able to recognize
   /// the currencey code in String and return the correct type.
@@ -99,7 +98,6 @@ class Currencies {
   /// Maps a currency 'code' to its associated currency.
   final Map<String, Currency> _directory = {};
 
-  ///
   /// Parses a string containing a money amount including a currency code.
   ///
   /// Provided the passed currency code is a [CommonCurrency] or belongs to a [Currency]
@@ -161,7 +159,7 @@ class Currencies {
 
     var monetaryAmount = monetaryAmountWithCode;
 
-    if (!containsCode(pattern)) {
+    if (!_containsCode(pattern)) {
       /// The default patterns often don't contain a currency
       /// code so as a conveniencce we strip the code out of the
       /// [monetaryAmount]. I hope this is a good idea :)
@@ -242,7 +240,7 @@ class Currencies {
   }
 
   /// tests a pattern to see if it contains a currency code.
-  bool containsCode(String pattern) {
+  bool _containsCode(String pattern) {
     return pattern.contains('C');
   }
 
@@ -251,7 +249,7 @@ class Currencies {
   /// $USD10.00 becomes $10.00
   String _stripCode(Currency? currency, String monetaryAmountWithCode) {
     String monetaryAmount;
-    if (currency != null && !containsCode(currency.pattern)) {
+    if (currency != null && !_containsCode(currency.pattern)) {
       final code = _extractCode(monetaryAmountWithCode, currency.code.length);
 
       /// Remove the currency code
@@ -291,12 +289,12 @@ class Currencies {
   }
 }
 
-/// Throw if the currency is not registered.
+/// Thrown if the currency is not registered.
 class UnknownCurrencyException implements MoneyException {
   /// The code or monetary amount that contained the unknow currency
   String code;
 
-  ///
+  /// Thrown if the currency is not registered.
   UnknownCurrencyException(this.code);
 
   @override
@@ -306,7 +304,11 @@ class UnknownCurrencyException implements MoneyException {
   }
 }
 
+/// Thrown if an exchange is attempted with a [Money] has a [Currency] which
+/// doesn't match the exchange rate.
 class MismatchedCurrencyException extends MoneyException {
+  /// Thrown if an exchange is attempted with a [Money] has a [Currency] which
+  /// doesn't match the exchange rate.
   MismatchedCurrencyException(
       {required String expected, required String actual}) {
     message =

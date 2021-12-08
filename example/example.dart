@@ -1,7 +1,17 @@
+import 'package:decimal/decimal.dart';
 import 'package:money2/money2.dart';
 // ignore_for_file: avoid_print
 
 void main() {
+  /// Create money from Fixed amount
+
+  final fixed = Fixed.fromInt(100, scale: 2);
+  Money.parse('1.23', code: 'AUD');
+
+  Money.fromFixed(fixed, code: 'AUD');
+
+  Money.fromDecimal(Decimal.parse('1.23'), code: 'EUR');
+
   ///
   /// Create a money which stores $USD 10.00
   ///
@@ -50,7 +60,7 @@ void main() {
   // > $AUD2000.00
 
   /// Register a non-common currency (dogecoin)
-  Currencies().register(Currency.create('DOGE', 5, symbol: 'Ð'));
+  Currencies().register(Currency.create('DODGE', 5, symbol: 'Ð'));
   final dodge = Currencies().find('DODGE');
   Money.fromNumWithCurrency(0.1123, dodge!);
   Money.fromNum(0.1123, code: 'DODGE');
@@ -96,10 +106,10 @@ void main() {
   ///
   /// Define a currency that has inverted separators.
   /// i.e. The USD uses '.' for the integer/fractional separator
-  ///      and ',' for the thousands separator.
+  ///      and ',' for the group separator.
   ///      -> 1,000.00
   /// The EURO use ',' for the integer/fractional separator
-  ///      and '.' for the thousands separator.
+  ///      and '.' for the group separator.
   ///      -> 1.000,00
   ///
   final euro = Currency.create('EUR', 2,
@@ -127,7 +137,7 @@ void main() {
   // > US100,345.30
 
   // 100,345.30 EUR
-  final euroCostPrice = Money.fromInt(10034530, code: 'euro');
+  final euroCostPrice = Money.fromInt(10034530, code: 'EUR');
   print(euroCostPrice.format('###.###'));
   // > 100.345
 

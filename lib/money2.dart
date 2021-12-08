@@ -22,12 +22,9 @@
  * THE SOFTWARE.
  */
 
-/// Money2 is a fork of LitGroup's Money package.
+/// Money2 stores, parses, formats and allows precision mathematical operations
+/// on monetary amounts and their associated currency.
 ///
-/// The aim of this fork is to improve the documentation and introduce a
-/// number of convenience methods to make it easier to work with Money.
-/// This package also changes some of the naming convention to provide
-/// a (hopefully) more intuiative api.
 ///
 /// The [Currency] class allows you to define the key attributes of a currency
 /// such as Symbol, Code, precision and a default format.
@@ -36,6 +33,9 @@
 /// is stored using the currencies 'minor' units (e.g. cents).
 ///
 /// This allows for precise calculations as required when handling money.
+///
+/// The [ExchangePlatform] allows you to set up a table of exchange rates
+/// for converting between currencies.
 ///
 /// Key features of Money2:
 /// * simple and expressive formating.
@@ -53,13 +53,14 @@
 /// * Major Units - the integer component of a currency - e.g. dollars
 /// * code - the currency code. e.g. USD
 /// * symbol - the currency symbol. e.g. '$'. It should be noted that not
-/// every currency has a symbol.
+///    every currency has a symbol.
 /// * pattern - a pattern used to control the display format.
 /// * precision - the number of decimal places assumed when a minor unit value (e.g. cents) is passed.
 /// * decimal separator - the character that separates the fraction part
-/// from the integer of a number e.g. '10.99'. This defaults to '.'
-/// but can be changed to ',' * thousands separator - the character
-/// that is used to format thousands (e.g. 100,000). This can be changed to '.'
+///    from the integer of a number e.g. '10.99'. This defaults to '.'
+///    but can be changed to ','
+/// * group separator - the character that is used to format
+///   groups (e.g. 100,000). This can be changed to '.'
 ///
 ///  Using the [Money] and [Currency] classes is easy.
 ///

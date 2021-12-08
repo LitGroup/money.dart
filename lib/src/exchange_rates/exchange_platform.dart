@@ -1,10 +1,11 @@
 import '../money.dart';
 import 'exchange_rate.dart';
 
-typedef CodePair = String;
+typedef _CodePair = String;
 
 /// The [ExchangePlatform] allows you to register a set of [ExchangeRate]
 /// which you can then use to do currency conversions.
+///
 /// We allow multiple [ExchangePlatform]s to exist to reflect
 /// the fact that there multiple exchanges around the world.
 ///
@@ -14,20 +15,24 @@ typedef CodePair = String;
 /// In the real world you will probably need to provide exchange rates
 /// in both directions as they are rarely the recipricol of each other.
 class ExchangePlatform {
-  final exchangeMap = <CodePair, ExchangeRate>{};
+  final exchangeMap = <_CodePair, ExchangeRate>{};
 
+  /// Register an exchange rate with this platform.
   void register(ExchangeRate exchangeRate) {
     exchangeMap[_generate(
             exchangeRate.fromCurrency.code, exchangeRate.toCurrency.code)] =
         exchangeRate;
   }
 
-  // void registerExchangeRate(ExchangeRateMap exchangeRate) {
-  //   exchangeMap[_generate(exchangeRate.from.code, exchangeRate.to.code)] =
-  //       exchangeRate;
-  // }
-
-  Money exchangeTo(Money from, CurrencyCode to) {
+  /// Converts [from] to the [to] currency using
+  /// a regisetered exhange rate.
+  ///
+  /// If no exchange exists but an inverted rate exists
+  /// then the inverted rate will be used unless [useInversion] is false.
+  ///
+  /// If no exchange can be calculated an [UnknownExchangeRateException]
+  /// will be thrown.
+  Money exchangeTo(Money from, CurrencyCode to, {bool useInversion = true}) {
     var exchangeRate = exchangeMap[_generate(from.currency.code, to)];
 
     if (exchangeRate != null) {
@@ -40,13 +45,13 @@ class ExchangePlatform {
       from.currency.code,
     )];
 
-    if (exchangeRate != null) {
+    if (exchangeRate != null && useInversion) {
       return exchangeRate.applyInverseRate(from);
     }
     throw UnknownExchangeRateException(from.currency.code, to);
   }
 
-  CodePair _generate(CurrencyCode from, CurrencyCode to) {
+  _CodePair _generate(CurrencyCode from, CurrencyCode to) {
     return '$from:$to';
   }
 }
@@ -60,7 +65,7 @@ class UnknownExchangeRateException implements MoneyException {
   /// The to  currency code in the unknown exchange
   CurrencyCode to;
 
-  ///
+  /// Thrown if no exchange rate exists between [from] and [to]
   UnknownExchangeRateException(this.from, this.to);
 
   @override

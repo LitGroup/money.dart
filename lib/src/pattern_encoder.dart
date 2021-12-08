@@ -60,7 +60,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
     // extract the contiguous money components made up of 0 # , and .
     final moneyPattern = _getMoneyPattern(majorPattern);
-    _checkZeros(moneyPattern, data.currency.thousandSeparator, minor: false);
+    _checkZeros(moneyPattern, data.currency.groupSeparator, minor: false);
 
     final integerPart = data.integerPart;
 
@@ -208,13 +208,13 @@ class PatternEncoder implements MoneyEncoder<String> {
   String _formatMinorPart(MoneyData data, String minorPattern) {
     var formatted = '';
 
-    String thousandSeparator = data.currency.thousandSeparator;
+    String groupSeparator = data.currency.groupSeparator;
 
     // extract the contiguous money components made up of 0 # , and .
     var moneyPattern = _getMoneyPattern(minorPattern);
 
     /// check that the zeros are only at the end of the pattern.
-    _checkZeros(moneyPattern, thousandSeparator, minor: true);
+    _checkZeros(moneyPattern, groupSeparator, minor: true);
 
     /// If there are trailing zeros in the pattern then we must ensure
     /// the final string is at least [requiredPatternWidth] or if
@@ -364,9 +364,9 @@ class PatternEncoder implements MoneyEncoder<String> {
     return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), '#');
   }
 
-  /// Check that Zeros are only at the end of the pattern unless we have thousand separators as there
+  /// Check that Zeros are only at the end of the pattern unless we have group separators as there
   /// can then be a zero at the end of each segment.
-  void _checkZeros(final String moneyPattern, final String thousandSeparator,
+  void _checkZeros(final String moneyPattern, final String groupSeparator,
       {required bool minor}) {
     if (!moneyPattern.contains('0')) return;
 
@@ -374,25 +374,25 @@ class PatternEncoder implements MoneyEncoder<String> {
         '''The '0' pattern characters must only be at the end of the pattern for ${minor ? 'Minor' : 'Major'} Units''');
 
     // compress zeros so we have only one which should be at the end,
-    // unless we have thousand separators then we can have several 0s e.g. 0,0,0
+    // unless we have group separators then we can have several 0s e.g. 0,0,0
     final comppressedMoneyPattern = moneyPattern.replaceAll(RegExp('0+'), '0');
 
-    // last char must be a zero (i.e. thousand separater not allowed here)
+    // last char must be a zero (i.e. group separater not allowed here)
     if (comppressedMoneyPattern[comppressedMoneyPattern.length - 1] != '0') {
       throw illegalPattern;
     }
 
     // check that zeros are the trailing character.
-    // if the pattern has thousand separators then there can be more than one 0.
+    // if the pattern has group separators then there can be more than one 0.
     var zerosEnded = false;
     final len = comppressedMoneyPattern.length - 1;
     for (var i = len; i > 0; i--) {
       final char = comppressedMoneyPattern[i];
       var isValid = char == '0';
 
-      // when looking at the intial zeros a thousand separator
+      // when looking at the intial zeros a group separator
       // is consider  valid.
-      if (!zerosEnded) isValid &= char == thousandSeparator;
+      if (!zerosEnded) isValid &= char == groupSeparator;
 
       if (isValid && zerosEnded) {
         throw illegalPattern;

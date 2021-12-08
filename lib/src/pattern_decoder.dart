@@ -42,7 +42,7 @@ class PatternDecoder implements MoneyDecoder<String> {
     var seenDecimal = false;
 
     final valueQueue =
-        ValueQueue(compressedMonetaryValue, currency.thousandSeparator);
+        ValueQueue(compressedMonetaryValue, currency.groupSeparator);
 
     for (var i = 0; i < compressedPattern.length; i++) {
       switch (compressedPattern[i]) {
@@ -146,12 +146,12 @@ class PatternDecoder implements MoneyDecoder<String> {
   ///
   String compressDigits(String pattern) {
     final decimalSeparator = currency.decimalSeparator;
-    final thousandsSeparator = currency.thousandSeparator;
+    final groupSeparator = currency.groupSeparator;
 
     var result = '';
 
     final regExPattern =
-        '([#|0|$thousandsSeparator]+)(?:$decimalSeparator([#|0]+))?';
+        '([#|0|$groupSeparator]+)(?:$decimalSeparator([#|0]+))?';
 
     final regEx = RegExp(regExPattern);
 
@@ -248,14 +248,14 @@ class ValueQueue {
   /// current index into the [monetaryValue]
   int index = 0;
 
-  /// the thousands seperator used in this [monetaryValue]
-  String thousandsSeparator;
+  /// the group seperator used in this [monetaryValue]
+  String groupSeparator;
 
   /// The last character we took from the queue.
   String? lastTake;
 
   ///
-  ValueQueue(this.monetaryValue, this.thousandsSeparator);
+  ValueQueue(this.monetaryValue, this.groupSeparator);
 
   /// returns the next character from the queue without
   /// removing it.
@@ -328,8 +328,8 @@ class ValueQueue {
 
     while (index < monetaryValue.length &&
         (isDigit(monetaryValue[index]) ||
-            monetaryValue[index] == thousandsSeparator)) {
-      if (monetaryValue[index] != thousandsSeparator) {
+            monetaryValue[index] == groupSeparator)) {
+      if (monetaryValue[index] != groupSeparator) {
         digits += monetaryValue[index];
       }
       index++;
