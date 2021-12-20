@@ -1,6 +1,5 @@
 import '../../money2.dart';
 
-
 typedef CurrencyCode = String;
 
 /// When defining an exchange rate we need to specify

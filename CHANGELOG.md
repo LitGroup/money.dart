@@ -1,3 +1,7 @@
+# 3.1.0
+- Merge pull request #59 from niklasbartsch/Upraded-to-the-latest-version-of-fixed
+- Fixes: error when using Money2 in a Flutter Web environment due to the reduced size of an int (53bits vs 64 bits).
+
 # 3.0.0-beta2
 - added notes on v2-v3 conversion.
 - Changed ExchangePlatform to work with ExchangeRate changes.
