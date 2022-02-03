@@ -30,7 +30,7 @@ class ExchangeRate {
           {required CurrencyCode fromCode,
           required CurrencyCode toCode,
           int? toScale}) =>
-      ExchangeRate.fromFixedWitCurrency(exchangeRate,
+      ExchangeRate.fromFixedWithCurrency(exchangeRate,
           fromCurrency: _findCurrency(fromCode),
           toCurrency: _findCurrency(toCode),
           toScale: toScale);
@@ -39,7 +39,7 @@ class ExchangeRate {
   ///
   /// The [toScale] is the scale of the resulting [Money] amount. If not
   /// supplied the scale of the [toCode]'s currency is used.
-  ExchangeRate.fromFixedWitCurrency(this.exchangeRate,
+  ExchangeRate.fromFixedWithCurrency(this.exchangeRate,
       {required this.fromCurrency, required this.toCurrency, this.toScale});
 
   /// Create an exchange rate from an integer holding minor units

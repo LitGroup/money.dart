@@ -163,7 +163,7 @@ class Money implements Comparable<Money> {
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money.fromBigIntWitCurrency(minorUnits, currency, scale: scale);
+    return Money.fromBigIntWithCurrency(minorUnits, currency, scale: scale);
   }
 
   /// Creates an instance of [Money] from an amount represented by
@@ -177,7 +177,7 @@ class Money implements Comparable<Money> {
   /// 500 cents is $5 USD.
   /// let fiveDollars = Money.fromBigIntWitCurrency(BigInt.from(500), usd);
   ///
-  factory Money.fromBigIntWitCurrency(BigInt minorUnits, Currency currency,
+  factory Money.fromBigIntWithCurrency(BigInt minorUnits, Currency currency,
       {int? scale}) {
     return Money._from(
         Fixed.fromBigInt(minorUnits, scale: scale ?? currency.scale), currency);
