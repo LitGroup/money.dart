@@ -1,3 +1,7 @@
+# 3.1.3-beta.1
+- exported money_data.dart in the barrel file.
+- corrected spelling for  Money.fromBigIntWitCurrency and ExchangeRate.fromFixedWitCurrency
+
 # 3.1.2
 Corrected the home page link
 
