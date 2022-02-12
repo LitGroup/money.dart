@@ -175,7 +175,7 @@ class Money implements Comparable<Money> {
   /// final usd = Currency.create('USD', 2);
   ///
   /// 500 cents is $5 USD.
-  /// let fiveDollars = Money.fromBigIntWitCurrency(BigInt.from(500), usd);
+  /// let fiveDollars = Money.fromBigIntWithCurrency(BigInt.from(500), usd);
   ///
   factory Money.fromBigIntWithCurrency(BigInt minorUnits, Currency currency,
       {int? scale}) {
