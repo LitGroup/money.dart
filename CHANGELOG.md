@@ -1,6 +1,7 @@
-# 3.1.3-beta.1
+# 3.1.3
 - exported money_data.dart in the barrel file.
 - corrected spelling for  Money.fromBigIntWitCurrency and ExchangeRate.fromFixedWitCurrency
+- updated links from noojee.dev to onepub.dev
 
 # 3.1.2
 Corrected the home page link
