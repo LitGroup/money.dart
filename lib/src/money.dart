@@ -264,11 +264,19 @@ class Money implements Comparable<Money> {
   /// code.
   factory Money.parse(String amount,
       {required String code, String? pattern, int? scale}) {
+    if (amount.isEmpty) {
+      throw MoneyParseException('Empty amount passed.');
+    }
+
     final currency = Currencies().find(code);
     if (currency == null) throw UnknownCurrencyException(code);
 
-    return Money.parseWithCurrency(amount, currency,
-        scale: scale, pattern: pattern);
+    try {
+      return Money.parseWithCurrency(amount, currency,
+          scale: scale, pattern: pattern);
+    } catch (e) {
+      return throw MoneyParseException(e.toString());
+    }
   }
 
   /// Parses the passed [amount] and returns a [Money] instance.
@@ -289,14 +297,23 @@ class Money implements Comparable<Money> {
   /// [currency] - the currency of the [amount].
   factory Money.parseWithCurrency(String amount, Currency currency,
       {String? pattern, int? scale}) {
-    pattern ??= currency.pattern;
+    if (amount.isEmpty) {
+      throw MoneyParseException('Empty amount passed.');
+    }
 
-    final decoder = PatternDecoder(currency, pattern);
+    try {
+      pattern ??= currency.pattern;
 
-    final data = decoder.decode(amount);
+      final decoder = PatternDecoder(currency, pattern);
 
-    return Money._from(
-        Fixed.copyWith(data.amount, scale: scale ?? currency.scale), currency);
+      final data = decoder.decode(amount);
+
+      return Money._from(
+          Fixed.copyWith(data.amount, scale: scale ?? currency.scale),
+          currency);
+    } catch (e) {
+      return throw MoneyParseException(e.toString());
+    }
   }
 
   /// The monetary amount

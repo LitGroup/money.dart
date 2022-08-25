@@ -1,3 +1,9 @@
+# 3.1.4
+- Fixed: #69 - tryParse throws when Money empty - thanks to LewisHolliday
+- add failing tryParse tests
+- add tests for parse with invalid input
+- Money.parse now correctly throws MoneyParseException when an invalid amount is passed.
+
 # 3.1.3
 - exported money_data.dart in the barrel file.
 - corrected spelling for  Money.fromBigIntWitCurrency and ExchangeRate.fromFixedWitCurrency

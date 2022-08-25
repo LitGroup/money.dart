@@ -224,4 +224,23 @@ void main() {
       expect(one.format('#.000'), equals('1.120'));
     });
   });
+
+  group('MoneyParseException', () {
+    test('parse', () {
+      expect(() => Money.parse(r'', code: 'USD'),
+          throwsA(isA<MoneyParseException>()));
+
+      expect(() => Money.parse(r'abcd', code: 'USD'),
+          throwsA(isA<MoneyParseException>()));
+    });
+
+    test('parseWithCurrency', () {
+      var usd = CommonCurrencies().usd;
+      expect(() => Money.parseWithCurrency(r'', usd),
+          throwsA(isA<MoneyParseException>()));
+
+      expect(() => Money.parseWithCurrency(r'abcd', usd),
+          throwsA(isA<MoneyParseException>()));
+    });
+  });
 }

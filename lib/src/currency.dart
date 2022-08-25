@@ -4,7 +4,6 @@
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
 
-
 import 'dart:math';
 
 import 'package:meta/meta.dart';
@@ -89,6 +88,9 @@ class Currency {
   /// doesn't match the [pattern].
   ///
   Money parse(String monetaryAmount, {String? pattern}) {
+    if (monetaryAmount.isEmpty) {
+      throw MoneyParseException('Empty monetaryAmount passed.');
+    }
     pattern ??= this.pattern;
     final decoder = PatternDecoder(this, pattern);
     final moneyData = decoder.decode(monetaryAmount);
