@@ -347,9 +347,7 @@ class Money implements Comparable<Money> {
     try {
       return Money.parse(monetaryAmount,
           code: code, pattern: pattern, scale: scale);
-    } on UnknownCurrencyException catch (_) {
-      return null;
-    } on MoneyParseException catch (_) {
+    } catch (_) {
       return null;
     }
   }
