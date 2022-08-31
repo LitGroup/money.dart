@@ -128,7 +128,7 @@ void main() {
         fromCode: 'CUR1',
         toCode: receiveCurrency.code,
       );
-      expect('$exchangeRate', equals(r'$2.12345678'));
+      expect('$exchangeRate', equals(r'2.12345678'));
 
       final Money receiveAmount = sendAmount.exchangeTo(exchangeRate);
       expect('$receiveAmount', equals(r'$2.61185184'));

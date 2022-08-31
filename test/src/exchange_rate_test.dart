@@ -28,7 +28,7 @@ void main() {
 
       final twdToUsdRate = ExchangeRate.fromMinorUnits(3,
           scale: 2, fromCode: 'TWD', toCode: 'USD'); // 1 TWD = 0.03 USD
-      expect(twdToUsdRate.toString(), equals(r'$0.03'));
+      expect(twdToUsdRate.toString(), equals(r'0.03'));
 
       final usdM = twdM.exchangeTo(twdToUsdRate);
       expect(usdM.toString(), equals(r'$30.00'));
@@ -41,9 +41,9 @@ void main() {
           fromCode: 'TWD',
           toCode: 'USD',
           toScale: 6); // 1 TWD = 0.035231 USD
-      expect(acurateTwdToUsdRate.toString(), equals(r'$0.035231'));
+      expect(acurateTwdToUsdRate.toString(), equals(r'0.035231'));
 
-      expect(acurateTwdToUsdRate.format('S0.00'), equals(r'$0.04'));
+      expect(acurateTwdToUsdRate.format('0.00'), equals(r'0.03'));
 
       final usdMaccurate = twdM.exchangeTo(acurateTwdToUsdRate);
       expect(usdMaccurate.format('S#.000000'), equals(r'$35.231000'));
@@ -58,7 +58,7 @@ void main() {
 
       final twdToJpyRate = ExchangeRate.fromMinorUnits(3,
           scale: 0, fromCode: 'TWD', toCode: 'JPY');
-      expect(twdToJpyRate.toString(), equals('¥3'));
+      expect(twdToJpyRate.toString(), equals('3'));
 
       final jpyM = twdM.exchangeTo(twdToJpyRate);
       expect(jpyM.toString(), equals('¥3000'));

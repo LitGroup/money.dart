@@ -197,13 +197,10 @@ class ExchangeRate {
     return currency;
   }
 
-  // We use a [Money] to take advantage of its formatting capabiities.
-  // An exchange rate isn't a money amount but we can use the same format
-  // to display it.
+  // Display the exchange rate as a fixed decimal
   @override
-  String toString() => '${toCurrency.symbol}$exchangeRate';
+  String toString() => exchangeRate.toString();
 
   /// Formats the [exchangeRate] using the given [pattern]
-  String format(String pattern) =>
-      Money.fromFixed(exchangeRate, code: toCurrency.code).format(pattern);
+  String format(String pattern) => exchangeRate.format(pattern);
 }
