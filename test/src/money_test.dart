@@ -11,9 +11,9 @@ void main() {
   group('Money', () {
     group('instantiation', () {
       test('fromInt', () {
-        var _ = Money.fromInt(0, code: 'USD');
-        _ = Money.fromInt(1, code: 'USD');
-        _ = Money.fromInt(-1, code: 'USD');
+        Money.fromInt(0, code: 'USD');
+        Money.fromInt(1, code: 'USD');
+        Money.fromInt(-1, code: 'USD');
       });
 
       test('from', () {

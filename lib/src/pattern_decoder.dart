@@ -187,15 +187,13 @@ class PatternDecoder implements MoneyDecoder<String> {
       final decimalLocation = result.indexOf(decimalSeparator);
       if (decimalLocation == -1) {
         final majorLocation = result.indexOf('#');
-        result = result.substring(0, majorLocation + 1) +
-            '.#' +
-            result.substring(majorLocation + 1);
+        result =
+            '${result.substring(0, majorLocation + 1)}.#${result.substring(majorLocation + 1)}';
       } else {
         // decimal but no minor units
         // e.g. #.
-        result = result.substring(0, decimalLocation + 1) +
-            '#' +
-            result.substring(decimalLocation + 1);
+        result =
+            '${result.substring(0, decimalLocation + 1)}#${result.substring(decimalLocation + 1)}';
       }
     } else if (match.group(2) != null) {
       // we have only minor units
