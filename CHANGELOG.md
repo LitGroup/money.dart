@@ -1,3 +1,7 @@
+# 3.2.0
+- updated to the latest version of decimal, fixed and meta.
+- BREAKING: The exchange rate formatter was incorrectly displaying the rate as a currency when its just a scalar value. The currency symbol prefix has now been removed. The exchange rate format was also performing rounding  when the scale was larger than the no. of decimals the format included. This was not the intended behaviour. It now truncates the no. of decimals to reflect the format pattern. If you want rounding then you should scale the no. before formatting it.
+
 # 3.1.4
 - Fixed: #69 - tryParse throws when Money empty - thanks to LewisHolliday
 - add failing tryParse tests
