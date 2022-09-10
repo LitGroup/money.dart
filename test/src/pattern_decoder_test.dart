@@ -62,7 +62,7 @@ void main() {
     final btcDecoder = PatternDecoder(btc, btc.pattern);
 
     /// Missing Symbol
-    var moneyData = btcDecoder.decode('₿1');
+    final moneyData = btcDecoder.decode('₿1');
     expect(moneyData.currency, equals(btc));
     expect(moneyData.integerPart.toInt(), equals(1));
     expect(moneyData.decimalPart.toInt(), equals(0));
@@ -87,19 +87,19 @@ void main() {
     final btcDecoder = PatternDecoder(btc, 'CCCS#.#');
 
     /// Missing Symbol
-    var moneyData = btcDecoder.decode('₿1');
+    final moneyData = btcDecoder.decode('₿1');
     expect(moneyData.currency, equals(btc));
     expect(moneyData.integerPart.toInt(), equals(1));
     expect(moneyData.decimalPart.toInt(), equals(0));
     expect(moneyData.amount.minorUnits.toInt(), equals(100000000));
 
-    var t2 = btcDecoder.decode('BTC₿1');
+    final t2 = btcDecoder.decode('BTC₿1');
     expect(t2.currency, equals(btc));
     expect(t2.integerPart.toInt(), equals(1));
     expect(t2.decimalPart.toInt(), equals(0));
     expect(t2.amount.minorUnits.toInt(), equals(100000000));
 
-    var t3 = btcDecoder.decode('1');
+    final t3 = btcDecoder.decode('1');
     expect(t3.currency, equals(btc));
     expect(t3.integerPart.toInt(), equals(1));
     expect(t3.decimalPart.toInt(), equals(0));

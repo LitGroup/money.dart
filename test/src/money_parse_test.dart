@@ -227,19 +227,19 @@ void main() {
 
   group('MoneyParseException', () {
     test('parse', () {
-      expect(() => Money.parse(r'', code: 'USD'),
+      expect(() => Money.parse('', code: 'USD'),
           throwsA(isA<MoneyParseException>()));
 
-      expect(() => Money.parse(r'abcd', code: 'USD'),
+      expect(() => Money.parse('abcd', code: 'USD'),
           throwsA(isA<MoneyParseException>()));
     });
 
     test('parseWithCurrency', () {
-      var usd = CommonCurrencies().usd;
-      expect(() => Money.parseWithCurrency(r'', usd),
+      final usd = CommonCurrencies().usd;
+      expect(() => Money.parseWithCurrency('', usd),
           throwsA(isA<MoneyParseException>()));
 
-      expect(() => Money.parseWithCurrency(r'abcd', usd),
+      expect(() => Money.parseWithCurrency('abcd', usd),
           throwsA(isA<MoneyParseException>()));
     });
   });

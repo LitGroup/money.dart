@@ -21,10 +21,10 @@ void main() {
       expect(value, equals(Money.fromInt(1050, code: 'NZD')));
 
       //Test for newly added currency
-      value = Currencies().parse(r'₦NGN4.50');
+      value = Currencies().parse('₦NGN4.50');
       expect(value, equals(Money.fromInt(450, code: 'NGN')));
 
-      value = Currencies().parse(r'₵GHS4.50');
+      value = Currencies().parse('₵GHS4.50');
       expect(value, equals(Money.fromInt(450, code: 'GHS')));
     });
 
@@ -32,15 +32,15 @@ void main() {
       expect(Currencies().find('AUD')!.parse(r'$1234.56').toString(),
           equals(r'$1234.56'));
 
-      expect(Currencies().find('INR')!.parse(r'₹1234.56').toString(),
-          equals(r'₹1234.56'));
+      expect(Currencies().find('INR')!.parse('₹1234.56').toString(),
+          equals('₹1234.56'));
     });
 
     test('Test 1000 separator', () {
       expect(
           Currencies()
               .find('AUD')!
-              .copyWith(pattern: r'S#,###.##')
+              .copyWith(pattern: 'S#,###.##')
               .parse(r'$1234.56')
               .toString(),
           equals(r'$1,234.56'));
@@ -48,18 +48,18 @@ void main() {
       expect(
           Currencies()
               .find('INR')!
-              .copyWith(pattern: r'S#,###.##')
-              .parse(r'₹1234.56')
+              .copyWith(pattern: 'S#,###.##')
+              .parse('₹1234.56')
               .toString(),
-          equals(r'₹1,234.56'));
+          equals('₹1,234.56'));
 
       expect(
           Currencies()
               .find('INR')!
-              .copyWith(pattern: r'S##,##,###.##')
-              .parse(r'₹1234567.89')
+              .copyWith(pattern: 'S##,##,###.##')
+              .parse('₹1234567.89')
               .toString(),
-          equals(r'₹12,34,567.89'));
+          equals('₹12,34,567.89'));
     });
   });
 }

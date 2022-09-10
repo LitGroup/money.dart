@@ -64,7 +64,7 @@ void main() {
       expect(
           Money.tryParse('abc', code: 'USD', pattern: 'CCC#.#'), equals(null));
       expect(
-          Money.tryParse(r'>0', code: 'USD', pattern: 'SCCC#.#'), equals(null));
+          Money.tryParse('>0', code: 'USD', pattern: 'SCCC#.#'), equals(null));
       expect(Money.tryParse(' ', code: 'USD', pattern: '#.#'), equals(null));
       expect(Money.tryParse('', code: 'USD', pattern: '#.#'), equals(null));
     });

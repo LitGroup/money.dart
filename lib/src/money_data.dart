@@ -6,22 +6,25 @@
 
 import 'package:fixed/fixed.dart';
 import 'package:meta/meta.dart' show sealed, immutable;
+
 import 'currency.dart';
 import 'money.dart';
+import 'pattern_decoder.dart';
+import 'pattern_encoder.dart';
 
-/// DTO for exchange of data between an instance of [Money] and [MoneyEncoder]
-/// or [MoneyDecoder].
+/// DTO for exchange of data between an instance of [Money] and [PatternEncoder]
+/// or [PatternDecoder].
 @sealed
 @immutable
 class MoneyData {
+  /// Creates a MoneyData
+  const MoneyData.from(this.amount, this.currency);
+
   /// Amount of money in the smallest units (e.g. cent for USD).
   final Fixed amount;
 
   /// The currency
   final Currency currency;
-
-  /// Creates a MoneyData
-  const MoneyData.from(this.amount, this.currency);
 
   /// returns the major currency value of this
   /// MoneyData (e.g. the dollar amount)

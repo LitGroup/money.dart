@@ -112,13 +112,12 @@ void main() {
     test('Exchange rates', () {
       final cur1 = Currency.create('CUR1', 2);
 
-      final Money sendAmount = Money.fromIntWithCurrency(123, cur1);
+      final sendAmount = Money.fromIntWithCurrency(123, cur1);
       Currencies().register(cur1);
 
       expect('$sendAmount', equals(r'$1.23'));
 
-      final Currency receiveCurrency =
-          Currency.create('EXC', 8, pattern: 'S0.00000000');
+      final receiveCurrency = Currency.create('EXC', 8, pattern: 'S0.00000000');
 
       Currencies().register(receiveCurrency);
 
@@ -128,15 +127,15 @@ void main() {
         fromCode: 'CUR1',
         toCode: receiveCurrency.code,
       );
-      expect('$exchangeRate', equals(r'2.12345678'));
+      expect('$exchangeRate', equals('2.12345678'));
 
-      final Money receiveAmount = sendAmount.exchangeTo(exchangeRate);
+      final receiveAmount = sendAmount.exchangeTo(exchangeRate);
       expect('$receiveAmount', equals(r'$2.61185184'));
 
       final exchangeTwoDigits = ExchangeRate.fromMinorUnits(100,
           scale: 2, fromCode: 'EXC', toCode: 'CUR1');
 
-      final Money receiveAmountTwoDigits =
+      final receiveAmountTwoDigits =
           receiveAmount.exchangeTo(exchangeTwoDigits);
       expect('$receiveAmountTwoDigits', equals(r'$2.61'));
     });

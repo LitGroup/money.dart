@@ -15,21 +15,17 @@ import 'currency.dart';
 /// ```
 ///
 class CommonCurrencies {
-  static final CommonCurrencies _self = CommonCurrencies._internal();
-
-  /// Factory constructor.
-  factory CommonCurrencies() {
-    return _self;
-  }
+  /// Factory constructor providing
+  /// access to all common currencies.
+  factory CommonCurrencies() => _self;
 
   CommonCurrencies._internal();
 
+  static final CommonCurrencies _self = CommonCurrencies._internal();
+
   /// Australian Dollar
   final Currency aud = Currency.create('AUD', 2,
-      pattern: 'S0.00',
-      country: 'Australian',
-      unit: 'Dollar',
-      name: 'Australian Dollar');
+      country: 'Australian', unit: 'Dollar', name: 'Australian Dollar');
 
   /// Bitcoin
   final Currency btc = Currency.create('BTC', 8,
@@ -86,19 +82,11 @@ class CommonCurrencies {
 
   /// Ghana Cedi
   final Currency ghs = Currency.create('GHS', 2,
-      symbol: '₵',
-      pattern: 'S0.00',
-      country: 'Ghana',
-      unit: 'Cedi',
-      name: 'Ghana Cedi');
+      symbol: '₵', country: 'Ghana', unit: 'Cedi', name: 'Ghana Cedi');
 
   /// Indian Rupee
   final Currency inr = Currency.create('INR', 2,
-      symbol: '₹',
-      pattern: 'S0.00',
-      country: 'Indian',
-      unit: 'Rupee',
-      name: 'Indian Rupee');
+      symbol: '₹', country: 'Indian', unit: 'Rupee', name: 'Indian Rupee');
 
   /// Japanese Yen
   final Currency jpy = Currency.create('JPY', 0,
@@ -118,11 +106,7 @@ class CommonCurrencies {
 
   /// Nigerian Naira
   final Currency ngn = Currency.create('NGN', 2,
-      symbol: '₦',
-      pattern: 'S0.00',
-      country: 'Nigerian',
-      unit: 'Naira',
-      name: 'Nigerian Naira');
+      symbol: '₦', country: 'Nigerian', unit: 'Naira', name: 'Nigerian Naira');
 
   /// Norwegian Krone
   final Currency nok = Currency.create('NOK', 2,
@@ -182,31 +166,29 @@ class CommonCurrencies {
       name: 'United States Dollar');
 
   /// Return list of all of the common currency.
-  List<Currency> asList() {
-    return [
-      aud,
-      brl,
-      btc,
-      cad,
-      chf,
-      cny,
-      czk,
-      euro,
-      gbp,
-      ghs,
-      inr,
-      jpy,
-      krw,
-      ltry,
-      mxn,
-      ngn,
-      nok,
-      nzd,
-      pln,
-      rub,
-      twd,
-      usd,
-      zar,
-    ];
-  }
+  List<Currency> asList() => [
+        aud,
+        brl,
+        btc,
+        cad,
+        chf,
+        cny,
+        czk,
+        euro,
+        gbp,
+        ghs,
+        inr,
+        jpy,
+        krw,
+        ltry,
+        mxn,
+        ngn,
+        nok,
+        nzd,
+        pln,
+        rub,
+        twd,
+        usd,
+        zar,
+      ];
 }

@@ -37,7 +37,8 @@
 /// * symbol - the currency symbol. e.g. '$'. It should be noted that not
 ///    every currency has a symbol.
 /// * pattern - a pattern used to control the display format.
-/// * precision - the number of decimal places assumed when a minor unit value (e.g. cents) is passed.
+/// * precision - the number of decimal places assumed when a minor unit value
+///      (e.g. cents) is passed.
 /// * decimal separator - the character that separates the fraction part
 ///    from the integer of a number e.g. '10.99'. This defaults to '.'
 ///    but can be changed to ','
@@ -70,13 +71,18 @@
 
 library money2;
 
+import 'src/currency.dart';
+import 'src/exchange_rates/exchange_platform.dart';
+import 'src/money.dart';
+
+export 'package:fixed/fixed.dart';
+
 export 'src/common_currencies.dart';
 export 'src/currencies.dart';
 export 'src/currency.dart';
 export 'src/encoders.dart';
-export 'src/money.dart';
-export 'src/pattern_encoder.dart' show IllegalPatternException;
-export 'src/exchange_rates/exchange_rate.dart';
 export 'src/exchange_rates/exchange_platform.dart';
-export 'package:fixed/fixed.dart';
+export 'src/exchange_rates/exchange_rate.dart';
+export 'src/money.dart';
 export 'src/money_data.dart';
+export 'src/pattern_encoder.dart' show IllegalPatternException;

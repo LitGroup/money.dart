@@ -9,16 +9,13 @@ import 'package:test/test.dart';
 
 class _TestEncoder implements MoneyEncoder<String> {
   @override
-  String encode(MoneyData data) {
-    return '${data.currency.code} ${data.amount.minorUnits}';
-  }
+  String encode(MoneyData data) =>
+      '${data.currency.code} ${data.amount.minorUnits}';
 }
 
 class _TestDecoder implements MoneyDecoder<MoneyData> {
   @override
-  MoneyData decode(MoneyData encoded) {
-    return encoded;
-  }
+  MoneyData decode(MoneyData encoded) => encoded;
 }
 
 class _FailingDecoder implements MoneyDecoder<String> {
@@ -35,7 +32,7 @@ void main() {
     test('has properties: minorUnits, currency', () {
       final minorUnits = BigInt.from(100);
 
-      final data = MoneyData.from(Fixed.fromBigInt(minorUnits, scale: 2), usd);
+      final data = MoneyData.from(Fixed.fromBigInt(minorUnits), usd);
       expect(data.amount.minorUnits, equals(minorUnits));
       expect(data.amount.scale, equals(2));
       expect(data.currency, equals(usd));
