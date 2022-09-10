@@ -1,3 +1,6 @@
+# 3.3.0
+- Upgraded to fixed 2.3.0 and Decimal 2.3.0 to fixed a compilation problem caused by a breaking change in decimal. upgraded to lint_hard. Increased the minimum sdk to 2.14 as reflect decimals minimum sdk.
+
 # 3.2.0
 - updated to the latest version of decimal, fixed and meta.
 - BREAKING: The exchange rate formatter was incorrectly displaying the rate as a currency when its just a scalar value. The currency symbol prefix has now been removed. The exchange rate format was also performing rounding  when the scale was larger than the no. of decimals the format included. This was not the intended behaviour. It now truncates the no. of decimals to reflect the format pattern. If you want rounding then you should scale the no. before formatting it.
