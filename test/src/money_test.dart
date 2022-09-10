@@ -30,7 +30,7 @@ void main() {
       });
 
       test('high precision', () {
-        var currency = Currency.create('BIG', 63);
+        final currency = Currency.create('BIG', 63);
         Currencies().register(currency);
         expect(
             Money.parse(r'$10.0', code: 'BIG').minorUnits /

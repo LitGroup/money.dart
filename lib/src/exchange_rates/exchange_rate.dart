@@ -17,20 +17,18 @@ typedef CurrencyCode = String;
 ///
 /// AUD 1.00 = USD 65c.
 ///
-/// The target currency as defined by [toCode] describes the
-/// currency of the [Money] instance that is returned by the excchange.
-///
-/// The [scale] for the [exchangeRate] should normally be quoted to
-/// a high precision such as 8 decimal places.
-///
-/// The [toScale] is the scale of the resulting [Money] amount. If not
-/// supplied the scale of the [toCode]'s currency is used.
-///
 class ExchangeRate {
-  /// Create an exchnage rate from a [Fixed] decimal.
+  /// Create an exchange rate from a [Fixed] decimal.
+  ///
+  /// The target currency, as defined by [toCode], describes the
+  /// currency of the [Money] instance that is returned by the excchange.
   ///
   /// The [toScale] is the scale of the resulting [Money] amount. If not
   /// supplied the scale of the [toCode]'s currency is used.
+  ///
+  /// The [toScale] for the [exchangeRate] should normally be quoted to
+  /// a high precision such as 8 decimal places.
+  ///
   factory ExchangeRate.fromFixed(Fixed exchangeRate,
           {required CurrencyCode fromCode,
           required CurrencyCode toCode,
@@ -43,7 +41,7 @@ class ExchangeRate {
   /// Create an exchange rate from a [Fixed] decimal.
   ///
   /// The [toScale] is the scale of the resulting [Money] amount. If not
-  /// supplied the scale of the [toCode]'s currency is used.
+  /// supplied the scale of the [toCurrency]'s currency is used.
   ExchangeRate.fromFixedWithCurrency(this.exchangeRate,
       {required this.fromCurrency, required this.toCurrency, this.toScale});
 
@@ -67,7 +65,7 @@ class ExchangeRate {
   /// to the provided [scale].
   ///
   /// The [toScale] is the scale of the resulting [Money] amount. If not
-  /// supplied the scale of the [toCode]'s currency is used.
+  /// supplied the scale of the [toCurrency]'s currency is used.
   ExchangeRate.fromMinorUnitsWithCurrency(int exchangeRateMinorUnits,
       {required int scale,
       required this.fromCurrency,
@@ -99,7 +97,7 @@ class ExchangeRate {
   /// The amount is stored with  [scale] decimal places.
   ///
   /// The [toScale] is the scale of the resulting [Money] amount. If not
-  /// supplied the scale of the [toCode]'s currency is
+  /// supplied the scale of the [toCurrency]'s currency is
   ExchangeRate.fromNumWithCurrency(
     num rateAsNum, {
     required int scale,
@@ -120,8 +118,7 @@ class ExchangeRate {
   factory ExchangeRate.fromBigInt(BigInt exchangeRateMinorUnits,
           {required int scale,
           required CurrencyCode fromCode,
-          required CurrencyCode toCode,
-          int? toScale}) =>
+          required CurrencyCode toCode}) =>
       ExchangeRate.fromBigIntWithCurrency(exchangeRateMinorUnits,
           scale: scale,
           fromCurrency: _findCurrency(fromCode),
@@ -165,7 +162,7 @@ class ExchangeRate {
 
     /// convertedUnits now has this.scale + exchangeRate.scale
     /// scale.
-    var convertedUnits = amount.amount * exchangeRate;
+    final convertedUnits = amount.amount * exchangeRate;
 
     return Money.fromFixed(convertedUnits,
         code: toCurrency.code, scale: toScale ?? toCurrency.scale);

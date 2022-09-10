@@ -8,7 +8,7 @@ import 'dart:math';
 
 import 'package:meta/meta.dart';
 
-import 'money.dart';
+import '../money2.dart';
 import 'pattern_decoder.dart';
 
 /// Allows you to create a [Currency] which is then used to construct
@@ -21,14 +21,12 @@ import 'pattern_decoder.dart';
 ///
 /// Normally you create one global currency instance for each currency type.
 /// If you wish you can register each [Currency] instance with the
-/// [Currencies] class which then is able to provides a global directory of
-/// [Currency] instances.
+/// [CommonCurrencies] class which then is able to provides a global
+/// directory of [Currency] instances.
 ///
 //@sealed
 @immutable
 class Currency {
-  static const String defaultPattern = 'S0.00';
-
   /// Creates a currency with a given [code] and [scale].
   ///
   /// * [code] - the currency code e.g. USD
@@ -37,7 +35,7 @@ class Currency {
   /// * [pattern] - the default output format used when you call toString
   /// on a Money instance created with this currency. See [Money.format]
   /// for details on the supported patterns.
-  /// * [inverSeparator] - normally the decimal separator is '.' and the
+  /// * [invertSeparators] - normally the decimal separator is '.' and the
   /// group separator is ','. When this value is true (defaults to false)
   /// then the separators are swapped. This is needed for most non English
   /// speaking [Currency]s.
@@ -55,6 +53,7 @@ class Currency {
       throw ArgumentError.value(code, 'code', 'Must be a non-empty string.');
     }
   }
+  static const String defaultPattern = 'S0.00';
 
   /// Creates a [Currency] from an existing [Currency] with changes.
   Currency copyWith({
@@ -63,12 +62,11 @@ class Currency {
     String? symbol,
     String? pattern,
     bool? invertSeparators,
-  }) {
-    return Currency.create(code ?? this.code, precision ?? scale,
-        symbol: symbol ?? this.symbol,
-        pattern: pattern ?? this.pattern,
-        invertSeparators: invertSeparators ?? this.invertSeparators);
-  }
+  }) =>
+      Currency.create(code ?? this.code, precision ?? scale,
+          symbol: symbol ?? this.symbol,
+          pattern: pattern ?? this.pattern,
+          invertSeparators: invertSeparators ?? this.invertSeparators);
 
   /// Takes a monetary amount encoded as a string
   /// and converts it to a [Money] instance.
@@ -84,7 +82,7 @@ class Currency {
   /// Currency aud = Currency.create('AUD', 2);
   /// Money audAmount = aud.parse('10.50');
   ///
-  /// A [MoneyParseException] is thrown if the [monetarAmount]
+  /// A [MoneyParseException] is thrown if the [monetaryAmount]
   /// doesn't match the [pattern].
   ///
   Money parse(String monetaryAmount, {String? pattern}) {
@@ -162,7 +160,6 @@ class Currency {
   /// Takes a [majorUnits] and a [minorUnits] and returns
   /// a BigInt which represents the two combined values in
   /// [minorUnits].
-  BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) {
-    return majorUnits * scaleFactor + minorUnits;
-  }
+  BigInt toMinorUnits(BigInt majorUnits, BigInt minorUnits) =>
+      majorUnits * scaleFactor + minorUnits;
 }

@@ -45,8 +45,7 @@ void main() {
 
     test('btc', () {
       /// proposed
-      final Currency t2 =
-          Currency.create('BTC', 8, symbol: '₿', pattern: 'S0.########');
+      final t2 = Currency.create('BTC', 8, symbol: '₿', pattern: 'S0.########');
 
       expect(Money.parseWithCurrency('1', t2).toString(), equals('₿1'));
       expect(Money.parseWithCurrency('1.1', t2).toString(), equals('₿1.1'));

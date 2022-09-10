@@ -13,14 +13,14 @@ import 'money_data.dart';
 
 /// Formats a monetary value to a String based on a pattern.
 class PatternEncoder implements MoneyEncoder<String> {
+  ///
+  PatternEncoder(this.money, this.pattern);
+
   /// the amount to encode
   Money money;
 
   /// the pattern to encode to.
   String pattern;
-
-  ///
-  PatternEncoder(this.money, this.pattern);
 
   @override
   String encode(MoneyData data) {
@@ -213,7 +213,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   String _formatMinorPart(MoneyData data, String minorPattern) {
     var formatted = '';
 
-    String groupSeparator = data.currency.groupSeparator;
+    final groupSeparator = data.currency.groupSeparator;
 
     // extract the contiguous money components made up of 0 # , and .
     var moneyPattern = _getMoneyPattern(minorPattern);
@@ -326,7 +326,8 @@ class PatternEncoder implements MoneyEncoder<String> {
         case '.':
         default:
           throw IllegalPatternException(
-              "The minor part of the pattern contains an unexpected character: '$char'");
+              'The minor part of the pattern contains an unexpected character: '
+              "'$char'");
       }
     }
 
@@ -365,15 +366,16 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   ///
-  String _compressMoney(String majorPattern) {
-    return majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), '#');
-  }
+  String _compressMoney(String majorPattern) =>
+      majorPattern.replaceAll(RegExp(r'[#|0|,|\.]+'), '#');
 
-  /// Check that Zeros are only at the end of the pattern unless we have group separators as there
-  /// can then be a zero at the end of each segment.
+  /// Check that Zeros are only at the end of the pattern unless we have group
+  /// separators as there can then be a zero at the end of each segment.
   void _checkZeros(final String moneyPattern, final String groupSeparator,
       {required bool minor}) {
-    if (!moneyPattern.contains('0')) return;
+    if (!moneyPattern.contains('0')) {
+      return;
+    }
 
     final illegalPattern = IllegalPatternException(
         '''The '0' pattern characters must only be at the end of the pattern for ${minor ? 'Minor' : 'Major'} Units''');
@@ -397,12 +399,16 @@ class PatternEncoder implements MoneyEncoder<String> {
 
       // when looking at the intial zeros a group separator
       // is consider  valid.
-      if (!zerosEnded) isValid &= char == groupSeparator;
+      if (!zerosEnded) {
+        isValid &= char == groupSeparator;
+      }
 
       if (isValid && zerosEnded) {
         throw illegalPattern;
       }
-      if (!isValid) zerosEnded = true;
+      if (!isValid) {
+        zerosEnded = true;
+      }
     }
   }
 
@@ -427,9 +433,9 @@ class PatternEncoder implements MoneyEncoder<String> {
     if (formattedMinorUnits.length <= requiredPatternWidth) {
       return formattedMinorUnits;
     }
-    int toTrim = 0;
+    var toTrim = 0;
 
-    for (int i = formattedMinorUnits.length - 1;
+    for (var i = formattedMinorUnits.length - 1;
         i > requiredPatternWidth - 1;
         i--) {
       if (formattedMinorUnits.substring(i, i + 1) == '0') {
@@ -445,11 +451,11 @@ class PatternEncoder implements MoneyEncoder<String> {
 
 /// Thrown when you pass an invalid pattern to [Money.format].
 class IllegalPatternException implements MoneyException {
-  /// the error
-  String message;
-
   ///
   IllegalPatternException(this.message);
+
+  /// the error
+  String message;
 
   @override
   String toString() => message;
