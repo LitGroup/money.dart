@@ -210,9 +210,15 @@ class Currencies {
       ..sort((lhs, rhs) => lhs.code.length - rhs.code.length);
 
     for (final currency in longToShort) {
-      if (monetaryAmount.contains(currency.code)) {
+      //[USD,IDR,AUD]
+      //If you have USDT ad code, then function will return USD because you using contain
+
+      // if (monetaryAmount.contains(currency.code)) {
+      //   match = currency;
+      //   break;
+      // }
+      if (monetaryAmount == currency.code) {
         match = currency;
-        break;
       }
     }
     return match;
