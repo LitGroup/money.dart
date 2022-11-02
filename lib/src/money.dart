@@ -257,7 +257,7 @@ class Money implements Comparable<Money> {
   /// currency indicated by the [code]. The S and C characters
   /// in the pattern are optional.
   ///
-  /// See [format] for details on how to construct a pattern.
+  /// See [format] for details on how to construct a [pattern].
   ///
   /// Throws an MoneyParseException if the [amount] doesn't
   /// match the pattern.
