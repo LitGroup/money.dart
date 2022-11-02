@@ -2,7 +2,7 @@ name: money2
 version: 3.3.2
 homepage: https://money2.onepub.dev
 documentation: https://money2.onepub.dev
-publish_to: https://beta.onepub.dev/api/jbbxpsdavu/
+publish_to: https://onepub.dev/api/jbbxpsdavu/
 description: Money and Currency classes with fixed precision maths, parsing and formatting. (Money.parse('$2010.00') * 10).format('S CC#,##0') -> $ US20,100
 repository: https://github.com/onepub-dev/money.dart
 environment: 
