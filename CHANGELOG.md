@@ -1,3 +1,8 @@
+# 3.4.0
+- upgraded to: fixed 2.4.0, intl 0.18, meta 1.9.0
+- updated publish to to onepub.dev
+- Experiment with pubspec_overrides.yaml.
+
 # 3.3.0
 - Upgraded to fixed 2.3.0 and Decimal 2.3.0 to fixed a compilation problem caused by a breaking change in decimal. upgraded to lint_hard. Increased the minimum sdk to 2.14 as reflect decimals minimum sdk.
 
