@@ -183,4 +183,39 @@ void main() {
   final codes = registeredCurrencies.map((c) => c.code);
   print(codes);
   // (USD, AUD, EUR, JPY)
+
+  // format ICU
+
+  final usdtCurrency = Currency.create('USDT', 8, name: 'USDT', symbol: 'USDT');
+  final idrCurrency = Currency.create('BIDR', 2, name: 'IDR', symbol: 'IDR');
+  //add 2 new currency with different decimal
+  Currencies().registerList([usdtCurrency, idrCurrency]);
+
+  //input raw value and convert to money
+  //with precision of usdt is 8 then the value should be like this.
+  //450278000000 => 4502.78000000
+  final money =
+      Money.fromBigIntWithCurrency(BigInt.parse('450278000000'), usdtCurrency);
+  //with formatDisplayIcu we can convert it to this
+  //4,502.78
+  //with number format we can use dilimiter and make any custom number format here.
+  // \u00A4# will be replace with symbol come from the money, or we can replace them
+  print(money.formatDisplayIcu('\u00A4#,##0.00#######'));
+  print(money.format("S #,##0.00"));
+
+  //same value but we will need this if you have any pattern you need from this link :
+  ///```
+  ///https://api.flutter.dev/flutter/intl/NumberFormat-class.html
+  ///```
+  print(money.formatDisplayIcu('#,##0.00#######'));
+  print(money.format("S #,##0.00"));
+
+  //if with the value above we will can not see the different right.
+  //but let give any new number
+
+  final moneyTwo =
+      Money.fromBigIntWithCurrency(BigInt.parse('450278120000'), usdtCurrency);
+  print(moneyTwo.formatDisplayIcu('\u00A4 #,##0.00#######')); //USDT4,502.7812
+  print(moneyTwo.format("S #,##0.00")); //USDT 4,502.78
+  //now you can see , [format] force to 2 decimal
 }

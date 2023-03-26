@@ -8,6 +8,7 @@
 
 import 'package:decimal/decimal.dart';
 import 'package:fixed/fixed.dart';
+import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 
 import 'common_currencies.dart';
@@ -98,6 +99,48 @@ class Money implements Comparable<Money> {
 
     return Money.fromNumWithCurrency(amount, currency,
         scale: scale ?? currency.scale);
+  }
+
+  ///formatDisplayIcu("\u00A4#,##0.00#######")
+  ///Number format ICU Please fisit this link
+  ///```dart
+  /// https://api.flutter.dev/flutter/intl/NumberFormat-class.html
+  ///```
+  ///for example :
+  ///you have to format with this pattern, \u00A4#,##0.00#######
+  ///What we need here is to force the decimal with two 0 decimal.
+  ///let say :
+  ///* 1 => 1.00
+  ///* 1.1 => 1.10
+  ///* 1.23 => 1.23
+  ///* 1.234 => 1.234
+  ///
+  /// ```dart
+  /// final money = MoneyTest().convertMinorUnitsToMoney('450278000000', 'USDT');
+  ///
+  /// print(money.formatDisplayIcu("\u00A4#,##0.00#######")); //USDT4,502.78
+  ///
+  /// print(money.format("S #,##0.00")); //SDT 4,502.78
+  /// ```
+  String formatDisplayIcu(String pattern,
+      {String overrideCurrencySymbol = '\u00A4'}) {
+    final newPattern =
+        pattern.replaceFirst(overrideCurrencySymbol, currency.symbol);
+    final myFormatter = NumberFormat(newPattern);
+    return myFormatter.format(amount.minorUnits / currency.scaleFactor);
+  }
+
+  String formatBeauty(int showZeroTotal) {
+    var tail =
+        showZeroTotal.toString().split('').map((e) => '0').toList().join();
+    final reversed = decimalPart.toString().split('').reversed;
+    final modified = int.parse(reversed.join());
+    final result =
+        modified.toString().split('').map((e) => '0').toList().join();
+    if (result.length > showZeroTotal) {
+      tail = result;
+    }
+    return format('#,###.$tail S');
   }
 
   /// Creates an instance of [Money] from a num holding the monetary value.
