@@ -9,7 +9,7 @@ environment:
   sdk: '>=2.14.0 <3.0.0'
 dependencies:
   decimal: ^2.3.0
-  # fixed: ^2.4.0
+  fixed: ^2.4.0
   intl: ^0.18.0
   meta: ^1.8.0
 dev_dependencies:
@@ -17,5 +17,5 @@ dev_dependencies:
   test: ^1.17.10
 dependency_overrides: null
 
-fixed:
-  path: ../fixed
+# fixed:
+#   path: ../fixed
