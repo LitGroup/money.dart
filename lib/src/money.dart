@@ -420,30 +420,16 @@ class Money implements Comparable<Money> {
   /// ```
   ///
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
-
-  ///formatDisplayIcu("\u00A4#,##0.00#######")
-  ///this is ICU format, \u00A4#,##0.00#######
-  /// ```dart
-  /// final money = MoneyTest().convertMinorUnitsToMoney('450278000000', 'USDT');
-  ///
-  /// print(money.formatDisplayIcu("\u00A4#,##0.00#######")); //USDT4,502.78
-  ///
-  ///
-  /// print(money.format("S #,##0.00")); //SDT 4,502.78
-  /// ```
-  String formatDisplayIcu(String pattern) {
-    print(currency.symbol);
-    // final newPattern = pattern.replaceFirst('\u00A4', currency.symbol);
-    final myFormatter = NumberFormat(pattern);
-    final result = amount.toDecimal();
-    // amount.minorUnits.toDecimal() / currency.scaleFactor.toDecimal();
-    print(amount.toDecimal());
-    print(amount.toDecimal().toDouble());
-    return myFormatter.format(amount.toDecimal().toDouble().ceil());
-  }
+ 
 
   ///expected pattern : ¤#,##0.######
-  ///* ¤ => is symbol
+  ///* ¤ => is symbol (come from backend) 
+  ///* S => is symbol too. you can make your own pattern 
+  /// example : 
+  /// S #,##0.# => USDT 1,231.123 
+  /// ¤ #,##0.# => USDT 1,231.123 
+  /// #,##0.#¤  => 1,231.123USDT 
+  /// for now the replacable symbol is harcoded for ¤ only. 
   String formatICU(String pattern, {bool showSymbol = true}) {
     late String replacePattern;
     if (showSymbol) {
@@ -455,46 +441,7 @@ class Money implements Comparable<Money> {
     }
     return format(replacePattern);
   }
-
-  String formatIcuWithMindDisplay(int minDisplay,
-      {String trailing = '...', bool showTrailing = false}) {
-    String zero = '';
-    String pagar = '';
-    for (var i = 0; i < minDisplay; i++) {
-      zero += '0';
-    }
-    for (var i = 0; i < scale; i++) {
-      pagar += '#';
-    }
-    String pattern = '#,##0.$pagar';
-
-    final formatted = format(pattern).split('.');
-
-    //check if the value have decimal or not.
-    if (formatted.length == 1) {
-      return '${formatted.first}.$zero';
-    } else {
-      //check the length
-      final truncMinDisplay = formatted.last.substring(0, minDisplay).trim();
-      if (showTrailing) {
-        return '${formatted.first}.$truncMinDisplay$trailing';
-      }
-      return '${formatted.first}.$truncMinDisplay';
-    }
-  }
-
-  String formatBeauty(int showZeroTotal) {
-    var tail =
-        showZeroTotal.toString().split('').map((e) => '0').toList().join();
-    final reversed = decimalPart.toString().split('').reversed;
-    final modified = int.parse(reversed.join());
-    final result =
-        modified.toString().split('').map((e) => '0').toList().join();
-    if (result.length > showZeroTotal) {
-      tail = result;
-    }
-    return format('#,###.$tail S');
-  }
+  
 
   @override
   String toString() => encodedBy(PatternEncoder(this, currency.pattern));
