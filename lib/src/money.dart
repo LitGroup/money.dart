@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 /* Copyright (C) S. Brett Sutton - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
@@ -99,48 +101,6 @@ class Money implements Comparable<Money> {
 
     return Money.fromNumWithCurrency(amount, currency,
         scale: scale ?? currency.scale);
-  }
-
-  ///formatDisplayIcu("\u00A4#,##0.00#######")
-  ///Number format ICU Please fisit this link
-  ///```dart
-  /// https://api.flutter.dev/flutter/intl/NumberFormat-class.html
-  ///```
-  ///for example :
-  ///you have to format with this pattern, \u00A4#,##0.00#######
-  ///What we need here is to force the decimal with two 0 decimal.
-  ///let say :
-  ///* 1 => 1.00
-  ///* 1.1 => 1.10
-  ///* 1.23 => 1.23
-  ///* 1.234 => 1.234
-  ///
-  /// ```dart
-  /// final money = MoneyTest().convertMinorUnitsToMoney('450278000000', 'USDT');
-  ///
-  /// print(money.formatDisplayIcu("\u00A4#,##0.00#######")); //USDT4,502.78
-  ///
-  /// print(money.format("S #,##0.00")); //SDT 4,502.78
-  /// ```
-  String formatDisplayIcu(String pattern,
-      {String overrideCurrencySymbol = '\u00A4'}) {
-    final newPattern =
-        pattern.replaceFirst(overrideCurrencySymbol, currency.symbol);
-    final myFormatter = NumberFormat(newPattern);
-    return myFormatter.format(amount.minorUnits / currency.scaleFactor);
-  }
-
-  String formatBeauty(int showZeroTotal) {
-    var tail =
-        showZeroTotal.toString().split('').map((e) => '0').toList().join();
-    final reversed = decimalPart.toString().split('').reversed;
-    final modified = int.parse(reversed.join());
-    final result =
-        modified.toString().split('').map((e) => '0').toList().join();
-    if (result.length > showZeroTotal) {
-      tail = result;
-    }
-    return format('#,###.$tail S');
   }
 
   /// Creates an instance of [Money] from a num holding the monetary value.
@@ -461,6 +421,81 @@ class Money implements Comparable<Money> {
   ///
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
 
+  ///formatDisplayIcu("\u00A4#,##0.00#######")
+  ///this is ICU format, \u00A4#,##0.00#######
+  /// ```dart
+  /// final money = MoneyTest().convertMinorUnitsToMoney('450278000000', 'USDT');
+  ///
+  /// print(money.formatDisplayIcu("\u00A4#,##0.00#######")); //USDT4,502.78
+  ///
+  ///
+  /// print(money.format("S #,##0.00")); //SDT 4,502.78
+  /// ```
+  String formatDisplayIcu(String pattern) {
+    print(currency.symbol);
+    // final newPattern = pattern.replaceFirst('\u00A4', currency.symbol);
+    final myFormatter = NumberFormat(pattern);
+    final result = amount.toDecimal();
+    // amount.minorUnits.toDecimal() / currency.scaleFactor.toDecimal();
+    print(amount.toDecimal());
+    print(amount.toDecimal().toDouble());
+    return myFormatter.format(amount.toDecimal().toDouble().ceil());
+  }
+
+  ///expected pattern : ¤#,##0.######
+  ///* ¤ => is symbol
+  String formatICU(String pattern, {bool showSymbol = true}) {
+    late String replacePattern;
+    if (showSymbol) {
+      //add symbol
+      replacePattern = pattern.replaceFirst('¤', 'S');
+    } else {
+      //remove symbol
+      replacePattern = pattern.replaceFirst('¤', '');
+    }
+    return format(replacePattern);
+  }
+
+  String formatIcuWithMindDisplay(int minDisplay,
+      {String trailing = '...', bool showTrailing = false}) {
+    String zero = '';
+    String pagar = '';
+    for (var i = 0; i < minDisplay; i++) {
+      zero += '0';
+    }
+    for (var i = 0; i < scale; i++) {
+      pagar += '#';
+    }
+    String pattern = '#,##0.$pagar';
+
+    final formatted = format(pattern).split('.');
+
+    //check if the value have decimal or not.
+    if (formatted.length == 1) {
+      return '${formatted.first}.$zero';
+    } else {
+      //check the length
+      final truncMinDisplay = formatted.last.substring(0, minDisplay).trim();
+      if (showTrailing) {
+        return '${formatted.first}.$truncMinDisplay$trailing';
+      }
+      return '${formatted.first}.$truncMinDisplay';
+    }
+  }
+
+  String formatBeauty(int showZeroTotal) {
+    var tail =
+        showZeroTotal.toString().split('').map((e) => '0').toList().join();
+    final reversed = decimalPart.toString().split('').reversed;
+    final modified = int.parse(reversed.join());
+    final result =
+        modified.toString().split('').map((e) => '0').toList().join();
+    if (result.length > showZeroTotal) {
+      tail = result;
+    }
+    return format('#,###.$tail S');
+  }
+
   @override
   String toString() => encodedBy(PatternEncoder(this, currency.pattern));
 
@@ -718,3 +753,22 @@ $monetaryValue contained an unexpected character '${compressedValue[monetaryInde
 
 /// Base class of all exceptions thrown from Money2.
 class MoneyException implements Exception {}
+
+extension FormatMaxDisplay on String {
+  String formatMaxDisplay(int maxDisplay, {String trailing = '....'}) {
+    if (this.contains('.')) {
+      //get decimal part
+      final decimalPart = this.split('.').last;
+      if (decimalPart.length <= maxDisplay) {
+        return this;
+      }
+
+      final newDecimal = decimalPart.substring(0, maxDisplay);
+      final result = replaceRange(indexOf('.') + 1, length, newDecimal);
+
+      return result + trailing;
+    } else {
+      return this;
+    }
+  }
+}
