@@ -11,6 +11,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:fixed/fixed.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
 import 'common_currencies.dart';
@@ -420,16 +421,9 @@ class Money implements Comparable<Money> {
   /// ```
   ///
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
- 
 
   ///expected pattern : ¤#,##0.######
-  ///* ¤ => is symbol (come from backend) 
-  ///* S => is symbol too. you can make your own pattern 
-  /// example : 
-  /// S #,##0.# => USDT 1,231.123 
-  /// ¤ #,##0.# => USDT 1,231.123 
-  /// #,##0.#¤  => 1,231.123USDT 
-  /// for now the replacable symbol is harcoded for ¤ only. 
+  ///* ¤ => is symbol
   String formatICU(String pattern, {bool showSymbol = true}) {
     late String replacePattern;
     if (showSymbol) {
@@ -441,7 +435,6 @@ class Money implements Comparable<Money> {
     }
     return format(replacePattern);
   }
-  
 
   @override
   String toString() => encodedBy(PatternEncoder(this, currency.pattern));
@@ -702,18 +695,59 @@ $monetaryValue contained an unexpected character '${compressedValue[monetaryInde
 class MoneyException implements Exception {}
 
 extension FormatMaxDisplay on String {
+  Map<String, dynamic> extracted() {
+    final regExp = RegExp(r'[A-Za-z]+');
+
+    final Iterable<Match> matches = regExp.allMatches(this);
+
+    final words = <String>[];
+    final result = <String, dynamic>{};
+
+    for (final match in matches) {
+      final word = match.group(0)!;
+      words.add(word);
+      final index = this.indexOf(word);
+      final data = {word: index};
+      result.addAll(data);
+    }
+
+    return result;
+  }
+
   String formatMaxDisplay(int maxDisplay, {String trailing = '....'}) {
+    //put the symbol.
+    //chec where the index.
+    final extractedSymbol = this.extracted().isEmpty ? null : this.extracted();
+    int? index;
+    String? symbol;
+    if (extractedSymbol != null) {
+      //get symbol and the index
+      symbol = extractedSymbol.entries.first.key;
+      index = extractedSymbol.entries.first.value as int;
+    }
+
+    //++++========================================
     if (this.contains('.')) {
       //get decimal part
       final decimalPart = this.split('.').last;
       if (decimalPart.length <= maxDisplay) {
+        if (extractedSymbol != null) {
+          if (index == 0) {
+            return this;
+          } else {
+            return '$this $symbol';
+          }
+        }
         return this;
       }
 
       final newDecimal = decimalPart.substring(0, maxDisplay);
       final result = replaceRange(indexOf('.') + 1, length, newDecimal);
-
-      return result + trailing;
+      if (index == 0) {
+        return '$result$trailing';
+      } else {
+        return '$result$trailing $symbol';
+      }
     } else {
       return this;
     }
