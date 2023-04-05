@@ -21,7 +21,7 @@ void main() {
   //with precision of usdt is 8 then the value should be like this.
   //450278000000 => 4502.78000000
   final money = Money.fromBigIntWithCurrency(
-      BigInt.parse('45010000000000000000'), ethCurrency);
+      BigInt.parse('45000000000000000000'), ethCurrency);
   // final money =
   //     Money.fromBigInt(BigInt.parse('45002000000000000000'), code: 'ETH');
   //with formatDisplayIcu we can convert it to this
@@ -29,7 +29,7 @@ void main() {
   //with number format we can use dilimiter and make any custom number format here.
   // \u00A4# will be replace with symbol come from the money, or we can replace them
 
-  print(money.formatICU2('#,##0.##################', maxDisplayPrecision: 6));
+  print(money.formatICU('#,##0.##################', maxDisplayPrecision: 6));
   final fixed = Fixed.fromInt(100);
   Money.parse('1.23', code: 'AUD');
   final angka1 = Decimal.fromInt(1);
