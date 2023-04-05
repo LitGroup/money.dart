@@ -10,8 +10,39 @@ import 'package:money2/money2.dart';
 void main() {
   /// Create money from Fixed amount
 
+  final usdtCurrency = Currency.create('USDT', 8, name: 'USDT', symbol: 'USDT');
+  final ethCurrency = Currency.create('ETH', 18, name: 'ETH', symbol: 'ETH');
+  final ethCurrency2 = Currency.create('ETH', 8, name: 'ETH', symbol: 'ETH');
+  final idrCurrency = Currency.create('BIDR', 2, name: 'IDR', symbol: 'IDR');
+  //add 2 new currency withdifferent decimal
+  Currencies().registerList([usdtCurrency, idrCurrency, ethCurrency]);
+
+  //input raw value and convert to money
+  //with precision of usdt is 8 then the value should be like this.
+  //450278000000 => 4502.78000000
+  final money = Money.fromBigIntWithCurrency(
+      BigInt.parse('45010000000000000000'), ethCurrency);
+  // final money =
+  //     Money.fromBigInt(BigInt.parse('45002000000000000000'), code: 'ETH');
+  //with formatDisplayIcu we can convert it to this
+  //4,502.78
+  //with number format we can use dilimiter and make any custom number format here.
+  // \u00A4# will be replace with symbol come from the money, or we can replace them
+
+  print(money.formatICU2('#,##0.##################', maxDisplayPrecision: 6));
   final fixed = Fixed.fromInt(100);
   Money.parse('1.23', code: 'AUD');
+  final angka1 = Decimal.fromInt(1);
+  final angka2 = Decimal.fromInt(3);
+  final totalUang = Money.fromDecimal(Decimal.fromInt(1), code: 'USDT');
+  final bunga = Decimal.fromInt(3);
+  final case1 = totalUang.amount.toDecimal() / bunga;
+  final hasilHitung =
+      case1.toDecimal(scaleOnInfinitePrecision: totalUang.currency.scale);
+  final newTotalUang = Money.fromDecimal(hasilHitung, code: 'USDT');
+
+  final hasil = angka1 / angka2;
+  print(hasil.toDecimal(scaleOnInfinitePrecision: 5));
 
   Money.fromFixed(fixed, code: 'AUD');
 
@@ -185,37 +216,4 @@ void main() {
   // (USD, AUD, EUR, JPY)
 
   // format ICU
-
-  final usdtCurrency = Currency.create('USDT', 8, name: 'USDT', symbol: 'USDT');
-  final idrCurrency = Currency.create('BIDR', 2, name: 'IDR', symbol: 'IDR');
-  //add 2 new currency with different decimal
-  Currencies().registerList([usdtCurrency, idrCurrency]);
-
-  //input raw value and convert to money
-  //with precision of usdt is 8 then the value should be like this.
-  //450278000000 => 4502.78000000
-  final money =
-      Money.fromBigIntWithCurrency(BigInt.parse('450278000000'), usdtCurrency);
-  //with formatDisplayIcu we can convert it to this
-  //4,502.78
-  //with number format we can use dilimiter and make any custom number format here.
-  // \u00A4# will be replace with symbol come from the money, or we can replace them
-  print(money.formatDisplayIcu('\u00A4#,##0.00#######'));
-  print(money.format("S #,##0.00"));
-
-  //same value but we will need this if you have any pattern you need from this link :
-  ///```
-  ///https://api.flutter.dev/flutter/intl/NumberFormat-class.html
-  ///```
-  print(money.formatDisplayIcu('#,##0.00#######'));
-  print(money.format("S #,##0.00"));
-
-  //if with the value above we will can not see the different right.
-  //but let give any new number
-
-  final moneyTwo =
-      Money.fromBigIntWithCurrency(BigInt.parse('450278120000'), usdtCurrency);
-  print(moneyTwo.formatDisplayIcu('\u00A4 #,##0.00#######')); //USDT4,502.7812
-  print(moneyTwo.format("S #,##0.00")); //USDT 4,502.78
-  //now you can see , [format] force to 2 decimal
 }

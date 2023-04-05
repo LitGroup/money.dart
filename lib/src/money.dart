@@ -9,6 +9,7 @@
 // import 'package:meta/meta.dart' show sealed, immutable;
 
 import 'package:decimal/decimal.dart';
+import 'package:decimal/intl.dart';
 import 'package:fixed/fixed.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';
@@ -425,6 +426,7 @@ class Money implements Comparable<Money> {
   ///expected pattern : ¤#,##0.######
   ///* ¤ => is symbol
   String formatICU(String pattern, {bool showSymbol = true}) {
+    var defaultLocale = Locale.parse('en');
     late String replacePattern;
     if (showSymbol) {
       //add symbol
@@ -434,6 +436,43 @@ class Money implements Comparable<Money> {
       replacePattern = pattern.replaceFirst('¤', '');
     }
     return format(replacePattern);
+  }
+
+  ///expected pattern : ¤#,##0.######
+  ///* ¤ => is symbol
+  String formatICU2(
+    String pattern, {
+    int? maxDisplayPrecision,
+    String trailingIfMax = '....',
+  }) {
+    const defaultLocale = 'USD'; //symbol for en locale
+    final formatter = NumberFormat(pattern, 'en');
+
+    final formatted = formatter.format(DecimalIntl(amount.toDecimal()));
+    final formattedWithSymbol =
+        formatted.replaceAll(defaultLocale, currency.symbol);
+    if (maxDisplayPrecision != null) {
+      String decimalPart = '';
+      String integerPart = '';
+      try {
+        final splitted = formatted.split('.');
+        integerPart = splitted[0];
+        decimalPart = splitted[1];
+      } catch (e) {
+        decimalPart = '';
+        integerPart = '';
+      }
+
+      if (decimalPart.length > maxDisplayPrecision) {
+        final decimalWithTrailing =
+            decimalPart.substring(0, maxDisplayPrecision);
+        //extract the symbol
+        String result1 = decimalPart.replaceAll(RegExp('[^A-Za-z ]'), '');
+        final full = '$integerPart.$decimalWithTrailing$trailingIfMax$result1';
+        return full.replaceAll(defaultLocale, currency.symbol);
+      }
+    }
+    return formattedWithSymbol;
   }
 
   @override
