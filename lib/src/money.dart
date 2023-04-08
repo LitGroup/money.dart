@@ -772,7 +772,11 @@ extension FormatMaxDisplay on String {
       }
 
       final newDecimal = decimalPart.substring(0, maxDisplay);
-      final result = replaceRange(indexOf('.') + 1, length, newDecimal);
+
+      final result = newDecimal.isNotEmpty
+          ? replaceRange(indexOf('.') + 1, length, newDecimal)
+          : this.split('.').first;
+          
       if (index == 0) {
         return '$result$trailing';
       } else {
