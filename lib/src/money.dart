@@ -469,7 +469,13 @@ class Money implements Comparable<Money> {
             decimalPart.substring(0, maxDisplayPrecision);
         //extract the symbol
         final result1 = decimalPart.replaceAll(RegExp('[^A-Za-z ]'), '');
-        final full = '$integerPart.$decimalWithTrailing$trailingIfMax$result1';
+        final decimalSeparator =
+            decimalWithTrailing.isEmpty ? '' : this.currency.decimalSeparator;
+
+        final full =
+            '$integerPart$decimalSeparator$decimalWithTrailing$trailingIfMax'
+            '$result1';
+
         return full.replaceAll(defaultLocale, currency.symbol);
       }
     }
@@ -782,7 +788,11 @@ extension FormatMaxDisplay on String {
       }
 
       final newDecimal = decimalPart.substring(0, maxDisplay);
-      final result = replaceRange(indexOf('.') + 1, length, newDecimal);
+
+      final result = newDecimal.isNotEmpty
+          ? replaceRange(indexOf('.') + 1, length, newDecimal)
+          : this.split('.').first;
+          
       if (index == 0) {
         return '$result$trailing';
       } else {
