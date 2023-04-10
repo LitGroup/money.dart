@@ -423,15 +423,31 @@ class Money implements Comparable<Money> {
   ///
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
 
+  String generatePattern({String? basicPattern}) {
+    String _pattern = basicPattern ?? '#,##0';
+    String newPattern = '';
+    for (var i = 0; i < scale; i++) {
+      newPattern += '#';
+    }
+    _pattern = _pattern + '.' + newPattern + ' ¤';
+    return _pattern;
+  }
+
   ///expected pattern : ¤#,##0.######
   ///* ¤ => is symbol
-  String formatICU(
-    String pattern, {
+  String formatICU({
+    String? pattern,
     int? maxDisplayPrecision,
     String trailingIfMax = '....',
   }) {
+    String _newPattern;
+    if (pattern == null) {
+      _newPattern = generatePattern();
+    } else {
+      _newPattern = pattern;
+    }
     const defaultLocale = 'USD'; //symbol for en locale
-    final formatter = NumberFormat(pattern, 'en');
+    final formatter = NumberFormat(_newPattern, 'en');
 
     final formatted = formatter.format(DecimalIntl(amount.toDecimal()));
     final formattedWithSymbol =
