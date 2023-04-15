@@ -52,7 +52,12 @@ class PatternEncoder implements MoneyEncoder<String> {
 
       /// ensure we don't end up with a trailing decimal point.
       if (formattedMinorPart.isNotEmpty) {
-        formatted += data.currency.decimalSeparator + formattedMinorPart;
+        final numericMinorPart =
+            formattedMinorPart.replaceAll(RegExp('[^0-9]'), '');
+        final decimalSeparator =
+            numericMinorPart.isNotEmpty ? data.currency.decimalSeparator : '';
+
+        formatted += decimalSeparator + formattedMinorPart;
       }
     }
 
