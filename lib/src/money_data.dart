@@ -5,7 +5,7 @@
  */
 
 import 'package:fixed/fixed.dart';
-import 'package:meta/meta.dart' show sealed, immutable;
+import 'package:meta/meta.dart' show immutable, sealed;
 
 import 'currency.dart';
 import 'money.dart';

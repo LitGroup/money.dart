@@ -30,7 +30,7 @@ class PatternDecoder implements MoneyDecoder<String> {
   final String pattern;
 
   @override
-  MoneyData decode(final String monetaryValue) {
+  MoneyData decode(String monetaryValue) {
     final negativeOne = BigInt.from(-1);
     var majorUnits = BigInt.zero;
     var minorUnits = BigInt.zero;

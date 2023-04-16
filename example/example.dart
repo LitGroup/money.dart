@@ -26,7 +26,7 @@ void main() {
   ///
   final costPrice = Money.fromInt(1000, code: 'USD');
 
-  print(costPrice.toString());
+  print(costPrice);
   // > $10.00
 
   ///
@@ -78,7 +78,7 @@ void main() {
   ///
   /// Output the result using the default format.
   ///
-  print(taxInclusive.toString());
+  print(taxInclusive);
   // > $11.00
 
   ///
@@ -105,7 +105,7 @@ void main() {
   ///
   final jpy = Currency.create('JPY', 0, symbol: '¥', pattern: 'S0');
   final jpyMoney = Money.fromIntWithCurrency(500, jpy);
-  print(jpyMoney.toString());
+  print(jpyMoney);
   // > ¥500
 
   ///
@@ -121,7 +121,7 @@ void main() {
       symbol: '€', invertSeparators: true, pattern: '#.##0,00 S');
 
   final bmwPrice = Money.fromIntWithCurrency(10025090, euro);
-  print(bmwPrice.toString());
+  print(bmwPrice);
   // > 100.250,90 €
 
   ///
@@ -172,7 +172,7 @@ void main() {
 
   // Do some maths
   final taxInclusivePrice = invoicePrice * 1.1;
-  print(taxInclusivePrice.toString());
+  print(taxInclusivePrice);
   // $11.00
 
   print(taxInclusivePrice.format('SCC 0.00'));

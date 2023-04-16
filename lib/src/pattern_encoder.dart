@@ -60,7 +60,7 @@ class PatternEncoder implements MoneyEncoder<String> {
   }
 
   /// Formats the major part of the [data].
-  String _formatMajorPart(MoneyData data, final String majorPattern) {
+  String _formatMajorPart(MoneyData data, String majorPattern) {
     var formatted = '';
 
     // extract the contiguous money components made up of 0 # , and .
@@ -113,7 +113,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   ///
   String _getFormattedMajorUnits(
-      MoneyData data, final String moneyPattern, BigInt majorUnits) {
+      MoneyData data, String moneyPattern, BigInt majorUnits) {
     String normalisedMoneyPattern;
     if (data.currency.invertSeparators) {
       // the NumberFormat doesn't like the inverted characters
@@ -236,7 +236,6 @@ class PatternEncoder implements MoneyEncoder<String> {
     if (moneyPattern.length > data.amount.scale) {
       moneyPattern = moneyPattern.substring(0, data.amount.scale);
       // extendFormatWithZeros
-
     }
 
     final decimalPart = data.amount.decimalPart;
@@ -345,7 +344,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   /// Compresses multiple currency pattern characters 'CCC' into a single
   /// 'C'.
-  String _compressC(final String majorPattern) {
+  String _compressC(String majorPattern) {
     // replaced with a single C.
     final compressedMajorPattern = majorPattern.replaceAll(RegExp('[C]+'), 'C');
 
@@ -371,7 +370,7 @@ class PatternEncoder implements MoneyEncoder<String> {
 
   /// Check that Zeros are only at the end of the pattern unless we have group
   /// separators as there can then be a zero at the end of each segment.
-  void _checkZeros(final String moneyPattern, final String groupSeparator,
+  void _checkZeros(String moneyPattern, String groupSeparator,
       {required bool minor}) {
     if (!moneyPattern.contains('0')) {
       return;
