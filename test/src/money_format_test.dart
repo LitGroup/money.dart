@@ -78,6 +78,15 @@ void main() {
           Money.fromInt(301, code: 'USD').format('000.000'), equals('003.010'));
     });
 
+    test('trailing zero when pattern have trailing symbol', () {
+      final usdt = Currency.create('USDT', 2, pattern: '#,##0.## CCC');
+      expect(Money.fromIntWithCurrency(01, usdt).toString(), '0.01 USDT');
+      expect(Money.fromIntWithCurrency(301, usdt).toString(), '3.01 USDT');
+      expect(Money.fromIntWithCurrency(3010, usdt).toString(), '30.1 USDT');
+      expect(Money.fromIntWithCurrency(100, usdt).toString(), '1 USDT');
+      expect(Money.fromIntWithCurrency(1000, usdt).toString(), '10 USDT');
+    });
+
     test('less than 10 cents USD in minor units', () {
       expect(Money.fromInt(01, code: 'USD').toString(), r'$0.01');
       expect(Money.fromInt(301, code: 'USD').toString(), r'$3.01');
