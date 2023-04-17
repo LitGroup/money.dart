@@ -438,7 +438,7 @@ class Money implements Comparable<Money> {
   String formatICU({
     String? pattern,
     int? maxDisplayPrecision,
-    String trailingIfMax = '....',
+    String trailingIfMax = '...',
   }) {
     String _newPattern;
     if (pattern == null) {
