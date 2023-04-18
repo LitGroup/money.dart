@@ -756,7 +756,7 @@ extension FormatMaxDisplay on String {
     return result;
   }
 
-  String formatMaxDisplay(int maxDisplay, {String trailing = '....'}) {
+  String formatMaxDisplay(int maxDisplay, {String trailing = '...'}) {
     //put the symbol.
     //chec where the index.
     final extractedSymbol = this.extracted().isEmpty ? null : this.extracted();
