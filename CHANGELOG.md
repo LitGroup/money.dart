@@ -1,3 +1,7 @@
+# 3.4.1
+- fix(pattern_encoder): handle trailing decimal when pattern has trailing symbol
+- Added scale unit tests provided by @nesquikm
+
 # 3.4.0
 - upgraded to: fixed 2.4.0, intl 0.18, meta 1.9.0
 
