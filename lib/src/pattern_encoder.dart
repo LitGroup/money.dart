@@ -6,15 +6,15 @@
 import 'dart:math';
 
 import 'package:intl/intl.dart';
-import 'package:money2/src/util.dart';
 
 import 'encoders.dart';
 import 'money.dart';
 import 'money_data.dart';
+import 'util.dart';
 
 /// Formats a monetary value to a String based on a pattern.
 class PatternEncoder implements MoneyEncoder<String> {
-  ///
+  ///s
   PatternEncoder(this.money, this.pattern);
 
   /// the amount to encode
