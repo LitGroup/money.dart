@@ -6,6 +6,7 @@
 import 'dart:math';
 
 import 'package:fixed/fixed.dart';
+import 'package:money2/src/util.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
@@ -302,9 +303,6 @@ class ValueQueue {
     final majorDigits = _takeDigits();
     return majorDigits.isEmpty ? BigInt.zero : BigInt.parse(majorDigits);
   }
-
-  /// true if the passed character is a digit.
-  bool isDigit(String char) => RegExp('[0123456789]').hasMatch(char);
 
   /// Takes any remaining digits as minor digits.
   /// If there are less digits than [Currency.scale]

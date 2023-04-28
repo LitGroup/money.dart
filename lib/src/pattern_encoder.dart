@@ -6,6 +6,7 @@
 import 'dart:math';
 
 import 'package:intl/intl.dart';
+import 'package:money2/src/util.dart';
 
 import 'encoders.dart';
 import 'money.dart';
@@ -52,12 +53,13 @@ class PatternEncoder implements MoneyEncoder<String> {
 
       /// ensure we don't end up with a trailing decimal point.
       if (formattedMinorPart.isNotEmpty) {
-        final numericMinorPart =
-            formattedMinorPart.replaceAll(RegExp('[^0-9]'), '');
-        final decimalSeparator =
-            numericMinorPart.isNotEmpty ? data.currency.decimalSeparator : '';
-
-        formatted += decimalSeparator + formattedMinorPart;
+        // If the minor part contains a digit (and not just the currency symbol)
+        // then we need a decimal place.
+        if (isDigit(formattedMinorPart)) {
+          formatted += data.currency.decimalSeparator + formattedMinorPart;
+        } else {
+          formatted += formattedMinorPart;
+        }
       }
     }
 
