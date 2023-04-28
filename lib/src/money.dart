@@ -423,10 +423,6 @@ class Money implements Comparable<Money> {
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
 
   String generatePattern({String? basicPattern}) {
-    print('pattern');
-    print(this.currency.pattern);
-    //default pattern  S0.00
-
     if (basicPattern == null) {
       final defaultPattern = currency.pattern;
       return defaultPattern.replaceAll('S', '¤');
