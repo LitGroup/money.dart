@@ -3,7 +3,6 @@
  * Proprietary and confidential
  * Written by Brett Sutton <bsutton@onepub.dev>, Jan 2022
  */
-import 'package:decimal/decimal.dart';
 import 'package:money2/money2.dart';
 // ignore_for_file: avoid_print
 
@@ -11,7 +10,8 @@ void main() {
   /// Create money from Fixed amount
 
   final usdtCurrency = Currency.create('USDT', 8, name: 'USDT', symbol: 'USDT');
-  final ethCurrency = Currency.create('ETH', 18, name: 'ETH', symbol: 'ETH');
+  final ethCurrency = Currency.create('ETH', 18,
+      name: 'ETH', symbol: 'ETH', pattern: '#,##0.0000############## ¤');
   // final ethCurrency2 = Currency.create('ETH', 8, name: 'ETH', symbol: 'ETH');
   final idrCurrency = Currency.create('BIDR', 2, name: 'IDR', symbol: 'IDR');
   //add 2 new currency withdifferent decimal
@@ -21,7 +21,7 @@ void main() {
       BigInt.parse('4115000000000010000000'), ethCurrency);
 
   print(money.formatICU(
-      pattern: '#,##0.0000############## ¤ ', maxDisplayPrecision: 4));
+      pattern: '#,##0.0000############## ¤', maxDisplayPrecision: 4));
 
   // final fixed = Fixed.fromInt(100);
   // Money.parse('1.23', code: 'AUD');

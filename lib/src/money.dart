@@ -12,7 +12,6 @@ import 'package:decimal/decimal.dart';
 import 'package:decimal/intl.dart';
 import 'package:fixed/fixed.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/locale.dart';
 import 'package:meta/meta.dart';
 
 import 'common_currencies.dart';
@@ -424,28 +423,34 @@ class Money implements Comparable<Money> {
   String format(String pattern) => encodedBy(PatternEncoder(this, pattern));
 
   String generatePattern({String? basicPattern}) {
-    String _pattern = basicPattern ?? '#,##0';
-    String newPattern = '';
+    print('pattern');
+    print(this.currency.pattern);
+    //default pattern  S0.00
+
+    if (basicPattern == null) {
+      final defaultPattern = currency.pattern;
+      return defaultPattern.replaceAll('S', '¤');
+    }
+    var _pattern = basicPattern;
+    var newPattern = '';
     for (var i = 0; i < scale; i++) {
       newPattern += '#';
     }
-    _pattern = _pattern + '.' + newPattern + ' ¤';
+    _pattern = '$_pattern.$newPattern ¤';
     return _pattern;
   }
 
   ///expected pattern : ¤#,##0.######
   ///* ¤ => is symbol
+  ///if [pattern] is [null] -> function will use registerd pattern from Money [S] as symbol
+  ///if pattern is used, it should be ICU format with [¤] as symbol
   String formatICU({
     String? pattern,
     int? maxDisplayPrecision,
     String trailingIfMax = '...',
   }) {
-    String _newPattern;
-    if (pattern == null) {
-      _newPattern = generatePattern();
-    } else {
-      _newPattern = pattern;
-    }
+    final _newPattern = generatePattern(basicPattern: pattern);
+
     const defaultLocale = 'USD'; //symbol for en locale
     final formatter = NumberFormat(_newPattern, 'en');
 
@@ -738,7 +743,7 @@ class MoneyException implements Exception {}
 
 extension FormatMaxDisplay on String {
   Map<String, dynamic> extracted() {
-    final regExp = RegExp(r'[A-Za-z]+');
+    final regExp = RegExp('[A-Za-z]+');
 
     final Iterable<Match> matches = regExp.allMatches(this);
 
@@ -756,6 +761,7 @@ extension FormatMaxDisplay on String {
     return result;
   }
 
+  @Deprecated('use formatICU instead')
   String formatMaxDisplay(int maxDisplay, {String trailing = '...'}) {
     //put the symbol.
     //chec where the index.
@@ -788,7 +794,7 @@ extension FormatMaxDisplay on String {
       final result = newDecimal.isNotEmpty
           ? replaceRange(indexOf('.') + 1, length, newDecimal)
           : this.split('.').first;
-          
+
       if (index == 0) {
         return '$result$trailing';
       } else {
