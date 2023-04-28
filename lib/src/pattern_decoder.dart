@@ -6,11 +6,12 @@
 import 'dart:math';
 
 import 'package:fixed/fixed.dart';
-import 'package:money2/src/util.dart';
 
 import 'currency.dart';
 import 'encoders.dart';
+import 'money.dart';
 import 'money_data.dart';
+import 'util.dart';
 
 /// Parses a String containing a monetary amount based on a pattern.
 class PatternDecoder implements MoneyDecoder<String> {
