@@ -465,14 +465,22 @@ class Money implements Comparable<Money> {
 
       }
 
-      final checkLenght = decimalPart.replaceAll(RegExp(r'\s+[a-zA-Z]+$'), '');
+      final checkLength = decimalPart.replaceAll(RegExp(r'\s+[a-zA-Z]+$'), '');
 
-      if (checkLenght.length > maxDisplayPrecision) {
-        final decimalWithTrailing =
-            decimalPart.substring(0, maxDisplayPrecision);
+      if (checkLength.length > maxDisplayPrecision) {
+        final decimalWithTrailing = decimalPart.substring(
+          0,
+          maxDisplayPrecision,
+        );
+
+        final decimalSeparator = decimalWithTrailing.isNotEmpty
+            ? this.currency.decimalSeparator
+            : '';
+
         //extract the symbol
         final result1 = decimalPart.replaceAll(RegExp('[^A-Za-z ]'), '');
-        final full = '$integerPart.$decimalWithTrailing$trailingIfMax$result1';
+        final full =
+            '$integerPart$decimalSeparator$decimalWithTrailing$trailingIfMax$result1';
         return full.replaceAll(defaultLocale, currency.symbol);
       }
     }
