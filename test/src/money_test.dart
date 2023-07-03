@@ -15,7 +15,14 @@ void main() {
         Money.fromInt(1, code: 'USD');
         Money.fromInt(-1, code: 'USD');
       });
-
+      final euro = CommonCurrencies().euro;
+      test('fromIntMajorUnits', () {
+        final m = Money.fromIntMajorUnits(10, code: 'EUR');
+        expect(m.toString(), '10,00€');
+        expect(m.minorUnits.toInt(), 1000);
+        final mWithC = Money.fromIntMajorUnitsWithCurrency(10, euro);
+        expect(mWithC.toString(), '10,00€');
+      });
       test('from', () {
         expect(Money.fromNum(0, code: 'USD'),
             equals(Money.fromInt(0, code: 'USD')));

@@ -172,11 +172,43 @@ class Money implements Comparable<Money> {
           currency);
 
   /// ******************************************
+  /// Money.fromIntMajorUnits
+  /// ******************************************
+
+  /// Creates an instance of [Money] from an integer majorUnits.
+  /// Only meant to handle round values
+  /// For 2 dollars, use 2
+  /// For 2.5 dollars, perfer another method such as fromNum
+  /// [code] - the currency code of the [majorUnits]. This must be either one
+  /// of the [CommonCurrencies] or a currency you have
+  /// registered via [Currencies.register].
+  /// Throws an [UnknownCurrencyException] if the [code] is not a registered
+  /// code.
+  factory Money.fromIntMajorUnits(int majorUnits, {required String code}) {
+    final currency = Currencies().find(code);
+    if (currency == null) {
+      throw UnknownCurrencyException(code);
+    }
+
+    return Money.fromIntMajorUnitsWithCurrency(majorUnits, currency);
+  }
+
+  /// Creates an instance of [Money] from an integer majorUnits.
+  /// [majorUnits] - a round amount of dough
+  factory Money.fromIntMajorUnitsWithCurrency(
+          int majorUnits, Currency currency) =>
+      // reverting the computation to keep money from int simple
+      Money._from(
+          Fixed.fromInt(
+              majorUnits * BigInt.from(10).pow(currency.scale).toInt()),
+          currency);
+
+  /// ******************************************
   /// Money.fromInt
   /// ******************************************
 
-  /// Creates an instance of [Money] from an integer.
-  ///
+  /// Creates an instance of [Money] from an integer minorUnits.
+  /// If you need 2 dollars, use 200
   /// [minorUnits] - the no. minorUnits of the [currency], e.g (cents).
   /// [code] - the currency code of the [minorUnits]. This must be either one
   /// of the [CommonCurrencies] or a currency you have
