@@ -117,6 +117,7 @@ class Currency {
 
   /// Full name of the currency. e.g. Australian Dollar
   final String country;
+  String get area => country;
 
   /// The major units of the currency. e.g. 'Dollar'
   final String unit;
