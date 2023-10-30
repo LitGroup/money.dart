@@ -1,0 +1,71 @@
+# https://hub.docker.com/_/dart
+image: dart:stable
+
+stages:
+  - test
+  - deploy
+
+.setup:
+  timeout: 5 minutes
+  tags:
+    - caching
+  resource_group: $CI_COMMIT_REF_SLUG
+  before_script:
+    # Set PUB_CACHE either here or in the CI/CD Settings if you have multiple
+    # jobs that use dart commands.
+    # PUB_CACHE is used by the `dart pub` command, it needs to be set so package
+    # dependencies are stored at the project-level for CI/CD operations.
+    - export PUB_CACHE=".pub-cache"
+    - export PATH="$PATH:$HOME/$PUB_CACHE/bin"
+    - dart --disable-analytics
+    # Install dependencies.
+    - dart pub get
+
+# Cache generated files and plugins between builds.
+.upload-cache:
+  cache:
+    key: pub-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - .pub-cache/bin/
+      - .pub-cache/global_packages/
+      - .pub-cache/hosted/
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+.download-cache:
+  cache:
+    key: pub-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - .pub-cache/bin/
+      - .pub-cache/global_packages/
+      - .pub-cache/hosted/
+    policy: pull
+
+test:
+  extends:
+    - .upload-cache
+    - .setup
+  script:
+    - dart analyze .
+    - >
+      dart test
+      --platform vm
+      --timeout 30s
+      --concurrency=$(nproc)
+      --test-randomize-ordering-seed=random
+      --reporter=expanded
+    - dart format --set-exit-if-changed bin/ lib/ test/ example/
+    - dart run example/*.dart
+
+pages:
+  stage: deploy
+  extends:
+    - .download-cache
+    - .setup
+  script:
+    - dart doc --output=public --validate-links
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
