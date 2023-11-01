@@ -18,23 +18,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'package:test/test.dart';
+import 'dart:collection';
 
-import 'package:money/money.dart';
+import 'package:money/money.dart' show Currencies, Currency, CurrencyCode;
 
-import 'fixtures/test_currencies.dart';
+class TestCurrencies extends Currencies {
+  /// Russian ruble.
+  static final rur = Currency(CurrencyCode('RUR'), precision: 2);
 
-void main() {
-  group('_MapBackedCurrencies', () {
-    final currencies = Currencies.from(TestCurrencies.asList());
+  /// United States dollar.
+  static final usd = Currency(CurrencyCode('USD'), precision: 2);
 
-    test('.findByCode()', () {
-      expect(currencies.findByCode(TestCurrencies.rur.code),
-          equals(TestCurrencies.rur));
-      expect(currencies.findByCode(TestCurrencies.btc.code),
-          equals(TestCurrencies.btc));
+  /// Euro.
+  static final eur = Currency(CurrencyCode('EUR'), precision: 2);
 
-      expect(currencies.findByCode(TestCurrencies.unknown.code), isNull);
-    });
-  });
+  /// Japanese yen.
+  static final jpy = Currency(CurrencyCode('JPY'), precision: 0);
+
+  /// Bitcoin.
+  static final btc = Currency(CurrencyCode('BTC'), precision: 8);
+
+  /// Unknown currency; not included in the test currencies directory.
+  static final unknown = Currency(CurrencyCode('UNKNOWN'), precision: 0);
+
+  static List<Currency> asList() => List.of(_currencies, growable: false);
+
+  static final List<Currency> _currencies = [
+    TestCurrencies.rur,
+    TestCurrencies.usd,
+    TestCurrencies.eur,
+    TestCurrencies.jpy,
+    TestCurrencies.btc,
+  ];
+
+  TestCurrencies();
+
+  @override
+  Currency? findByCode(CurrencyCode code) =>
+      _currencies.where((currency) => currency.code == code).firstOrNull;
 }

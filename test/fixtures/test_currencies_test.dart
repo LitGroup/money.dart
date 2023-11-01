@@ -20,21 +20,31 @@
 
 import 'package:test/test.dart';
 
-import 'package:money/money.dart';
-
-import 'fixtures/test_currencies.dart';
+import 'test_currencies.dart';
 
 void main() {
-  group('_MapBackedCurrencies', () {
-    final currencies = Currencies.from(TestCurrencies.asList());
+  group('TestCurrencies', () {
+    final currencies = TestCurrencies();
 
     test('.findByCode()', () {
       expect(currencies.findByCode(TestCurrencies.rur.code),
           equals(TestCurrencies.rur));
-      expect(currencies.findByCode(TestCurrencies.btc.code),
-          equals(TestCurrencies.btc));
+      expect(currencies.findByCode(TestCurrencies.usd.code),
+          equals(TestCurrencies.usd));
 
       expect(currencies.findByCode(TestCurrencies.unknown.code), isNull);
+    });
+
+    test('.asList()', () {
+      expect(
+          TestCurrencies.asList(),
+          containsAll([
+            TestCurrencies.rur,
+            TestCurrencies.usd,
+            TestCurrencies.eur,
+            TestCurrencies.jpy,
+            TestCurrencies.btc,
+          ]));
     });
   });
 }

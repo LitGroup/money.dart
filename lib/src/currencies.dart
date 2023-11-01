@@ -20,17 +20,33 @@
 
 import 'package:money/money.dart';
 
-final class Currencies {
-  static Currencies from<T extends Iterable<Currency>>(T iterable) {
-    return Currencies._internal(
-        {for (final currency in iterable) currency.code: currency});
+//------------------------------------------------------------------------------
+// Currencies abstract class
+//------------------------------------------------------------------------------
+
+/// Interface/base class of the currency directory.
+///
+/// ## Note for implementors
+///
+/// If you loading a list of currencies from the external source (e.g. database,
+/// RESTful API) you should load the whole directory at once. Do not try
+/// to call external resource per call of the [Currencies] method.
+abstract class Currencies {
+  static Currencies from<T extends Iterable<Currency>>(T currencyList) {
+    return _MapBackedCurrencies(currencyList);
   }
 
-  Currencies._internal(this._currencies);
+  Currency? findByCode(CurrencyCode code);
+}
+
+class _MapBackedCurrencies extends Currencies {
+  _MapBackedCurrencies(Iterable<Currency> currencyList)
+      : _currencies = {
+          for (final currency in currencyList) currency.code: currency
+        };
 
   final Map<CurrencyCode, Currency> _currencies;
 
-  Currency? findByCode(CurrencyCode code) {
-    return _currencies[code];
-  }
+  @override
+  Currency? findByCode(CurrencyCode code) => _currencies[code];
 }
