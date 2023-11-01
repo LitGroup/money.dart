@@ -22,98 +22,132 @@ import 'package:test/test.dart';
 
 import 'package:money/money.dart';
 
+import 'fixtures/test_currencies.dart';
+
 void main() {
   group('Money', () {
-    final rur = Currency(CurrencyCode('RUR'), precision: 2);
-    final usd = Currency(CurrencyCode('USD'), precision: 2);
+    // Construction
+    // -------------------------------------------------------------------------
 
     test('construction with subunits', () {
-      expect(() => Money.withSubunits(BigInt.from(100), rur), returnsNormally);
+      expect(() => Money.withSubunits(BigInt.from(100), TestCurrencies.rur),
+          returnsNormally);
     });
 
-    // Comparison:
+    // Predicates
+    // -------------------------------------------------------------------------
 
     test('.sameCurrencyAs()', () {
-      final twoRubles = Money.withSubunits(BigInt.from(200), rur);
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final twoDollars = Money.withSubunits(BigInt.from(200), usd);
+      final twoRubles =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final twoDollars =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.usd);
 
       expect(twoRubles.isSameCurrencyAs(fiveRubles), isTrue);
       expect(twoRubles.isSameCurrencyAs(twoDollars), isFalse);
     });
 
     test('.notSameCurrencyAs()', () {
-      final twoRubles = Money.withSubunits(BigInt.from(200), rur);
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final twoDollars = Money.withSubunits(BigInt.from(200), usd);
+      final twoRubles =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final twoDollars =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.usd);
 
       expect(twoRubles.isNotSameCurrencyAs(twoDollars), isTrue);
       expect(twoRubles.isNotSameCurrencyAs(fiveRubles), isFalse);
     });
 
+    // Comparison
+    // -------------------------------------------------------------------------
+
     test('.hashCode', () {
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final fiveMoreRubles = Money.withSubunits(BigInt.from(500), rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final fiveMoreRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
 
       expect(fiveRubles.hashCode, equals(fiveMoreRubles.hashCode));
     });
 
     test('.==()', () {
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final sixRubles = Money.withSubunits(BigInt.from(600), rur);
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final sixRubles =
+          Money.withSubunits(BigInt.from(600), TestCurrencies.rur);
+      final fiveDollars =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.usd);
 
       expect(fiveRubles == fiveRubles, isTrue);
-      expect(fiveRubles == Money.withSubunits(BigInt.from(500), rur), isTrue);
+      expect(
+          fiveRubles ==
+              Money.withSubunits(BigInt.from(500), TestCurrencies.rur),
+          isTrue);
 
       expect(fiveRubles == sixRubles, isFalse,
           reason: 'The same currency but different amount.');
       expect(fiveRubles == fiveDollars, isFalse,
-          reason: 'The same amount but different currencies.');
+          reason: 'The same amount but different fixtures.');
     });
 
-    // Arithmetics:
+    // Arithmetics
+    // -------------------------------------------------------------------------
 
     test('.-() unary', () {
-      final zeroRubles = Money.withSubunits(BigInt.from(0), rur);
+      final zeroRubles = Money.withSubunits(BigInt.from(0), TestCurrencies.rur);
 
       expect(-zeroRubles, equals(zeroRubles));
 
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final minusFiveRubles = Money.withSubunits(BigInt.from(-500), rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final minusFiveRubles =
+          Money.withSubunits(BigInt.from(-500), TestCurrencies.rur);
 
       expect(-fiveRubles, equals(minusFiveRubles));
       expect(-minusFiveRubles, equals(fiveRubles));
     });
 
     test('.-()', () {
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final threeRubles = Money.withSubunits(BigInt.from(300), rur);
-      final twoRubles = Money.withSubunits(BigInt.from(200), rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final threeRubles =
+          Money.withSubunits(BigInt.from(300), TestCurrencies.rur);
+      final twoRubles =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.rur);
 
       expect(fiveRubles - threeRubles, equals(twoRubles));
       expect(threeRubles - fiveRubles, equals(-twoRubles));
     });
 
     test('.-() fails for operands of different currencies', () {
-      final fiveRubbles = Money.withSubunits(BigInt.from(500), rur);
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+      final fiveRubbles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final fiveDollars =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.usd);
       expect(() => fiveRubbles - fiveDollars,
           throwsA(isA<MoneyArithmeticError>()));
     });
 
     test('.+()', () {
-      final fiveRubles = Money.withSubunits(BigInt.from(500), rur);
-      final threeRubles = Money.withSubunits(BigInt.from(300), rur);
-      final twoRubles = Money.withSubunits(BigInt.from(200), rur);
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final threeRubles =
+          Money.withSubunits(BigInt.from(300), TestCurrencies.rur);
+      final twoRubles =
+          Money.withSubunits(BigInt.from(200), TestCurrencies.rur);
 
       expect(twoRubles + threeRubles, equals(fiveRubles));
       expect(-threeRubles + fiveRubles, equals(twoRubles));
     });
 
-    test('.+() fails for operands of different currencies', () {
-      final fiveRubbles = Money.withSubunits(BigInt.from(500), rur);
-      final fiveDollars = Money.withSubunits(BigInt.from(500), usd);
+    test('.+() fails for operands of different fixtures', () {
+      final fiveRubbles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+      final fiveDollars =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.usd);
 
       expect(() => fiveRubbles + fiveDollars,
           throwsA(isA<MoneyArithmeticError>()));

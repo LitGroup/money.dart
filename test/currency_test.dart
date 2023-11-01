@@ -26,7 +26,7 @@ void main() {
   group('Currency', () {
     final rurCode = CurrencyCode('RUR');
     final usdCode = CurrencyCode('USD');
-    final customCode = CurrencyCode('CUSTOM');
+    final jpyCode = CurrencyCode('JPY');
 
     group('construction', () {
       test('succeeds', () {
@@ -34,13 +34,13 @@ void main() {
         expect(currency.code, equals(rurCode));
         expect(currency.precision, equals(2));
 
-        currency = Currency(customCode, precision: 0);
-        expect(currency.code, equals(customCode));
+        currency = Currency(jpyCode, precision: 0);
+        expect(currency.code, equals(jpyCode));
         expect(currency.precision, equals(0));
       });
 
       test('fails if `precision` is negative', () {
-        expect(() => Currency(customCode, precision: -1), throwsArgumentError);
+        expect(() => Currency(jpyCode, precision: -1), throwsArgumentError);
       });
     });
 

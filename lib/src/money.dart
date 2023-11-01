@@ -25,8 +25,9 @@ import 'money_arithmetic_error.dart';
 
 @immutable
 final class Money {
-  // Factories
+  // Construction
   // ---------------------------------------------------------------------------
+
   Money.withSubunits(BigInt amountInSubunits, Currency currency)
       : _amount = amountInSubunits,
         _currency = currency;
