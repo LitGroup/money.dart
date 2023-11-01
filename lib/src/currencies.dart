@@ -32,8 +32,12 @@ import 'package:money/money.dart';
 /// RESTful API) you should load the whole directory at once. Do not try
 /// to call external resource per call of the [Currencies] method.
 abstract class Currencies {
-  static Currencies from<T extends Iterable<Currency>>(T currencyList) {
-    return _MapBackedCurrencies(currencyList);
+  static Currencies from<T extends Iterable<Currency>>(T currencies) {
+    return _MapBackedCurrencies(currencies);
+  }
+
+  static Currencies aggregating<T extends Iterable<Currencies>>(T directories) {
+    return _AggregatingCurrencies(directories);
   }
 
   Currency? findByCode(CurrencyCode code);
@@ -49,4 +53,19 @@ class _MapBackedCurrencies extends Currencies {
 
   @override
   Currency? findByCode(CurrencyCode code) => _currencies[code];
+}
+
+class _AggregatingCurrencies extends Currencies {
+  _AggregatingCurrencies(Iterable<Currencies> directories)
+      : _directories = List.of(directories, growable: false);
+
+  final List<Currencies> _directories;
+
+  @override
+  Currency? findByCode(CurrencyCode code) {
+    return _directories
+        .map((directory) => directory.findByCode(code))
+        .where((code) => code != null)
+        .firstOrNull;
+  }
 }

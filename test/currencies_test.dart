@@ -37,4 +37,20 @@ void main() {
       expect(currencies.findByCode(TestCurrencies.unknown.code), isNull);
     });
   });
+
+  group('_AggregatingCurrencies', () {
+    final currencies = Currencies.aggregating([
+      Currencies.from([TestCurrencies.rur]),
+      Currencies.from([TestCurrencies.btc]),
+    ]);
+
+    test('.findByCode()', () {
+      expect(currencies.findByCode(TestCurrencies.rur.code),
+          equals(TestCurrencies.rur));
+      expect(currencies.findByCode(TestCurrencies.btc.code),
+          equals(TestCurrencies.btc));
+
+      expect(currencies.findByCode(TestCurrencies.unknown.code), isNull);
+    });
+  });
 }
