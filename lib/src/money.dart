@@ -25,6 +25,8 @@ import 'money_arithmetic_error.dart';
 
 @immutable
 final class Money {
+  // Factories
+  // ---------------------------------------------------------------------------
   Money.withSubunits(BigInt amountInSubunits, Currency currency)
       : _amount = amountInSubunits,
         _currency = currency;
@@ -33,11 +35,15 @@ final class Money {
   final BigInt _amount;
   final Currency _currency;
 
-  // Comparison ----------------------------------------------------------------
+  // Predicates
+  // ---------------------------------------------------------------------------
 
   bool isSameCurrencyAs(Money other) => _currency == other._currency;
 
   bool isNotSameCurrencyAs(Money other) => !isSameCurrencyAs(other);
+
+  // Comparison
+  // ---------------------------------------------------------------------------
 
   @override
   int get hashCode => Object.hash(_currency, _amount);
@@ -48,7 +54,8 @@ final class Money {
       other._currency == _currency &&
       other._amount == _amount;
 
-  // Arithmetic ----------------------------------------------------------------
+  // Arithmetic
+  // ---------------------------------------------------------------------------
 
   Money operator -() => _withSubunits(-_amount);
 
@@ -64,6 +71,9 @@ final class Money {
     return _withSubunits(_amount + other._amount);
   }
 
+  // Conversion to string
+  // ---------------------------------------------------------------------------
+
   @override
   String toString() {
     // This is temporary implementation for debug only.
@@ -71,6 +81,9 @@ final class Money {
 
     return 'Money { subunits: $_amount, currency: ${_currency.code} }';
   }
+
+  // Internal utility methods
+  // ---------------------------------------------------------------------------
 
   /// Creates new money value with the given [amount] of subunits
   /// and the same currency.
