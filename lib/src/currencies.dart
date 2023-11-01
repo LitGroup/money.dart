@@ -24,24 +24,53 @@ import 'package:money/money.dart';
 // Currencies abstract class
 //------------------------------------------------------------------------------
 
-/// Interface/base class of the currency directory.
+/// The interface/abstract class of the currency directory.
 ///
-/// ## Note for implementors
+/// ## Built-in implementations
 ///
-/// If you loading a list of currencies from the external source (e.g. database,
-/// RESTful API) you should load the whole directory at once. Do not try
-/// to call external resource per call of the [Currencies] method.
+/// The factory method [from()] creates an instance of `Currencies` with
+/// the given collection of values:
+///
+/// ```dart
+/// final currencies = Currencies.from([
+///   Currency(CurrencyCode('RUR'), precision: 2),
+///   Currency(CurrencyCode('BTC'), precision: 8),
+/// ]);
+/// ```
+///
+/// The factory method [aggregating()] creates an instance that aggregates
+/// the given instances of `Currencies`:
+///
+/// ```dart
+/// final currencies = Currencies.aggregating([
+///     Currencies.from([(CurrencyCode('RUR'), precision: 2)]),
+///     Currencies.from([(CurrencyCode('BTC'), precision: 8)]),
+/// ]);
+///
+/// assert(currencies.findByCoed(CurrencyCode('RUR')) != null);
+/// assert(currencies.findByCoed(CurrencyCode('BTC')) != null);
+/// ```
 abstract class Currencies {
-  static Currencies from<T extends Iterable<Currency>>(T currencies) {
+  /// Creates an instance of `Currencies` from the collection of currencies.
+  ///
+  /// Duplicates in the given collection will be ignored.
+  static Currencies from(Iterable<Currency> currencies) {
     return _MapBackedCurrencies(currencies);
   }
 
+  /// Creates an instance of `Currencies` which aggregates the provided instances.
   static Currencies aggregating<T extends Iterable<Currencies>>(T directories) {
     return _AggregatingCurrencies(directories);
   }
 
+  /// Returns the found currency with the specified code;
+  /// returns `null` if nothing is found.
   Currency? findByCode(CurrencyCode code);
 }
+
+//------------------------------------------------------------------------------
+// Map backed implementation of Currencies
+//------------------------------------------------------------------------------
 
 class _MapBackedCurrencies extends Currencies {
   _MapBackedCurrencies(Iterable<Currency> currencyList)
@@ -55,6 +84,10 @@ class _MapBackedCurrencies extends Currencies {
   Currency? findByCode(CurrencyCode code) => _currencies[code];
 }
 
+//------------------------------------------------------------------------------
+// Aggregating implementation of Currencies
+//------------------------------------------------------------------------------
+
 class _AggregatingCurrencies extends Currencies {
   _AggregatingCurrencies(Iterable<Currencies> directories)
       : _directories = List.of(directories, growable: false);
@@ -62,10 +95,8 @@ class _AggregatingCurrencies extends Currencies {
   final List<Currencies> _directories;
 
   @override
-  Currency? findByCode(CurrencyCode code) {
-    return _directories
-        .map((directory) => directory.findByCode(code))
-        .where((code) => code != null)
-        .firstOrNull;
-  }
+  Currency? findByCode(CurrencyCode code) => _directories
+      .map((directory) => directory.findByCode(code))
+      .where((code) => code != null)
+      .firstOrNull;
 }
