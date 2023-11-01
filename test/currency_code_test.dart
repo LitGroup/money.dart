@@ -18,38 +18,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'package:meta/meta.dart';
+import 'package:test/test.dart';
 
-import 'currency_code.dart';
+import 'package:money/money.dart';
 
-@immutable
-final class Currency {
-  Currency(this.code, {required this.precision}) {
-    if (precision.isNegative) {
-      throw ArgumentError(
-          'Precision of the currency cannot be negative', 'precision');
-    }
-  }
+void main() {
+  group('CurrencyCode', () {
+    test('construction', () {
+      expect(() => CurrencyCode('RUR'), returnsNormally);
+    });
 
-  final CurrencyCode code;
+    test('.toString()', () {
+      expect(CurrencyCode('RUR').toString(), equals('RUR'));
+      expect(CurrencyCode('rur').toString(), equals('rur'));
+    });
 
-  final int precision;
+    test('.==() provides case insensitive comparison', () {
+      expect(CurrencyCode('RUR') == CurrencyCode('RUR'), isTrue);
+      expect(CurrencyCode('RUR') == CurrencyCode('rur'), isTrue);
+      expect(CurrencyCode('rur') == CurrencyCode('RUR'), isTrue);
+      expect(CurrencyCode('RUR') == CurrencyCode('USD'), isFalse);
+    });
 
-  @override
-  bool operator ==(Object other) {
-    if (other is Currency && other.code == code) {
-      assert(precision == other.precision,
-          'Semantic error: the precision of currencies with same code must be the same.');
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  int get hashCode => code.hashCode;
-
-  @override
-  String toString() => code.toString();
+    test('.hashCode', () {
+      expect(
+          CurrencyCode('RUR').hashCode, equals(CurrencyCode('RUR').hashCode));
+      expect(
+          CurrencyCode('RUR').hashCode, equals(CurrencyCode('rur').hashCode));
+    });
+  });
 }

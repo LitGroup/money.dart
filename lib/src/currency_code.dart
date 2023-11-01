@@ -20,36 +20,44 @@
 
 import 'package:meta/meta.dart';
 
-import 'currency_code.dart';
-
+/// The value-type representing an alphabetical currency code.
+///
+/// ```dart
+///  final rur = CurrencyCode('RUR');
+/// ```
+///
+/// [CurrencyCode] interprets the given value in the case insensitive way:
+///
+/// ```dart
+/// assert(CurrencyCode('RUR') == CurrencyCode('rur'));
+/// ```
+///
+/// DO NOT use an empty value for the instantiation of the code, this ends up
+/// with an assertion failure in the debug mode.
 @immutable
-final class Currency {
-  Currency(this.code, {required this.precision}) {
-    if (precision.isNegative) {
-      throw ArgumentError(
-          'Precision of the currency cannot be negative', 'precision');
-    }
-  }
+final class CurrencyCode {
+  CurrencyCode(String value)
+      : assert(value.isNotEmpty, 'Currency code should not be empty.'),
+        _value = value,
+        _canonicalValue = value.toUpperCase();
 
-  final CurrencyCode code;
+  final String _value;
 
-  final int precision;
+  final String _canonicalValue;
+
+  /// Returns the original value of the code provided during the instantiation.
+  @override
+  String toString() => _value;
+
+  /// Makes case insensitive check for equality.
+  ///
+  /// ```dart
+  /// assert(CurrencyCode('RUR') == CurrencyCode('rur'));
+  /// ```
+  @override
+  bool operator ==(Object other) =>
+      other is CurrencyCode && other._canonicalValue == _canonicalValue;
 
   @override
-  bool operator ==(Object other) {
-    if (other is Currency && other.code == code) {
-      assert(precision == other.precision,
-          'Semantic error: the precision of currencies with same code must be the same.');
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  int get hashCode => code.hashCode;
-
-  @override
-  String toString() => code.toString();
+  int get hashCode => _canonicalValue.hashCode;
 }

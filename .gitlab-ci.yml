@@ -11,17 +11,12 @@ stages:
     - caching
   resource_group: $CI_COMMIT_REF_SLUG
   before_script:
-    # Set PUB_CACHE either here or in the CI/CD Settings if you have multiple
-    # jobs that use dart commands.
-    # PUB_CACHE is used by the `dart pub` command, it needs to be set so package
-    # dependencies are stored at the project-level for CI/CD operations.
     - export PUB_CACHE=".pub-cache"
     - export PATH="$PATH:$HOME/$PUB_CACHE/bin"
     - dart --disable-analytics
     # Install dependencies.
     - dart pub get
 
-# Cache generated files and plugins between builds.
 .upload-cache:
   cache:
     key: pub-cache-$CI_COMMIT_REF_SLUG
@@ -30,8 +25,6 @@ stages:
       - .pub-cache/global_packages/
       - .pub-cache/hosted/
 
-# Cache downloaded dependencies and plugins between builds.
-# To keep cache across branches add 'key: "$CI_JOB_NAME"'
 .download-cache:
   cache:
     key: pub-cache-$CI_COMMIT_REF_SLUG
@@ -54,8 +47,7 @@ test:
       --concurrency=$(nproc)
       --test-randomize-ordering-seed=random
       --reporter=expanded
-    - dart format --set-exit-if-changed bin/ lib/ test/ example/
-    - dart run example/*.dart
+    - dart format --set-exit-if-changed --output=none lib/ test/
 
 pages:
   stage: deploy

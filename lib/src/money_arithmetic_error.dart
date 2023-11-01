@@ -18,38 +18,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'package:meta/meta.dart';
+import 'money.dart';
 
-import 'currency_code.dart';
-
-@immutable
-final class Currency {
-  Currency(this.code, {required this.precision}) {
-    if (precision.isNegative) {
-      throw ArgumentError(
-          'Precision of the currency cannot be negative', 'precision');
+final class MoneyArithmeticError extends Error {
+  static void checkForAdditionOf(Money lhs, Money rhs) {
+    if (lhs.isNotSameCurrencyAs(rhs)) {
+      throw MoneyArithmeticError._internal(
+          '$lhs + $rhs', 'addition of different currencies is not possible');
     }
   }
 
-  final CurrencyCode code;
-
-  final int precision;
-
-  @override
-  bool operator ==(Object other) {
-    if (other is Currency && other.code == code) {
-      assert(precision == other.precision,
-          'Semantic error: the precision of currencies with same code must be the same.');
-
-      return true;
-    } else {
-      return false;
+  static void checkForSubtractionOf(Money lhs, Money rhs) {
+    if (lhs.isNotSameCurrencyAs(rhs)) {
+      throw MoneyArithmeticError._internal(
+          '$lhs - $rhs', 'subtraction of different currencies is not possible');
     }
   }
 
-  @override
-  int get hashCode => code.hashCode;
+  MoneyArithmeticError._internal(this._expression, this._description);
+
+  final String _expression;
+  final String _description;
 
   @override
-  String toString() => code.toString();
+  String toString() {
+    return 'Money arithmetic error ($_expression): $_description.';
+  }
 }

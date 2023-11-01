@@ -18,38 +18,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import 'package:meta/meta.dart';
+import 'package:money/money.dart';
+import 'package:test/test.dart';
 
-import 'currency_code.dart';
+void main() {
+  group('Currencies', () {
+    final rur = Currency(CurrencyCode('RUR'), precision: 2);
+    final usd = Currency(CurrencyCode('USD'), precision: 2);
 
-@immutable
-final class Currency {
-  Currency(this.code, {required this.precision}) {
-    if (precision.isNegative) {
-      throw ArgumentError(
-          'Precision of the currency cannot be negative', 'precision');
-    }
-  }
+    /// The currencies directory to be tested.
+    late Currencies currencies;
 
-  final CurrencyCode code;
+    setUp(() => currencies = Currencies.from([rur, usd]));
 
-  final int precision;
+    group('.findByCode()', () {
+      test('returns found currency', () {
+        expect(currencies.findByCode(rur.code), equals(rur));
+        expect(currencies.findByCode(usd.code), equals(usd));
+      });
 
-  @override
-  bool operator ==(Object other) {
-    if (other is Currency && other.code == code) {
-      assert(precision == other.precision,
-          'Semantic error: the precision of currencies with same code must be the same.');
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  int get hashCode => code.hashCode;
-
-  @override
-  String toString() => code.toString();
+      test('returns null if requested currency not registered', () {
+        expect(currencies.findByCode(CurrencyCode('UNKNOWN')), isNull);
+      });
+    });
+  });
 }
