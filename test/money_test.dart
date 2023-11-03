@@ -90,7 +90,7 @@ void main() {
       expect(fiveRubles == sixRubles, isFalse,
           reason: 'The same currency but different amount.');
       expect(fiveRubles == fiveDollars, isFalse,
-          reason: 'The same amount but different fixtures.');
+          reason: 'The same amount but different currencies.');
     });
 
     // Arithmetics
@@ -143,7 +143,7 @@ void main() {
       expect(-threeRubles + fiveRubles, equals(twoRubles));
     });
 
-    test('.+() fails for operands of different fixtures', () {
+    test('.+() fails for operands of different currencies', () {
       final fiveRubbles =
           Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
       final fiveDollars =
