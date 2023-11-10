@@ -20,44 +20,53 @@
 
 import 'package:meta/meta.dart';
 
-/// The value-type representing an alphabetical currency code.
+/// An alphabetic currency code.
 ///
-/// ```dart
-///  final rur = CurrencyCode('RUR');
-/// ```
-///
-/// [CurrencyCode] interprets the given value in the case insensitive way:
-///
-/// ```dart
-/// assert(CurrencyCode('RUR') == CurrencyCode('rur'));
-/// ```
-///
-/// DO NOT use an empty value for the instantiation of the code, this ends up
-/// with an assertion failure in the debug mode.
+/// ## Format Description
+/// The code can contain from 3 to 10 Latin letters in uppercase only.
+/// For example: 'RUR', 'USDT'.
 @immutable
 final class CurrencyCode {
-  CurrencyCode(String value)
-      : assert(value.isNotEmpty, 'Currency code should not be empty.'),
-        _value = value,
-        _canonicalValue = value.toUpperCase();
+  /// Creates self.
+  ///
+  /// Throws [ArgumentError] if the given [value] contains an invalid string.
+  static CurrencyCode from(String value) {
+    return tryFrom(value) ??
+        (throw ArgumentError.value(value, 'value', 'Invalid currency code.'));
+  }
+
+  /// Creates self.
+  ///
+  /// Makes the same as [from()] factory, but returns `null` in case of invalid [value].
+  static CurrencyCode? tryFrom(String value) {
+    final pattern = RegExp(r'^[A-Z]{3,10}$');
+
+    if (!pattern.hasMatch(value)) {
+      return null;
+    }
+
+    return CurrencyCode._internal(value);
+  }
+
+  @Deprecated('Use CurrencyCode.from() instead.')
+  factory CurrencyCode(String value) {
+    return CurrencyCode.from(value);
+  }
+
+  CurrencyCode._internal(this._value) {
+    assert(_value.isNotEmpty,
+        'Currency code cannot be created from empty string.');
+  }
 
   final String _value;
 
-  final String _canonicalValue;
-
-  /// Returns the original value of the code provided during the instantiation.
   @override
   String toString() => _value;
 
-  /// Makes case insensitive check for equality.
-  ///
-  /// ```dart
-  /// assert(CurrencyCode('RUR') == CurrencyCode('rur'));
-  /// ```
   @override
   bool operator ==(Object other) =>
-      other is CurrencyCode && other._canonicalValue == _canonicalValue;
+      other is CurrencyCode && other._value == _value;
 
   @override
-  int get hashCode => _canonicalValue.hashCode;
+  int get hashCode => _value.hashCode;
 }
