@@ -18,9 +18,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-export 'src/currencies.dart' show Currencies;
-export 'src/currency.dart' show Currency;
-export 'src/currency_code.dart' show CurrencyCode;
-export 'src/money.dart' show Money;
-export 'src/money_arithmetic_error.dart';
-export 'src/money_coding.dart';
+import 'package:money/money.dart';
+
+class FakeMoneyEncoder implements MoneyEncoder<MoneyData> {
+  @override
+  MoneyData encode(MoneyData data) => data;
+}
+
+class FakeMoneyDecoder implements MoneyDecoder<MoneyData> {
+  @override
+  MoneyData decode(MoneyData encoded) => encoded;
+}
+
+class AlwaysFailingMoneyDecoder implements MoneyDecoder<MoneyData> {
+  @override
+  MoneyData decode(MoneyData encoded) => throw MoneyFormatException();
+}

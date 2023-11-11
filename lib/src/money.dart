@@ -22,6 +22,7 @@ import 'package:meta/meta.dart';
 
 import 'currency.dart';
 import 'money_arithmetic_error.dart';
+import 'money_coding.dart';
 
 @immutable
 final class Money {
@@ -35,6 +36,33 @@ final class Money {
   /// The amount in subunits.
   final BigInt _amount;
   final Currency _currency;
+
+  // Encoding & decoding
+  // ---------------------------------------------------------------------------
+
+  /// Creates self decoding the given [value] using the [decoder].
+  ///
+  /// Throws [MoneyFormatException] if decoding fails.
+  static Money decoding<T>(T value, {required MoneyDecoder<T> decoder}) {
+    final (:subunits, :currency) =
+        decoder.decode(value); // throws MoneyFormatException
+
+    return Money.withSubunits(subunits, currency);
+  }
+
+  /// Creates self decoding the given [value] using the [decoder].
+  ///
+  /// Returns `null` if decoding fails.
+  static Money? decodingOrNull<T>(T value, {required MoneyDecoder<T> decoder}) {
+    try {
+      return decoding(value, decoder: decoder);
+    } on MoneyFormatException {
+      return null;
+    }
+  }
+
+  T encodedBy<T>(MoneyEncoder<T> encoder) =>
+      encoder.encode((subunits: _amount, currency: _currency));
 
   // Predicates
   // ---------------------------------------------------------------------------

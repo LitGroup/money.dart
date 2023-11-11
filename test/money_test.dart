@@ -23,6 +23,7 @@ import 'package:test/test.dart';
 import 'package:money/money.dart';
 
 import 'fixtures/test_currencies.dart';
+import 'fixtures/fake_coding.dart';
 
 void main() {
   group('Money', () {
@@ -32,6 +33,57 @@ void main() {
     test('construction with subunits', () {
       expect(() => Money.withSubunits(BigInt.from(100), TestCurrencies.rur),
           returnsNormally);
+    });
+
+    // Encoding & Decoding
+    // -------------------------------------------------------------------------
+    test('.encodedBy()', () {
+      final fiveRubles =
+          Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+
+      final data = fiveRubles.encodedBy(FakeMoneyEncoder());
+      expect(data.subunits, equals(BigInt.from(500)));
+      expect(data.currency, equals(TestCurrencies.rur));
+    });
+
+    group('.decoding()', () {
+      test('succeeds', () {
+        final expected =
+            Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+        final actual = Money.decoding(
+            (subunits: BigInt.from(500), currency: TestCurrencies.rur),
+            decoder: FakeMoneyDecoder());
+
+        expect(actual, equals(expected));
+      });
+
+      test('throws exception on decoding failure', () {
+        expect(
+            () => Money.decoding(
+                (subunits: BigInt.from(500), currency: TestCurrencies.rur),
+                decoder: AlwaysFailingMoneyDecoder()),
+            throwsA(isA<MoneyFormatException>()));
+      });
+    });
+
+    group('.decodingOrNull()', () {
+      test('succeeds', () {
+        final expected =
+            Money.withSubunits(BigInt.from(500), TestCurrencies.rur);
+        final actual = Money.decodingOrNull(
+            (subunits: BigInt.from(500), currency: TestCurrencies.rur),
+            decoder: FakeMoneyDecoder());
+
+        expect(actual, equals(expected));
+      });
+
+      test('returns null on decoding failure', () {
+        expect(
+            Money.decodingOrNull(
+                (subunits: BigInt.from(500), currency: TestCurrencies.rur),
+                decoder: AlwaysFailingMoneyDecoder()),
+            isNull);
+      });
     });
 
     // Predicates

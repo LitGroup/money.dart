@@ -18,9 +18,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-export 'src/currencies.dart' show Currencies;
-export 'src/currency.dart' show Currency;
-export 'src/currency_code.dart' show CurrencyCode;
-export 'src/money.dart' show Money;
-export 'src/money_arithmetic_error.dart';
-export 'src/money_coding.dart';
+import 'currency.dart';
+
+typedef MoneyData = ({BigInt subunits, Currency currency});
+
+abstract interface class MoneyEncoder<T> {
+  T encode(MoneyData data);
+}
+
+abstract interface class MoneyDecoder<T> {
+  /// Decodes [MoneyData] from the given representation.
+  ///
+  /// Throws [MoneyFormatException] if the given value cannot be decoded.
+  MoneyData decode(T encoded);
+}
+
+class MoneyFormatException extends FormatException {
+  MoneyFormatException([super.message = '', super.source]);
+}
