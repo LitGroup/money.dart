@@ -23,23 +23,23 @@ import 'dart:collection';
 import 'package:money/money.dart' show Currencies, Currency, CurrencyCode;
 
 class TestCurrencies extends Currencies {
-  /// Russian ruble.
-  static final rur = Currency(CurrencyCode('RUR'), precision: 2);
+  /// Russian Ruble.
+  static final rur = Currency(CurrencyCode.from('RUR'), precision: 2);
 
-  /// United States dollar.
-  static final usd = Currency(CurrencyCode('USD'), precision: 2);
+  /// United States Dollar.
+  static final usd = Currency(CurrencyCode.from('USD'), precision: 2);
 
   /// Euro.
-  static final eur = Currency(CurrencyCode('EUR'), precision: 2);
+  static final eur = Currency(CurrencyCode.from('EUR'), precision: 2);
 
-  /// Japanese yen.
-  static final jpy = Currency(CurrencyCode('JPY'), precision: 0);
+  /// Japanese Yen.
+  static final jpy = Currency(CurrencyCode.from('JPY'), precision: 0);
 
   /// Bitcoin.
-  static final btc = Currency(CurrencyCode('BTC'), precision: 8);
+  static final btc = Currency(CurrencyCode.from('BTC'), precision: 8);
 
   /// Unknown currency; not included in the test currencies directory.
-  static final unknown = Currency(CurrencyCode('UNKNOWN'), precision: 0);
+  static final unknown = Currency(CurrencyCode.from('UNKNOWN'), precision: 0);
 
   static List<Currency> asList() => List.of(_currencies, growable: false);
 

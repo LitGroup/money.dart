@@ -25,9 +25,9 @@ import 'package:money/money.dart';
 void main() {
   // Values for testing expressions:
   final oneRuble = Money.withSubunits(
-      BigInt.from(100), Currency(CurrencyCode('RUR'), precision: 2));
+      BigInt.from(100), Currency(CurrencyCode.from('RUR'), precision: 2));
   final twoDollars = Money.withSubunits(
-      BigInt.from(200), Currency(CurrencyCode('USD'), precision: 2));
+      BigInt.from(200), Currency(CurrencyCode.from('USD'), precision: 2));
 
   group('MoneyArithmeticError', () {
     test('.checkForAdditionOf()', () {

@@ -24,9 +24,9 @@ import 'package:money/money.dart';
 
 void main() {
   group('Currency', () {
-    final rurCode = CurrencyCode('RUR');
-    final usdCode = CurrencyCode('USD');
-    final jpyCode = CurrencyCode('JPY');
+    final rurCode = CurrencyCode.from('RUR');
+    final usdCode = CurrencyCode.from('USD');
+    final jpyCode = CurrencyCode.from('JPY');
 
     group('construction', () {
       test('succeeds', () {

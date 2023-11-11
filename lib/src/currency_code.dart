@@ -48,11 +48,6 @@ final class CurrencyCode {
     return CurrencyCode._internal(value);
   }
 
-  @Deprecated('Use CurrencyCode.from() instead.')
-  factory CurrencyCode(String value) {
-    return CurrencyCode.from(value);
-  }
-
   CurrencyCode._internal(this._value) {
     assert(_value.isNotEmpty,
         'Currency code cannot be created from empty string.');
